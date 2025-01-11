@@ -1,0 +1,17 @@
+{
+    "name": "PMB UNIMUDA",
+    "short_name": "PMB UNIMUDA",
+    "description": "Website Resmi Penerimaan Mahasiswa Baru UNIMUDA Sorong",
+    "lang": "id-ID",
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#7d2a98",
+    "background_color": "#7d2a98",
+    "icons": [
+        {
+            "src": "app/img/logo.png",
+            "sizes": "280x280",
+            "type": "image/png"
+        }
+    ]
+}

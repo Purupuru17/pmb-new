@@ -1,0 +1,19 @@
+{
+    "name": "unimuda/pmb",
+    "description": "Penerimaan Mahasiswa Baru UNIMUDA Sorong",
+    "type": "project",
+    "license": "GPL",
+    "homepage": "http://pmb.unimudasorong.ac.id",
+    "authors": [
+        {
+            "name": "PMB",
+            "email": "pmb@unimudasorong.ac.id"
+        }
+    ],
+    "require": {
+        "phpoffice/phpspreadsheet": "^1.6",
+        "dompdf/dompdf": "^0.8.3",
+        "aws/aws-sdk-php": "^3.183",
+        "guzzlehttp/guzzle": "^7.0"
+    }
+}
