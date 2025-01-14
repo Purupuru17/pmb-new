@@ -25,12 +25,8 @@ class Seleksi extends KZ_Controller {
         if(empty(decode($id))) {
             redirect($this->module);
         }
-        if($this->sessiongroup != 1) {
-            $this->session->set_flashdata('notif', notif('warning', 'Informasi', 'Hubungi PUSDATIN untuk melakukan perubahan NIM'));
-            redirect($this->module);
-        }
-        $this->data['detail'] = $this->m_mhs->getId(decode($id));
         $this->data['prodi'] = $this->m_prodi->getAll();
+        $this->data['detail'] = $this->m_mhs->getId(decode($id));
         
         $this->data['module'] = $this->module;
         $this->data['title'] = array('Seleksi', 'NIM PDDikti');
@@ -40,22 +36,6 @@ class Seleksi extends KZ_Controller {
             array('title' => $this->data['title'][1], 'url' => '')
         );
         $this->load_view('master/seleksi/v_add', $this->data);
-    }
-    function edit($id = NULL) {
-        if (empty(decode($id))) {
-            redirect($this->module);
-        }
-        $this->data['edit'] = $this->m_mhs->getId(decode($id));
-
-        $this->data['gelombang'] = load_array('gelombang');
-        $this->data['action'] = $this->module_do . '/edit/' . $id;
-        $this->data['title'] = array('Seleksi', 'Ubah Data');
-        $this->data['breadcrumb'] = array(
-            array('title' => 'Mahasiswa', 'url' => '#'),
-            array('title' => $this->uri->segment(2), 'url' => site_url($this->module)),
-            array('title' => $this->data['title'][1], 'url' => '')
-        );
-        $this->load_view('master/seleksi/v_edit', $this->data);
     }
     function ajax() {
         $routing_module = $this->uri->uri_to_assoc(4, $this->url_route);
@@ -70,8 +50,6 @@ class Seleksi extends KZ_Controller {
                 $this->_get_mhs();
             } else if ($routing_module['source'] == 'nim') {
                 $this->_generate_nim();
-            } else if ($routing_module['source'] == 'wilayah') {
-                $this->_get_wilayah();
             }
         }
     }
@@ -81,6 +59,7 @@ class Seleksi extends KZ_Controller {
         $tahun = $this->input->post('tahun');
         $jalur = $this->input->post('jalur');
         $status = $this->input->post('status');
+        $kip = $this->input->post('kip');
         
         $where = null;
         if ($prodi != '') {
@@ -95,6 +74,9 @@ class Seleksi extends KZ_Controller {
         if ($status != '') {
             $where['m.status_mhs'] = $status;
         }
+        if ($kip != '') {
+            $where['m.kip_mhs'] = $kip;
+        }
         
         $list = $this->m_mhs->get_datatables($where);
 
@@ -104,30 +86,25 @@ class Seleksi extends KZ_Controller {
             $no++;
             $rows = array();
 
-            $set = ($row['set_by'] == '0') ? ' <i class="fa fa-check blue bigger-110"></i>' : '';
+            $set = ($row['set_by'] == '0') ? ' <i class="fa fa-flag blue"></i>' : '';
             $bio = empty($row['id_bio']) ? ' <i class="fa fa-question bigger-110 red"></i>' : ' <i class="fa fa-check-square-o green"></i>';
             $feeder = empty($row['id_reg']) ? ' <i class="fa fa-question bigger-110 red"></i>' : ' <i class="fa fa-check-square-o green"></i>';
             
-            $is_valid = !in_array($row['status_mhs'], array('LULUS','VALID','AKTIF')) ? '' : '<a href="' . site_url($this->module . '/add/' . encode($row['id_mhs'])) . '" 
-                        class="tooltip-danger btn btn-white btn-danger btn-round btn-sm" data-rel="tooltip" title="Tambah NIM">
-                        <span class="red"><i class="ace-icon fa fa-graduation-cap bigger-120"></i></span>
-                    </a>';
-            $aksi = '<a href="' . site_url($this->module . '/edit/' . encode($row['id_mhs'])) . '" 
-                        class="tooltip-warning btn btn-white btn-warning btn-round btn-sm" data-rel="tooltip" title="Atribut Mahasiswa">
-                        <span class="orange"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></span>
-                    </a> '.$is_valid;
+            $btn_aksi = !in_array($row['status_mhs'], array('LULUS','VALID','AKTIF')) ? '' : '<a href="' . site_url($this->module . '/add/' . encode($row['id_mhs'])) . '" 
+                    class="tooltip-success btn btn-white btn-success btn-round btn-sm" data-rel="tooltip" title="Tambah NIM">
+                    <span class="green"><i class="ace-icon fa fa-graduation-cap bigger-120"></i></span>
+                </a>';
+            $btn_aksi .= '<a target="_blank" href="'. site_url('master/daftar/detail/'. encode($row['id_mhs'])) .'" class="tooltip-info btn btn-white btn-info btn-round btn-sm" data-rel="tooltip" title="Lihat Data">
+                    <span class="blue"><i class="ace-icon fa fa-search-plus bigger-120"></i></span>
+                </a>';
             
             $rows[] = ctk($no);
-            $rows[] = '<a class="bolder" target="_blank" href="' . site_url('master/daftar/detail/' . encode($row['id_mhs'])) . '">
-                    #'.$row['kode_reg'].'</a>'.
-                    '<span class="span-log hide"><br/>'.$row['jalur_mhs'].'</span>';
-            $rows[] = '<strong>'.$row['nama_mhs'].'</strong> '.$bio.'<span class="span-log hide smaller-80 red">
-                    <br/>'.$row['atribut_mhs'].'</span>';
+            $rows[] = '<strong>#'. $row['kode_reg'] .'</strong>'.$set.'<br><small>'.$row['kip_mhs'].'</small>';
+            $rows[] = '<strong>'.$row['nama_mhs'].'</strong> '.$bio;
             $rows[] = '<strong class="green">' . ctk($row['nim']) . '</strong> ' . $feeder;
             $rows[] = ctk($row['nama_prodi']);
-            $rows[] = st_mhs($row['status_mhs']).$set.'<span class="span-log hide">
-                    <br/>'.format_date($row['update_mhs'],2).'</span>';
-            $rows[] = '<div class="action-buttons">'.$aksi.'</div>';
+            $rows[] = st_mhs($row['status_mhs']).'<br/><small>'.format_date($row['tgl_daftar'],2).'</small>';
+            $rows[] = '<div class="action-buttons">'.$btn_aksi.'</div>';
 
             $data[] = $rows;
         }
@@ -141,11 +118,11 @@ class Seleksi extends KZ_Controller {
     }
     function _get_mhs() {
         $id = decode($this->input->post('id'));
-        if(empty($id)){
+        
+        $mhs = $this->m_mhs->getId($id);
+        if(empty($mhs)){
             jsonResponse(array('status' => FALSE, 'msg' => 'NIM atau ID masih kosong'));
         }
-        $mhs = $this->m_mhs->getId($id);
-        
         $this->load->library(array('feeder'));
         $rs = $this->feeder->get('GetDataLengkapMahasiswaProdi', array('limit' => 1, 'filter' => "nik='{$mhs['nik']}'"));
         
@@ -160,9 +137,8 @@ class Seleksi extends KZ_Controller {
         }
         //update id bio
         $this->m_mhs->update($id, array('id_bio' => $rs['data'][0]['id_mahasiswa'],
-            'status_mhs' => 'VALID',
-            'update_mhs' => date('Y-m-d H:i:s'),
-            'log_mhs' => $this->sessionname . ' update id_mahasiswa'
+            'status_mhs' => 'VALID', 'update_mhs' => date('Y-m-d H:i:s'),
+            'log_mhs' => $this->sessionname . ' mengubah Biodata'
         ));
         if(empty($mhs['nim'])){
             jsonResponse(array('data' => NULL, 'status' => false, 'msg' => 'NIM masih kosong'));
@@ -174,8 +150,7 @@ class Seleksi extends KZ_Controller {
         $this->m_mhs->update($id, array('id_bio' => $rs['data'][0]['id_mahasiswa'],
             'id_reg' => $rs['data'][0]['id_registrasi_mahasiswa'],
             'status_mhs' => 'AKTIF',
-            'update_mhs' => date('Y-m-d H:i:s'),
-            'log_mhs' => $this->sessionname . ' update id_registrasi_mahasiswa'
+            'update_mhs' => date('Y-m-d H:i:s'), 'log_mhs' => $this->sessionname . ' mengubah Riwayat Pendidikan'
         ));
         jsonResponse(array('data' => $rs['data'][0], 'status' => true, 'msg' => 'Data ditemukan'));
     }
@@ -194,23 +169,6 @@ class Seleksi extends KZ_Controller {
         } else {
             jsonResponse(array('nim' => NULL, 'status' => FALSE, 'msg' => 'Generate NIM gagal dibuat'));
         } 
-    }
-    function _get_wilayah(){
-        $id = $this->input->get('id');
-        $query = $this->input->post('q');
-            
-        if(!empty($id)){
-            $this->db->where('id_wilayah', $id);
-        }else{
-        $this->db->like('nama_wilayah', $query); 
-        }
-        $result = $this->db->get('m_wilayah');
-        
-        $data = array();
-        foreach ($result->result_array() as $val) {
-            $data[] = array("id" => ($val['id_wilayah']), "text" => $val['nama_wilayah']);
-        }
-        jsonResponse($data);
     }
     private $rules_nim = array(
         array(

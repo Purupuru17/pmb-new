@@ -4,7 +4,6 @@ class Daftar_do extends KZ_Controller {
     
     private $module = 'master/daftar';
     private $module_do = 'master/daftar_do';
-    private $path = 'app/upload/mhs/';
             
     function __construct() {
         parent::__construct();
@@ -43,8 +42,8 @@ class Daftar_do extends KZ_Controller {
         $data['kecamatan'] = $this->input->post('camat');
         $data['kabupaten'] = $this->input->post('bupati');
 
-        $data['opsi_prodi'] = implode("|", $prodi); 
-        $data['id_mhs'] = random_string('lownum',8).'-'.random_string('lownum',4).'-'.random_string('lownum',6);
+        $data['opsi_prodi'] = implode("|", $prodi);
+        $data['id_mhs'] = random_string('unique');
         $data['kode_reg'] = $this->m_mhs->getNomor('UNMD');
         $data['status_mhs'] = 'PENDAFTARAN';
         $data['kip_mhs'] = 'PENDING';
@@ -52,6 +51,7 @@ class Daftar_do extends KZ_Controller {
         $data['log_mhs'] = $this->sessionname.' menambahkan data';
         $data['set_by'] = '0';
         
+        $user['id_user'] = $data['id_mhs'];
         $user['id_group'] = 4;
         $user['fullname'] = $data['nama_mhs'];
         $user['username'] = $data['kode_reg'];
@@ -62,13 +62,24 @@ class Daftar_do extends KZ_Controller {
         $user['ip_user'] = ip_agent();
         $user['buat_user'] = $data['tgl_daftar'];
 
-        $cek = $this->m_mhs->isExist(array('nik' => $data['nik']));
-        if($cek > 0){
+        $is_nik = $this->m_mhs->isExist(array('nik' => $data['nik']));
+        if($is_nik > 0){
             $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Data NIK sudah tersimpan sebelumnya'));
             redirect($this->module.'/add');
         }
-        $result = $this->m_mhs->insertAll($data, $user);
-        if ($result) {
+        $is_kode = $this->m_mhs->isExist(array('kode_reg' => $data['kode_reg']));
+        if($is_kode > 0){
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Kode Registrasi sudah tersimpan sebelumnya'));
+            redirect($this->module.'/add');
+        }
+        $this->db->trans_start();
+        //insert
+        $this->db->insert('yk_user', $user);
+        $this->db->insert('m_mhs', $data);
+        $this->db->insert('tmp_mhs', array('user_id' => $user['id_user'], 'mhs_id' => $data['id_mhs']));
+        //complete
+        $this->db->trans_complete();
+        if ($this->db->trans_status()) {
             $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Data berhasil disimpan'));
             redirect($this->module);
         } else {
@@ -86,7 +97,7 @@ class Daftar_do extends KZ_Controller {
         if(!$this->_validation($this->rules_edit)){
             redirect($this->module.'/edit/'.$id);
         }
-        
+        $data['nim'] = $this->input->post('nim');
         $data['prodi_id'] = decode($this->input->post('opsi1'));
         $prodi[] = $this->input->post('opsi2');
         $prodi[] = $this->input->post('opsi3');
@@ -164,7 +175,128 @@ class Daftar_do extends KZ_Controller {
             redirect($this->module.'/detail/'.$id);
         }
     }
-    
+    function export() {
+        if (!$this->_validation($this->rules_export)) {
+            redirect($this->module);
+        }
+        $prodi = decode($this->input->post('prodi'));
+        $tahun = $this->input->post('tahun');
+        $status = $this->input->post('status');
+        $jalur = $this->input->post('jalur');
+        $kip = $this->input->post('kip');
+        
+        $where['m.angkatan'] = $tahun;
+        $where['m.status_mhs'] = $status;
+
+        if ($prodi != '') {
+            $where['m.prodi_id'] = $prodi;
+        }
+        if ($jalur != '') {
+            $where['m.jalur_mhs'] = $jalur;
+        }
+        if ($kip != '') {
+            $where['m.kip_mhs'] = $kip;
+        }
+        $list = $this->db->order_by('m.tgl_daftar', 'ASC')
+            ->join('m_prodi p', 'm.prodi_id = p.id_prodi', 'left')
+            ->join('m_ortu o', 'm.id_mhs = o.mhs_id', 'left')
+            ->group_by('m.id_mhs')
+            ->get_where('m_mhs m', $where);
+        
+        if ($list->num_rows() < 1) {
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Data Mahasiswa tidak ditemukan'));
+            redirect($this->module);
+        }
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle($where['m.angkatan']. '-' . $where['m.status_mhs']);
+
+        $fields = array('No', 'Kode Registrasi', 'Jalur Pendaftaran', 'Program Studi', 'NIM', 
+            'NIK', 'Nama Lengkap', 'Tempat Lahir', 'Tanggal Lahir', 'Ibu Kandung',
+            'Jenis Kelamin', 'Agama', 'Telepon', 'Email', 'Alamat Sorong', 'Alamat Asal',
+            'Kecamatan', 'Kabupaten', 'NISN', 'Asal Sekolah', 'NPSN', 'Atribut', 'KIP',
+            'Ayah/Suami', 'NIK', 'Pendidikan', 'Pekerjaan', 'Penghasilan', 'Ibu/Istri', 'NIK', 'Pekerjaan', 'Telepon', 'Alamat');
+        $col = 1;
+        foreach ($fields as $field) {
+            $sheet->setCellValueByColumnAndRow($col, 1, $field);
+            $sheet->getColumnDimensionByColumn($col)->setAutoSize(true);
+            $col++;
+        }
+        $no = 1;
+        $row = 2;
+        $filename = url_title('MABA ' . $where['m.status_mhs'] .' '. $where['m.angkatan'] 
+            .' '. format_date(date('Y-m-d H:i:s'),1), '-', true) . '.xls';
+        foreach ($list->result_array() as $data) {
+            
+            $alamat_asal = 'Jln. '. $data['jalan'].' RT '.$data['rt'].' RW '.$data['rw'].' Kelurahan '.$data['kelurahan'];
+            $kecamatan = $this->db->get_where('m_wilayah', ['id_wilayah' => $data['kecamatan']])->row_array();
+            $kabupaten = $this->db->get_where('m_wilayah', ['id_wilayah' => $data['kabupaten']])->row_array();
+            
+            $sheet->setCellValue('A' . $row, $no);
+            $sheet->setCellValue('B' . $row, $data['kode_reg']);
+            $sheet->setCellValue('C' . $row, $data['jalur_mhs']);
+            $sheet->setCellValueExplicit('D' . $row, is_null($data['nama_prodi']) ? '' : $data['nama_prodi'], 's');
+            $sheet->setCellValueExplicit('E' . $row, is_null($data['nim']) ? '' : $data['nim'], 's');
+            
+            $sheet->setCellValueExplicit('F' . $row, $data['nik'], 's');
+            $sheet->setCellValue('G' . $row, $data['nama_mhs']);
+            $sheet->setCellValue('H' . $row, $data['tempat_lahir']);
+            $sheet->setCellValue('I' . $row, $data['tgl_lahir']);
+            $sheet->setCellValue('J' . $row, $data['ibu_kandung']);
+
+            $sheet->setCellValue('K' . $row, $data['kelamin_mhs']);
+            $sheet->setCellValue('L' . $row, $data['agama']);
+            $sheet->setCellValueExplicit('M' . $row, $data['telepon_mhs'], 's');
+            $sheet->setCellValue('N' . $row, $data['email_mhs']);
+            $sheet->setCellValue('O' . $row, $data['alamat_mhs']);
+            $sheet->setCellValue('P' . $row, $alamat_asal);
+            $sheet->setCellValue('Q' . $row, element('nama_wilayah', $kecamatan));
+            $sheet->setCellValue('R' . $row, element('nama_wilayah', $kabupaten));
+            
+            $sheet->setCellValueExplicit('S' . $row, $data['nisn'], 's');
+            $sheet->setCellValue('T' . $row, $data['sekolah']);
+            $sheet->setCellValueExplicit('U' . $row, $data['npsn'], 's');
+            $sheet->setCellValue('V' . $row, $data['atribut_mhs']);
+            $sheet->setCellValue('W' . $row, $data['kip_mhs']);
+            
+            $sheet->setCellValue('X' . $row, $data['nama_ayah']);
+            $sheet->setCellValueExplicit('Y' . $row, $data['nik_ayah'], 's');
+            $sheet->setCellValue('Z' . $row, $data['didik_ayah']);
+            $sheet->setCellValue('AA' . $row, $data['kerja_ayah']);
+            $sheet->setCellValue('AB' . $row, $data['hasil_ayah']);
+            $sheet->setCellValue('AC' . $row, $data['nama_ibu']);
+            $sheet->setCellValueExplicit('AD' . $row, $data['nik_ibu'], 's');
+            $sheet->setCellValue('AE' . $row, $data['kerja_ibu']);
+            $sheet->setCellValueExplicit('AF' . $row, $data['telepon_ortu'], 's');
+            $sheet->setCellValue('AG' . $row, $data['alamat_ortu']);
+            
+            $no++;
+            $row++;
+        }
+        $tableStyle = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+            'alignment' => array('horizontal' => 'center', 'vertical' => 'center', 'wrapText' => true)
+        ];
+        $boldStyle = array(
+            'font' => array('size' => 12, 'bold' => true, 'color' => array('rgb' => '000000'))
+        );
+        $row--;
+        $sheet->getStyle('A1')->applyFromArray($tableStyle);
+        $sheet->getStyle('A1:AG' . $row)->applyFromArray($tableStyle);
+        $sheet->getStyle('A1:AG1')->applyFromArray($boldStyle);
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        $writer->save('php://output');
+        exit();
+    }
     //function
     function _valid_date($tgl) {
         list($yyyy,$mm,$dd) = explode('-',$tgl);
@@ -331,5 +463,17 @@ class Daftar_do extends KZ_Controller {
             'label' => 'Kabupaten',
             'rules' => 'required|trim|xss_clean|min_length[3]'
         )
-    ); 
+    );
+    private $rules_export = array(
+        array(
+            'field' => 'status',
+            'label' => 'Status',
+            'rules' => 'required|trim|xss_clean'
+        ),
+        array(
+            'field' => 'tahun',
+            'label' => 'Angkatan',
+            'rules' => 'required|trim|xss_clean'
+        )
+    );
 }

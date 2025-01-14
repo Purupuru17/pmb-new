@@ -8,29 +8,7 @@ class Seleksi_do extends KZ_Controller {
     
     function __construct() {
         parent::__construct();
-        $this->load->model(array('m_mhs','m_prodi'));
-    }
-    function edit($id = NULL) {
-        if(empty(decode($id))){
-            redirect($this->module);
-        }
-        if(!$this->_validation($this->rules_edit)){
-            redirect($this->module.'/edit/'.$id);
-        }
-        $data['nim'] = $this->input->post('nim');
-        $data['atribut_mhs'] = strtoupper($this->input->post('atribut'));
-        
-        $data['update_mhs'] = date('Y-m-d H:i:s');
-        $data['log_mhs'] = $this->sessionname.' mengubah atribut maba';
-
-        $result = $this->m_mhs->update(decode($id), $data);
-        if ($result) {
-            $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Data berhasil diubah'));
-            redirect($this->module);
-        } else {
-            $this->session->set_flashdata('notif', notif('danger', 'Peringatan', 'Data gagal diubah'));
-            redirect($this->module.'/edit/'.$id);
-        }
+        $this->load->model(array('m_mhs'));
     }
     function ajax() {
         $routing_module = $this->uri->uri_to_assoc(4, $this->url_route);
@@ -50,17 +28,12 @@ class Seleksi_do extends KZ_Controller {
     }
     //function
     function _insert_bio() {
-        if (!$this->_validation($this->rules_insert,'ajax')) {
-            jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
-        }
         $id = decode($this->input->post('id'));
-        $wilayah = $this->input->post('wilayah');
-
+        
         $mhs = $this->m_mhs->getId($id);
         if(empty($mhs)) {
-            jsonResponse(array('status' => FALSE, 'msg' => 'Tidak ada data mahasiswa'));
+            jsonResponse(array('status' => FALSE, 'msg' => 'Data mahasiswa tidak ditemukan'));
         }
-        
         switch ($mhs['agama']) {
             case 'Islam':
                 $agama = 1;
@@ -97,7 +70,7 @@ class Seleksi_do extends KZ_Controller {
         $data['rw'] = $mhs['rw'];
         $data['dusun'] = $mhs['kelurahan'];
         $data['kelurahan'] = $mhs['kelurahan'];
-        $data['id_wilayah'] = $wilayah;
+        $data['id_wilayah'] = $mhs['kecamatan'];
         $data['handphone'] = $mhs['telepon_mhs'];
         $data['email'] = $mhs['email_mhs'];
         $data['penerima_kps'] = '0';
@@ -120,9 +93,8 @@ class Seleksi_do extends KZ_Controller {
         }
         //Update MHS
         $this->m_mhs->update($id, array('id_bio' => $rs['data']['id_mahasiswa'],
-            'status_mhs' => 'VALID',
-            'update_mhs' => date('Y-m-d H:i:s'),
-            'log_mhs' => $this->sessionname . ' insert biodata'));
+            'status_mhs' => 'VALID', 'update_mhs' => date('Y-m-d H:i:s'),
+            'log_mhs' => $this->sessionname . ' insert Biodata'));
         jsonResponse(array('data' => $rs['data'], 'status' => true, 'msg' => 'Data berhasil tersimpan'));  
     }
     function _insert_nim() {
@@ -153,7 +125,6 @@ class Seleksi_do extends KZ_Controller {
         if(count($check['data']) > 0) {
             jsonResponse(array('data' => $check['data'][0], 'status' => false, 'msg' => 'NIM sudah terpakai di Feeder PDDikti'));
         }
-        
         //Insert Riwayat
         $akm['id_mahasiswa'] = $mhs['id_bio'];
         $akm['nim'] = $nim;
@@ -178,10 +149,9 @@ class Seleksi_do extends KZ_Controller {
         }
         //Update MHS
         $this->m_mhs->update($id, array('id_reg' => $rs['data']['id_registrasi_mahasiswa'],
-            'prodi_id' => $prodi, 'nim' => $nim, 'angkatan' => $tahun,
-            'status_mhs' => 'AKTIF',
-            'update_mhs' => date('Y-m-d H:i:s'),
-            'log_mhs' => $this->sessionname . ' insert riwayat pendidikan'));
+            'prodi_id' => $prodi, 'nim' => $nim, 
+            'angkatan' => $tahun, 'status_mhs' => 'AKTIF',
+            'update_mhs' => date('Y-m-d H:i:s'), 'log_mhs' => $this->sessionname . ' insert Riwayat Pendidikan'));
         jsonResponse(array('data' => $rs['data'], 'status' => true, 'msg' => 'Data berhasil tersimpan'));
     }
     function _delete_nim() {
@@ -219,165 +189,6 @@ class Seleksi_do extends KZ_Controller {
             'log_mhs' => $this->sessionname . ' hapus riwayat pendidikan'));
         jsonResponse(array('data' => $rs['data'], 'status' => true, 'msg' => 'Data berhasil dihapus'));
     }
-    function export() {
-        if (!$this->_validation($this->rules_export)) {
-            redirect($this->module);
-        }
-        $where['m.angkatan'] = $this->input->post('tahun');
-        $where['m.status_mhs'] = $this->input->post('status');
-
-        $prodi = decode($this->input->post('prodi'));
-        if ($prodi != '') {
-            $where['m.prodi_id'] = $prodi;
-        }
-        $jalur = $this->input->post('jalur');
-        if ($jalur != '') {
-            $where['m.jalur_mhs'] = $jalur;
-        }
-        $list = $this->m_mhs->getAll($where, 'asc');
-        if ($list['rows'] < 1) {
-            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Tidak ada data Mahasiswa pada pilihan anda'));
-            redirect($this->module);
-        }
-        
-        $filename = url_title('MABA ' . $where['m.status_mhs'] .' '. $where['m.angkatan'] .' '. format_date(date('Y-m-d H:i:s'),1), '-', true) . '.xls';
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle($where['m.angkatan']. '-' . $where['m.status_mhs']);
-
-        $sheet->getColumnDimension('A')->setWidth(5);
-        $sheet->getColumnDimension('B')->setWidth(20);
-        $sheet->getColumnDimension('C')->setWidth(20);
-        $sheet->getColumnDimension('D')->setWidth(30);
-        $sheet->getColumnDimension('E')->setWidth(20);
-
-        $sheet->getColumnDimension('F')->setWidth(20);
-        $sheet->getColumnDimension('G')->setWidth(30);
-        $sheet->getColumnDimension('H')->setWidth(20);
-        $sheet->getColumnDimension('I')->setWidth(20);
-        $sheet->getColumnDimension('J')->setWidth(30);
-
-        $sheet->getColumnDimension('K')->setWidth(20);
-        $sheet->getColumnDimension('L')->setWidth(10);
-        $sheet->getColumnDimension('M')->setWidth(50);
-        $sheet->getColumnDimension('N')->setWidth(50);
-        $sheet->getColumnDimension('O')->setWidth(20);
-
-        $sheet->getColumnDimension('P')->setWidth(30);
-        $sheet->getColumnDimension('Q')->setWidth(20);
-        $sheet->getColumnDimension('R')->setWidth(40);
-        $sheet->getColumnDimension('S')->setWidth(20);
-        $sheet->getColumnDimension('T')->setWidth(50);
-        //16 Field
-        $fields = array('No', 'Kode Registrasi', 'Jalur Pendaftaran', 'Program Studi', 'NIM', 
-            'NIK', 'Nama Lengkap', 'Tempat Lahir', 'Tanggal Lahir', 'Ibu Kandung',
-            'Jenis Kelamin', 'Agama', 'Alamat Sorong', 'Alamat Asal', 'Telepon', 
-            'Email', 'NISN', 'Asal Sekolah', 'NPSN', 'Opsi Program Studi');
-        $col = 1;
-        foreach ($fields as $field) {
-            $sheet->setCellValueByColumnAndRow($col, 1, $field);
-            $col++;
-        }
-        $no = 1;
-        $row = 2;
-        foreach ($list['data'] as $data) {
-            $alamat_asal = 'Jln. '. $data['jalan'].' RT '.$data['rt'].' RW '.$data['rw'].' Kelurahan '.$data['kelurahan'];
-            switch ($data['agama']) {
-                case '':
-                    $agama = null;
-                    break;
-                case 'Islam':
-                    $agama = 1;
-                    break;
-                case 'Kristen':
-                    $agama = 2;
-                    break;
-                case 'Katolik':
-                    $agama = 3;
-                    break;
-                case 'Hindu':
-                    $agama = 4;
-                    break;
-                case 'Budha':
-                    $agama = 5;
-                    break;
-                case 'Konghucu':
-                    $agama = 6;
-                    break;
-                default:
-                    $agama = 99;
-                    break;
-            }
-
-            $sheet->setCellValue('A' . $row, $no);
-            $sheet->setCellValue('B' . $row, $data['kode_reg']);
-            $sheet->setCellValue('C' . $row, $data['jalur_mhs']);
-            $sheet->setCellValueExplicit('D' . $row, is_null($data['nama_prodi']) ? '' : $data['nama_prodi'], 's');
-            $sheet->setCellValueExplicit('E' . $row, is_null($data['nim']) ? '' : $data['nim'], 's');
-            
-            $sheet->setCellValueExplicit('F' . $row, $data['nik'], 's');
-            $sheet->setCellValue('G' . $row, $data['nama_mhs']);
-            $sheet->setCellValue('H' . $row, $data['tempat_lahir']);
-            $sheet->setCellValue('I' . $row, $data['tgl_lahir']);
-            $sheet->setCellValue('J' . $row, $data['ibu_kandung']);
-
-            $sheet->setCellValue('K' . $row, $data['kelamin_mhs']);
-            $sheet->setCellValue('L' . $row, $data['agama']);
-            $sheet->setCellValue('M' . $row, $data['alamat_mhs']);
-            $sheet->setCellValue('N' . $row, $alamat_asal);
-            $sheet->setCellValueExplicit('O' . $row, $data['telepon_mhs'], 's');
-            
-            $sheet->setCellValue('P' . $row, $data['email_mhs']);
-            $sheet->setCellValueExplicit('Q' . $row, $data['nisn'], 's');
-            $sheet->setCellValue('R' . $row, $data['sekolah']);
-            $sheet->setCellValueExplicit('S' . $row, $data['npsn'], 's');
-            $sheet->setCellValue('T' . $row, $data['opsi_prodi']);
-            
-            $no++;
-            $row++;
-        }
-        $tableStyle = [
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                ],
-            ],
-            'alignment' => array('horizontal' => 'center', 'vertical' => 'center', 'wrapText' => true)
-        ];
-        $boldStyle = array(
-            'font' => array('size' => 12, 'bold' => true, 'color' => array('rgb' => '000000'))
-        );
-        $row--;
-        $sheet->getStyle('A1')->applyFromArray($tableStyle);
-        $sheet->getStyle('A1:T' . $row)->applyFromArray($tableStyle);
-        $sheet->getStyle('A1:T1')->applyFromArray($boldStyle);
-
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="' . $filename . '"');
-        header('Cache-Control: max-age=0');
-
-        $writer = new PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-        $writer->save('php://output');
-        exit();
-    }
-    private $rules_edit = array(
-        array(
-            'field' => 'atribut',
-            'label' => 'Atribut Kampus',
-            'rules' => 'required|trim|xss_clean'
-        )
-    );
-    private $rules_insert = array(
-        array(
-            'field' => 'id',
-            'label' => 'Mahasiswa',
-            'rules' => 'required|trim|xss_clean'
-        ), array(
-            'field' => 'wilayah',
-            'label' => 'Kecamatan',
-            'rules' => 'required|trim|xss_clean|is_natural'
-        )
-    );
     private $rules_update = array(
         array(
             'field' => 'mid',
@@ -395,18 +206,6 @@ class Seleksi_do extends KZ_Controller {
             'field' => 'tahun',
             'label' => 'Angkatan',
             'rules' => 'required|trim|xss_clean|is_natural'
-        )
-    );
-    private $rules_export = array(
-        array(
-            'field' => 'status',
-            'label' => 'Status',
-            'rules' => 'required|trim|xss_clean'
-        ),
-        array(
-            'field' => 'tahun',
-            'label' => 'Angkatan',
-            'rules' => 'required|trim|xss_clean'
         )
     );
 }

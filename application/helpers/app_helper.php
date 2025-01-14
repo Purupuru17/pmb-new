@@ -164,11 +164,23 @@ if (!function_exists('star')) {
 }
 if (!function_exists('st_aktif')) {
 
-    function st_aktif($value, $ya = null) {
-        if(!is_null($ya)){
+    function st_aktif($value, $yes_no = null, $pay = null) {
+        if(!is_null($yes_no)){
             return ($value == '1') ? '<span class="label label-success label-white">YA</span>' : '<span class="label label-danger label-white">TIDAK</span>';
         }
-        return ($value == '1') ? '<span class="label label-success arrowed-in-right arrowed">AKTIF</span>' : '<span class="label label-danger arrowed-in-right arrowed">TIDAK AKTIF</span>';
+        $label = !is_null($pay) ? array('LUNAS','BELUM LUNAS') : array('AKTIF','TIDAK AKTIF');
+        switch ($value) {
+            case '1':
+                $status = '<span class="label label-success arrowed-in-right arrowed">'.$label[0].'</span>';
+                break;
+            case '0':
+                $status = '<span class="label label-danger arrowed-in-right arrowed">'.$label[1].'</span>';
+                break;
+            default:
+                $status = '<span class="label label-default arrowed-in-right arrowed">PENDING</span>';
+                break;
+        }
+        return $status;
     }
 }
 if (!function_exists('st_file')) {

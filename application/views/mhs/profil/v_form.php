@@ -45,7 +45,7 @@ $this->load->view('sistem/v_breadcrumb');
                     <span class="help-inline col-xs-8 col-md-offset-4">
                         <span class="middle">
                             <a class="red" target="_blank" href="https://nisn.data.kemdikbud.go.id/index.php/Cindex/formcaribynama">
-                                <i class="fa fa-external-link bigger-120"></i> Klik untuk cek NISN
+                                <i class="fa fa-external-link bigger-110"></i> Klik untuk cek NISN
                             </a>
                         </span>
                     </span>
@@ -70,8 +70,8 @@ $this->load->view('sistem/v_breadcrumb');
                     </span>
                     <span class="help-inline col-xs-8 col-md-offset-4">
                         <span class="middle">
-                            <a class="red" target="_blank" href="https://referensi.data.kemdikbud.go.id/index11.php">
-                                <i class="fa fa-external-link bigger-120"></i> Klik untuk cek NPSN Sekolah
+                            <a class="red" target="_blank" href="https://referensi.data.kemdikbud.go.id">
+                                <i class="fa fa-external-link bigger-110"></i> Klik untuk cek NPSN Sekolah
                             </a>
                         </span>
                     </span>
@@ -143,7 +143,7 @@ $this->load->view('sistem/v_breadcrumb');
                             <select class="select2 width-100" name="agama" id="agama" data-placeholder="---> Pilih Agama <---">
                                 <option value=""> </option>
                                 <?php
-                                foreach ($agama as $val) {
+                                foreach (load_array('agama') as $val) {
                                     $selected = ($edit['agama'] == $val) ? 'selected' : '';
                                     echo '<option value="' . $val . '"  ' . $selected . '>' . $val . '</option>';
                                 }
@@ -294,7 +294,8 @@ load_js(array(
     const form = $("#validation-form");
     const img_ext = ["jpg", "png", "jpeg", "PNG", "JPG"];
     const bulan = new Array(null,"Januari", "Februari", "Maret", "April", "Mei", "Juni", 
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember");    
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember");
+        
     $(document).ready(function () {
         load_wilayah();
         $(".select2").select2({allowClear: true})
@@ -396,7 +397,7 @@ load_js(array(
                     ' Mohon menunggu, jangan menutup atau me-refresh halaman ini. <br>Silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
             bootbox.dialog({ title: title, message: msg, closeButton: false });
         }
-    }); 
+    });
     form.validate({
         errorElement: 'div',
         errorClass: 'help-block',

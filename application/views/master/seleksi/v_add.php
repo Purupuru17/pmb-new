@@ -25,10 +25,8 @@
             <?= $this->session->flashdata('notif'); ?>
         </div>
         <div class="col-xs-12 col-sm-12">
-            <h4 class="blue">
-                <span class="middle bolder">
-                    <a target="_blank" href="<?= site_url('master/daftar/edit/'. encode($detail['id_mhs'])) ?>"><?= $detail['nama_mhs'] ?></a>
-                </span>
+            <h4 class="blue bolder bigger-150">
+                <?= $detail['nama_mhs'] ?>
             </h4>
             <div id="user-profile-1" class="user-profile row">
                 <div class="col-xs-12 col-sm-6">
@@ -36,7 +34,7 @@
                         <div class="profile-info-row">
                             <div class="profile-info-name"> Kode Registrasi </div>
                             <div class="profile-info-value">
-                                <span class="bolder bigger-120">#<?= $detail['kode_reg'] ?></span>
+                                <span class="bolder bigger-110">#<?= $detail['kode_reg'] ?></span>
                             </div>
                         </div>
                         <div class="profile-info-row">
@@ -45,9 +43,9 @@
                                 $opsi_prodi = explode('|', $detail['opsi_prodi']);
                             ?>
                             <div class="profile-info-value">
-                                <span class="bolder blue bigger-110">1.  <?= element('nama_prodi', $detail, '') ?></span><br/>
-                                <span class="red">2. <?= element(0, $opsi_prodi, '') ?></span><br/>
-                                <span class="red">3. <?= element(1, $opsi_prodi, '') ?></span>
+                                <span class="bolder green bigger-110"><?= element('nama_prodi', $detail, '') ?></span><br/>
+                                Pilihan 2 : <span class="bolder"><?= element(0, $opsi_prodi, '') ?></span><br/>
+                                Pilihan 3 : <span class="bolder grey"><?= element(1, $opsi_prodi, '') ?></span>
                             </div>
                         </div>
                         <div class="profile-info-row">
@@ -81,39 +79,21 @@
                             </div>
                         </div>
                         <div class="profile-info-row">
-                            <div class="profile-info-name"> NISN </div>
-                            <div class="profile-info-value">
-                                <span><?= $detail['nisn'] ?></span>
-                            </div>
-                        </div>
-                        <div class="profile-info-row">
-                            <div class="profile-info-name"> Asal Sekolah </div>
-                            <div class="profile-info-value">
-                                <span><?= $detail['sekolah'] ?></span>
-                            </div>
-                        </div>
-                        <div class="profile-info-row">
-                            <div class="profile-info-name"> NPSN </div>
-                            <div class="profile-info-value">
-                                <span><?= $detail['npsn'] ?></span>
-                            </div>
-                        </div>
-                        <div class="profile-info-row">
                             <div class="profile-info-name"> NIK </div>
                             <div class="profile-info-value">
-                                <span><?= $detail['nik'] ?></span>
+                                <span class="bolder"><?= $detail['nik'] ?></span>
                             </div>
                         </div>
                         <div class="profile-info-row">
                             <div class="profile-info-name"> Ibu Kandung </div>
                             <div class="profile-info-value">
-                                <span class=""><?= $detail['ibu_kandung'] ?></span>
+                                <span class="bolder"><?= $detail['ibu_kandung'] ?></span>
                             </div>
                         </div>
                         <div class="profile-info-row">
                             <div class="profile-info-name"> Tanggal Lahir </div>
                             <div class="profile-info-value">
-                                <span><?= $detail['tempat_lahir'] ?>, 
+                                <span class="bolder"><?= $detail['tempat_lahir'] ?>, 
                                 <?= format_date($detail['tgl_lahir'],1) ?>
                                 </span>
                             </div>
@@ -121,7 +101,7 @@
                         <div class="profile-info-row">
                             <div class="profile-info-name"> Jenis Kelamin </div>
                             <div class="profile-info-value">
-                                <span><?= $detail['kelamin_mhs'] ?></span>
+                                <span class="bolder"><?= $detail['kelamin_mhs'] ?></span>
                             </div>
                         </div>
                         <div class="profile-info-row">
@@ -174,6 +154,24 @@
                                 <span><?= $detail['kabupaten'] ?></span>
                             </div>
                         </div>
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> NISN </div>
+                            <div class="profile-info-value">
+                                <span><?= $detail['nisn'] ?></span>
+                            </div>
+                        </div>
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> Asal Sekolah </div>
+                            <div class="profile-info-value">
+                                <span><?= $detail['sekolah'] ?></span>
+                            </div>
+                        </div>
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> NPSN </div>
+                            <div class="profile-info-value">
+                                <span><?= $detail['npsn'] ?></span>
+                            </div>
+                        </div>
                         <div class="profile-info-row ">
                             <div class="profile-info-name">Log :</div>
                             <div class="profile-info-value">
@@ -194,7 +192,7 @@
                             <label class="control-label col-xs-12 col-sm-4 no-padding-right">Program Studi :</label>
                             <div class="col-xs-12 col-sm-7">
                                 <div class="clearfix">
-                                    <select class="select2 width-100" name="prodi" id="prodi" data-placeholder="-------> Pilih Program Studi <-------">
+                                    <select class="select2 width-100 bolder" name="prodi" id="prodi" data-placeholder="-------> Pilih Program Studi <-------">
                                         <option value=""> </option>
                                         <?php
                                         foreach ($prodi['data'] as $val) {
@@ -240,11 +238,15 @@
                             </div>
                         </div>
                         <div class="clearfix form-actions">
-                            <div class="col-md-offset-4 col-md-5">
-                                <button class="btn btn-success btn-white btn-round" name="btn-nim" id="btn-nim" type="button">
-                                    <i class="ace-icon fa fa-calculator"></i>
+                            <div class="col-md-offset-4 col-md-8">
+                                <button class="btn btn-danger btn-white btn-round" name="btn-nim" id="btn-nim" type="button">
+                                    <i class="ace-icon fa fa-check-square-o"></i>
                                     Generate NIM
                                 </button>
+                                <a target="_blank" href="<?= site_url('master/daftar/edit/'. encode($detail['id_mhs'])) ?>" class="btn btn-warning btn-white btn-round btn-mini" >
+                                    <i class="ace-icon fa fa-pencil-square-o"></i>
+                                    Ubah Data
+                                </a>
                             </div>
                         </div>
                     </form>
@@ -265,45 +267,33 @@
                             </div>
                         </div>
                         <div class="profile-info-row">
-                            <div class="profile-info-name"> Kecamatan </div>
-                            <div class="profile-info-value">
-                                <span><?= $detail['kecamatan'] ?></span>
-                            </div>
-                        </div>
-                        <div class="profile-info-row">
-                            <div class="profile-info-name"> Kecamatan </div>
-                            <div class="profile-info-value">
-                                <input value="<?= $detail['kecamatan'] ?>" type="hidden" name="wilayah" id="wilayah" class="width-100" />
-                            </div>
-                        </div>
-                        <div class="profile-info-row">
                             <div class="profile-info-name"> </div>
                             <div class="profile-info-value">
-                                <button onclick="load_mhs()" id="btn-feeder" class="btn btn-block btn-bold btn-primary btn-white">
+                                <button onclick="load_mhs()" id="btn-feeder" class="btn btn-block btn-bold btn-default btn-white">
                                     <i class="ace-icon fa fa-search-plus bigger-110"></i>
-                                    <span class="">Cek Data Feeder</span>
+                                    <span class="">Cek Data PDDikti</span>
                                 </button>
                             </div>
                         </div>
                         <div class="profile-info-row">
                             <div class="profile-info-name"> </div>
                             <div class="profile-info-value">
-                                <button id="btn-bio" class="btn btn-bold btn-success btn-white btn-block" type="button">
+                                <button id="btn-bio" class="btn btn-bold btn-info btn-white btn-block" type="button">
                                 <i class="ace-icon fa fa-send bigger-110"></i>
-                                    <span class="">Insert Biodata Feeder</span>
+                                    <span class="">Insert Biodata</span>
                             </button>
                         </div>
                         </div>
                         <div class="profile-info-row">
                             <div class="profile-info-name"> </div>
                             <div class="profile-info-value">
-                                <button id="btn-reg" class="btn btn-bold btn-warning btn-white btn-block" type="button">
+                                <button id="btn-reg" class="btn btn-bold btn-success btn-white btn-block" type="button">
                                     <i class="ace-icon fa fa-send bigger-110"></i>
-                                    <span class="">Insert NIM Feeder + PMB</span>
+                                    <span class="">Insert NIM (Riwayat Pendidikan)</span>
                                 </button>
                             </div>
                         </div>
-                        <div class="profile-info-row">
+                        <div class="profile-info-row hide">
                             <div class="profile-info-name"> </div>
                             <div class="profile-info-value">
                                 <button id="btn-del" class="btn btn-bold btn-danger btn-white btn-block" type="button">
@@ -336,11 +326,10 @@ load_js(array(
 ?>
 <script type="text/javascript">
     const module = "<?= site_url($module) ?>";
-    const module_do = module + "_do";
+    
     $(document).ready(function () {
         $(".select2").select2({allowClear: true});
         $(".select2-chosen").addClass("center");
-        load_wilayah();
     });
     $("#btn-bio").click(function () {
         insert_bio();
@@ -360,36 +349,11 @@ load_js(array(
     });
 </script>
 <script type="text/javascript">
-    function load_wilayah() {
-        $("#wilayah").select2({
-            placeholder: "------> Pilih Kecamatan <------",
-            minimumInputLength: 3,
-            ajax: { 
-                url: module + "/ajax/type/table/source/wilayah",
-                type: "POST",
-                dataType: 'json',
-                delay: 250,
-                data: function (term, page) {
-                    return { q: term };
-                },
-                results: function (data, page) {
-                    return { results: data };
-                },
-                cache: true
-            },
-            initSelection: function(element, callback) {
-                var id = $(element).val();
-                if (id !== "") {
-                    $.ajax(module + "/ajax/type/table/source/wilayah?id=" + id, {
-                        dataType: "json"
-                    }).done(function(data) { 
-                        callback(data[0]);
-                    });
-            }
-            }
-        });
-    }
     function load_mhs() {
+        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
+        var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
+                ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
+        var progress = bootbox.dialog({title: title,message: msg,closeButton: false});
         $.ajax({
             url: module + "/ajax/type/table/source/feeder",
             type: "POST",
@@ -398,6 +362,7 @@ load_js(array(
                 id : $("#mid").val()
             },
             success: function(rs) {
+                progress.modal("hide");
                 if (rs.status) {
                     $("#span-bio").html(rs.data.id_mahasiswa);
                     $("#span-reg").html(rs.data.id_registrasi_mahasiswa);
@@ -410,32 +375,22 @@ load_js(array(
                 show_data(rs.data);
             },
             error: function(xhr, ajaxOptions, thrownError) {
+                progress.modal("hide");
                 myNotif('Error', 'Kesalahan Jaringan', 3);
             }
         });
     }
     function insert_bio() {
-        var wilayah = $("#wilayah").val();
-        if(wilayah === '' || wilayah === null){
-            myNotif('Peringatan', 'Pilih Kecamatan dahulu', 2);
-            return;
-        }
-        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i>' +
-                ' Mohon tunggu . . . </h4>';
+        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
         var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
                 ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
-        var progress = bootbox.dialog({
-            title: title,
-            message: msg,
-            closeButton: false
-        });
+        var progress = bootbox.dialog({title: title,message: msg,closeButton: false});
         $.ajax({
-            url: module_do + "/ajax/type/action/source/insert",
+            url: module + "_do/ajax/type/action/source/insert",
             dataType: "json",
             type: "POST",
             data: {
-                id: $("#mid").val(),
-                wilayah: wilayah
+                id: $("#mid").val()
             },
             success: function (rs) {
                 progress.modal("hide");
@@ -460,17 +415,12 @@ load_js(array(
             myNotif('Peringatan', 'Generate NIM mahasiswa', 2);
             return;
         }
-        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i>' +
-                ' Mohon tunggu . . . </h4>';
+        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
         var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
                 ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
-        var progress = bootbox.dialog({
-            title: title,
-            message: msg,
-            closeButton: false
-        });
+        var progress = bootbox.dialog({title: title,message: msg,closeButton: false});
         $.ajax({
-            url: module_do + "/ajax/type/action/source/update",
+            url: module + "_do/ajax/type/action/source/update",
             dataType: "json",
             type: "POST",
             data: $("#validation-form").serialize(),
@@ -491,17 +441,12 @@ load_js(array(
         });
     }
     function delete_nim() {
-        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i>' +
-                ' Mohon tunggu . . . </h4>';
+        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
         var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
                 ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
-        var progress = bootbox.dialog({
-            title: title,
-            message: msg,
-            closeButton: false
-        });
+        var progress = bootbox.dialog({title: title,message: msg,closeButton: false});
         $.ajax({
-            url: module_do + "/ajax/type/action/source/delete",
+            url: module + "_do/ajax/type/action/source/delete",
             dataType: "json",
             type: "POST",
             data: $("#validation-form").serialize(),
@@ -527,13 +472,18 @@ load_js(array(
             $("select#prodi").select2('open');
             myNotif('Peringatan', 'Pilih Program Studi', 2);
             return;
-        } 
+        }
+        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
+        var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
+                ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
+        var progress = bootbox.dialog({title: title,message: msg,closeButton: false});
         $.ajax({
             url: module + "/ajax/type/table/source/nim",
             type: "POST",
             dataType: "json",
             data: $("#validation-form").serialize(),
             success: function(rs) {
+                progress.modal("hide");
                 if (rs.status) {
                     myNotif('Informasi', rs.msg, 1);
                 } else {
@@ -542,6 +492,7 @@ load_js(array(
                 $("input#nim").val(rs.nim);
             },
             error: function(xhr, ajaxOptions, thrownError) {
+                progress.modal("hide");
                 myNotif('Error', 'Kesalahan Jaringan', 3);
             }
         });

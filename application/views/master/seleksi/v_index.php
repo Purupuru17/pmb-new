@@ -16,7 +16,7 @@ $this->load->view('sistem/v_breadcrumb');
             <?= $this->session->flashdata('notif'); ?>
         </div>
         <div class="col-xs-12">
-            <form id="search-form" action="<?= site_url($module.'_do/export') ?>" name="form" class="form-horizontal" method="POST">
+            <form id="search-form" action="#" name="form" class="form-horizontal" method="POST">
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-2 no-padding-right">Program Studi :</label>
                     <div class="col-xs-12 col-sm-4">
@@ -39,9 +39,25 @@ $this->load->view('sistem/v_breadcrumb');
                             <select class="select2 width-100" name="tahun" id="tahun" data-placeholder="---> Pilih Tahun <---">
                                 <option value=""> </option>
                                 <?php
+                                $tahun = (date('m') == '12') ? date('Y') + 1 : date('Y');
                                 foreach (load_array('tahun') as $val) {
-                                    $selected = (date('Y') == $val) ? 'selected' : '';
+                                    $selected = ($tahun == $val) ? 'selected' : '';
                                     echo '<option value="'.$val.'" '.$selected.'>'.$val.'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2 no-padding-right">Status :</label>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="clearfix">
+                            <select class="select2 width-100" name="status" id="status" data-placeholder="----> Pilih Status <----">
+                                <option value=""> </option>
+                                <?php
+                                foreach (load_array('status') as $val) {
+                                    echo '<option value="'.$val.'">'.$val.'</option>';
                                 }
                                 ?>
                             </select>
@@ -64,13 +80,13 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-2 no-padding-right">Status :</label>
+                    <label class="control-label col-xs-12 col-sm-2 no-padding-right">KIP :</label>
                     <div class="col-xs-12 col-sm-3">
                         <div class="clearfix">
-                            <select class="select2 width-100" name="status" id="status" data-placeholder="-------> Pilih Status <-------">
+                            <select class="select2 width-100" name="kip" id="kip" data-placeholder="-------> Pilih Opsi <-------">
                                 <option value=""> </option>
                                 <?php
-                                foreach (load_array('status') as $val) {
+                                foreach (load_array('kip') as $val) {
                                     echo '<option value="'.$val.'">'.$val.'</option>';
                                 }
                                 ?>
@@ -79,15 +95,10 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-offset-2 col-md-5">
-                        <button class="btn btn-primary btn-white" name="cari" id="btn-search" type="button">
+                    <div class="col-md-offset-2 col-md-6">
+                        <button class="btn btn-primary btn-white btn-bold" name="cari" id="btn-search" type="button">
                             <i class="ace-icon fa fa-search-plus"></i>
                             Pencarian
-                        </button>
-                        &nbsp;&nbsp;
-                        <button class="btn btn-success btn-white" name="export" id="btn-export" type="submit">
-                            <i class="ace-icon fa fa-file-excel-o"></i>
-                            Export
                         </button>
                     </div>
                 </div>
@@ -100,13 +111,6 @@ $this->load->view('sistem/v_breadcrumb');
                         <i class="ace-icon fa fa-list"></i>
                         <?= $title[1] ?>
                     </h5>
-                    <div class="widget-toolbar no-border">
-                        <div class="btn-group btn-overlap">
-                            <button id="log-btn" class="btn btn-white btn-primary btn-sm btn-bold">
-                                <i class="fa fa-external-link bigger-110"></i> Lihat Atribut
-                            </button>
-                        </div>
-                    </div>
                 </div>
                 <div class="widget-body">
                     <div class="widget-main padding-2 table-responsive">
@@ -168,6 +172,7 @@ $this->load->view('sistem/v_breadcrumb');
                         val.tahun = $("#tahun").val();
                         val.jalur = $("#jalur").val();
                         val.status = $("#status").val();
+                        val.kip = $("#kip").val();
                     }
                 },
                 aaSorting: [],
@@ -190,12 +195,5 @@ $this->load->view('sistem/v_breadcrumb');
     }
     $("#btn-search").click(function () { //button filter event click
         table.fnDraw();  //just reload table
-    });
-    $("#log-btn").click(function () {
-        if($(".span-log").hasClass("hide")){
-            $(".span-log").removeClass("hide");
-        }else{
-            $(".span-log").addClass("hide");
-        }
     });
 </script>                

@@ -5,7 +5,6 @@ class Profil extends KZ_Controller {
     private $module = 'mhs/profil';
     private $module_do = 'mhs/profil_do';
     private $url_route = array('id', 'source', 'type');
-    private $tmp = NULL;
 
     function __construct() {
         parent::__construct();
@@ -14,8 +13,7 @@ class Profil extends KZ_Controller {
         $this->_getMhs();
     }
     function index() {
-        $detail = $this->m_mhs->getId($this->tmp['mhs_id']);
-        
+        $detail = $this->m_mhs->getId($this->mid);
         if(is_null($detail)) {
             $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Data tidak ditemukan'));
             redirect('beranda');
@@ -24,10 +22,8 @@ class Profil extends KZ_Controller {
             redirect($this->module.'/edit');
         }
         $this->data['valid_test'] = (in_array($detail['status_mhs'], ['PENDAFTARAN','TES SELEKSI'])) ? FALSE : FALSE;
-        $this->data['valid_ktm'] = (in_array($detail['status_mhs'], ['LULUS','VALID','AKTIF'])) ? TRUE : FALSE; 
-        
-        $this->data['user'] = $this->tmp;
         $this->data['detail'] = $detail;
+        $this->data['user'] = $this->m_mhs->getTMP(array('mhs_id' => $this->mid));
         
         $this->data['module'] = $this->module;
         $this->data['title'] = array('Pendaftaran', $detail['nama_mhs']);
@@ -38,8 +34,7 @@ class Profil extends KZ_Controller {
         $this->load_view('mhs/profil/v_index', $this->data);
     }
     function edit() {
-        $this->data['edit'] = $this->m_mhs->getId($this->tmp['mhs_id']);
-        $this->data['agama'] = load_array('agama');
+        $this->data['edit'] = $this->m_mhs->getId($this->mid);
         
         $this->data['module'] = $this->module;
         $this->data['action'] = $this->module_do . '/edit/';
@@ -50,6 +45,28 @@ class Profil extends KZ_Controller {
             array('title' => $this->data['title'][1], 'url' => '')
         );
         $this->load_view('mhs/profil/v_form', $this->data);
+    }
+    function cetak() {
+        $this->load->model(array('m_prodi'));
+        $this->load->library(array('fungsi'));
+        
+        $detail = $this->m_mhs->getId($this->mid);
+        if(is_null($detail)){
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Data tidak ditemukan'));
+            redirect($this->module);
+        }
+        if(!in_array($detail['status_mhs'], ['LULUS','VALID','AKTIF'])){
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan'
+                , 'Mohon maaf anda belum dinyatakan LULUS. KTM hanya terbit ketika Status Mahasiswa : LULUS & AKTIF'));
+            redirect($this->module);
+        }
+        $this->data['detail'] = $detail;
+        $this->data['prodi'] = $this->m_prodi->getId($detail['prodi_id']);
+        
+        $title = 'KARTU MAHASISWA SEMENTARA';
+        $this->data['judul'] = array($title, null);
+        $this->fungsi->PdfGenerate($this->load->view('mhs/profil/v_kartu', $this->data, true), 
+            url_title($title.' '.$detail['nim'].' '.$detail['nama_mhs'], '-', true));
     }
     function ajax() {
         $routing_module = $this->uri->uri_to_assoc(4, $this->url_route);
@@ -64,9 +81,6 @@ class Profil extends KZ_Controller {
         }
     }
     //function
-    function _getMhs(){
-        $this->tmp = $this->m_mhs->getTMP(array('user_id' => $this->sessionid));
-    }
     function _get_wilayah(){
         $id = $this->input->get('id');
         $keyword = $this->input->post('key');

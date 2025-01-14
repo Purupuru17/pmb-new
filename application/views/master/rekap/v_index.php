@@ -48,6 +48,21 @@ $this->load->view('sistem/v_breadcrumb');
                         </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2 no-padding-right">Status :</label>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="clearfix">
+                            <select class="select2 width-100" name="status" id="status" data-placeholder="----> Pilih Status <----">
+                                <option value=""> </option>
+                                <?php
+                                foreach (load_array('status') as $val) {
+                                    echo '<option value="'.$val.'">'.$val.'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group hide">
                     <label class="control-label col-xs-12 col-sm-2 no-padding-right">Jalur Pendaftaran :</label>
                     <div class="col-xs-12 col-sm-3">
@@ -64,23 +79,8 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-2 no-padding-right">Status :</label>
-                    <div class="col-xs-12 col-sm-3">
-                        <div class="clearfix">
-                            <select class="select2 width-100" name="status" id="status" data-placeholder="-------> Pilih Status <-------">
-                                <option value=""> </option>
-                                <?php
-                                foreach (load_array('status') as $val) {
-                                    echo '<option value="'.$val.'">'.$val.'</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-2 no-padding-right">Jenis Berkas :</label>
-                    <div class="col-xs-12 col-sm-4">
+                    <div class="col-xs-12 col-sm-3">
                         <div class="clearfix">
                             <select class="select2 width-100" name="berkas" id="berkas" data-placeholder="-------> Pilih Jenis Berkas <-------">
                                 <option value=""> </option>
@@ -96,7 +96,7 @@ $this->load->view('sistem/v_breadcrumb');
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-2 no-padding-right">Validasi Berkas :</label>
-                    <div class="col-xs-12 col-sm-3">
+                    <div class="col-xs-12 col-sm-2">
                         <div class="clearfix">
                             <select class="select2 width-100" name="valid" id="valid" data-placeholder="----> Pilih Opsi <----">
                                 <option value=""> </option>
@@ -109,12 +109,12 @@ $this->load->view('sistem/v_breadcrumb');
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-6">
-                        <button class="btn btn-primary btn-white" name="cari" id="btn-search" type="button">
+                        <button class="btn btn-primary btn-white btn-bold" name="cari" id="btn-search" type="button">
                             <i class="ace-icon fa fa-search-plus"></i>
                             Pencarian
                         </button>
                         &nbsp;&nbsp;
-                        <button class="btn btn-success btn-white" name="export" id="btn-export" type="submit">
+                        <button class="btn btn-success btn-white btn-bold" name="export" id="btn-export" type="submit">
                             <i class="ace-icon fa fa-file-excel-o"></i>
                             Export
                         </button>
@@ -165,13 +165,13 @@ $this->load->view('sistem/v_breadcrumb');
                 </div>
             </div>
             <div class="modal-body padding-10">
-                <form id="validation-form" action="<?= site_url($act_berkas); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                <form id="validation-form" action="<?= site_url($action); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="berkasid" id="berkasid" class="reset"/>                    
                     <div class="form-group">
                         <label class="control-label col-xs-12 col-sm-4 no-padding-right">Nama Berkas :</label>
                         <div class="col-xs-12 col-sm-6">
                             <div class="clearfix">
-                                <label id="txt-berkas" class="control-label bolder bigger-120"></label>
+                                <label id="txt-berkas" class="bolder bigger-120"></label>
                             </div>
                         </div>
                     </div>

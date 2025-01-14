@@ -24,9 +24,7 @@ class Daftar extends KZ_Controller {
     function add() {
         $this->data['edit'] = $this->m_mhs->getEmpty();
         $this->data['prodi'] = $this->m_prodi->getAll();
-        $this->data['kode_reg'] = $this->m_mhs->getNomor('UNMD');
         
-        $this->data['form'] = 'add';
         $this->data['module'] = $this->module;
         $this->data['action'] = $this->module_do.'/add';
         $this->data['title'] = array('Pendaftaran','Tambah Data');
@@ -44,7 +42,6 @@ class Daftar extends KZ_Controller {
         $this->data['edit'] = $this->m_mhs->getId(decode($id));
         $this->data['prodi'] = $this->m_prodi->getAll();
         
-        $this->data['form'] = 'edit';
         $this->data['module'] = $this->module;
         $this->data['action'] = $this->module_do.'/edit/'.$id;
         $this->data['title'] = array('Pendaftaran','Ubah Data');
@@ -60,19 +57,18 @@ class Daftar extends KZ_Controller {
             redirect($this->module);
         }
         $this->load->model(array('m_ortu','m_berkas'));
-        $this->load->library(array('cat'));
         
-        $this->data['detail'] = $this->m_mhs->getId(decode($id));
+        $detail = $this->m_mhs->getId(decode($id));
+        
         $this->data['user'] = $this->m_mhs->getTMP(array('mhs_id' => decode($id)));
         $this->data['ortu'] = $this->m_ortu->getAll(array('mhs_id' => decode($id)));
         $this->data['berkas'] = $this->m_berkas->getAll(array('mhs_id' => decode($id)));
+        $this->data['kecamatan'] = $this->db->get_where('m_wilayah', ['id_wilayah' => $detail['kecamatan']])->row_array();
+        $this->data['kabupaten'] = $this->db->get_where('m_wilayah', ['id_wilayah' => $detail['kabupaten']])->row_array();
         
-        $auth = $this->cat->Auth($this->data['detail']);
-        $this->data['params'] = $auth['data'];
-        $this->data['url_auth'] = $auth['url'].'GetSkor';
-        
+        $this->data['detail'] = $detail;
         $this->data['module'] = $this->module;
-        $this->data['act_berkas'] = $this->module_do.'/detail/'.$id.'/';
+        $this->data['action'] = $this->module_do.'/detail/'.$id.'/'; //validasi-berkas
         $this->data['title'] = array('Pendaftaran', $this->data['detail']['nama_mhs']);
         $this->data['breadcrumb'] = array( 
             array('title'=>'Mahasiswa', 'url'=>'#'),
@@ -128,23 +124,24 @@ class Daftar extends KZ_Controller {
             $no++;
             $rows = array();
             
-            $set = ($row['set_by'] == '0') ? ' <i class="fa fa-check blue bigger-110"></i>' : '';
-            $aksi = '<div class="action-buttons">
-                        <a href="'. site_url($this->module .'/detail/'. encode($row['id_mhs'])) .'" class="tooltip-info btn btn-white btn-info btn-round btn-sm" data-rel="tooltip" title="Lihat Data">
-                            <span class="blue"><i class="ace-icon fa fa-search-plus bigger-120"></i></span>
-                        </a>
-                        <a href="'. site_url($this->module .'/edit/'. encode($row['id_mhs'])) .'" class="tooltip-warning btn btn-white btn-warning btn-round btn-sm" data-rel="tooltip" title="Ubah Data">
-                            <span class="orange"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></span>
-                        </a></div>';
+            $set = ($row['set_by'] == '0') ? ' <i class="fa fa-flag blue"></i>' : '';
+            $is_nim = empty($row['nim']) ? $row['nik'] : '<strong class="green">' . ctk($row['nim']) . '</strong>';
+            
+            $btn_aksi = '<a href="'. site_url($this->module .'/detail/'. encode($row['id_mhs'])) .'" class="tooltip-info btn btn-white btn-info btn-round btn-sm" data-rel="tooltip" title="Lihat Data">
+                    <span class="blue"><i class="ace-icon fa fa-search-plus bigger-120"></i></span>
+                </a>
+                <a href="'. site_url($this->module .'/edit/'. encode($row['id_mhs'])) .'" class="tooltip-warning btn btn-white btn-warning btn-round btn-sm" data-rel="tooltip" title="Ubah Data">
+                    <span class="orange"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></span>
+                </a>';
             
             $rows[] = ctk($no);
-            $rows[] = '<strong>#'. $row['kode_reg'] .'</strong> <br>'.ctk($row['jalur_mhs']);
-            $rows[] = '<strong class="blue">'. $row['nama_mhs'] .'</strong><hr class="margin-5">'.$row['nik'];
-            $rows[] = ctk($row['nama_prodi']).'<hr class="margin-5"><small>'. str_replace('|', ', ', ctk($row['opsi_prodi']).'</small>');
-            $rows[] = ctk($row['nisn']).'<hr class="margin-5">'.ctk($row['sekolah']);
-            $rows[] = ctk($row['kelamin_mhs']).'<br/>'.ctk($row['telepon_mhs']);//.'<br/>'.ctk($row['ibu_kandung']);
-            $rows[] = st_mhs($row['status_mhs']).$set.'<br/>'.format_date($row['tgl_daftar'],2);
-            $rows[] = $aksi;
+            $rows[] = '<strong>#'. $row['kode_reg'] .'</strong>'.$set.'<br>'.ctk($row['jalur_mhs']);
+            $rows[] = '<strong class="blue">'. $row['nama_mhs'] .'</strong><br/>'.$is_nim;
+            $rows[] = '<strong>'.ctk($row['nama_prodi']).'</strong><br/><small>'. str_replace('|', ', ', ctk($row['opsi_prodi']).'</small>');
+            $rows[] = ctk($row['nisn']).'<br/><small>'.ctk($row['kip_mhs']).'</small>';
+            $rows[] = ctk($row['kelamin_mhs']).'<br/>'.ctk($row['telepon_mhs']);
+            $rows[] = st_mhs($row['status_mhs']).'<br/><small>'.format_date($row['tgl_daftar'],2).'</small>';
+            $rows[] = '<div class="action-buttons">'.$btn_aksi.'</div>';
 
             $data[] = $rows;
         }
@@ -158,12 +155,13 @@ class Daftar extends KZ_Controller {
     }
     function _get_wilayah(){
         $id = $this->input->get('id');
-        $query = $this->input->post('q');
+        $keyword = $this->input->post('key');
+        $opsi = $this->input->post('opsi');
             
         if(!empty($id)){
             $this->db->where('id_wilayah', $id);
         }else{
-            $this->db->like('nama_wilayah', $query); 
+            $this->db->like('nama_wilayah', $opsi.'. '.$keyword);
         }
         $result = $this->db->get('m_wilayah');
         

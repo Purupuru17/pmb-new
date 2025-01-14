@@ -44,7 +44,7 @@
                                 <td nowrap>
                                     <div class="action-buttons <?= ($row['status_berkas'] == '1') ? 'hide' : '' ?>">
                                         <a href="#" itemid="<?= encode($row['id_berkas']) ?>" itemprop="<?= $row['nama_upload'] ?>" id="edit-btn" class="tooltip-warning btn btn-white btn-warning btn-round btn-sm" data-rel="tooltip" title="Ubah Data">
-                                            <span class="orange"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></span>
+                                            <span class="orange"><i class="ace-icon fa fa-question bigger-120"></i> Validasi</span>
                                         </a>
                                     </div>
                                 </td>
@@ -71,13 +71,13 @@
                 </div>
             </div>
             <div class="modal-body padding-10">
-                <form id="validation-form" action="<?= site_url($act_berkas); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                <form id="validation-form" action="<?= site_url($action); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="berkas" id="berkas" class="reset"/>                    
                     <div class="form-group">
                         <label class="control-label col-xs-12 col-sm-4 no-padding-right">Nama Berkas :</label>
                         <div class="col-xs-12 col-sm-6">
                             <div class="clearfix">
-                                <label id="txt-berkas" class="control-label bolder bigger-120"></label>
+                                <label id="txt-berkas" class="bolder bigger-120"></label>
                             </div>
                         </div>
                     </div>

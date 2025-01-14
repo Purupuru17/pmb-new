@@ -31,11 +31,19 @@ $opsi3 = element(1, $exp, '');
         <div class="col-xs-12">
             <h3 class="lighter center block blue"><?= $title[1] ?></h3>
             <form id="validation-form" action="<?= site_url($action); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                <div class="form-group hide">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">NIM :</label>
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="clearfix">
+                            <input value="<?= $edit['nim'] ?>" type="text" name="nim" id="nim" class="col-xs-12  col-sm-6" placeholder="Nomor Induk Mahasiswa" />
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Pilihan Program Studi :</label>
                     <div class="col-xs-12 col-sm-4">
                         <div class="clearfix">
-                            <select class="select2 width-100" name="opsi1" id="opsi1" data-placeholder="-------> Pilihan Pertama <-------">
+                            <select class="select2 width-100 bolder" name="opsi1" id="opsi1" data-placeholder="-------> Pilihan Pertama <-------">
                                 <option value=""> </option>
                                 <?php
                                 foreach ($prodi['data'] as $val) {
@@ -81,7 +89,7 @@ $opsi3 = element(1, $exp, '');
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Periode Masuk :</label>
-                    <div class="col-xs-12 col-sm-3">
+                    <div class="col-xs-12 col-sm-2">
                         <div class="clearfix">
                             <select class="select2 width-100" name="tahun" id="tahun" data-placeholder="---> Pilih Tahun <---">
                                 <option value=""> </option>
@@ -96,24 +104,8 @@ $opsi3 = element(1, $exp, '');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Jalur Pendaftaran :</label>
-                    <div class="col-xs-12 col-sm-4">
-                        <div class="clearfix">
-                            <select class="select2 width-100" name="jalur" id="jalur" data-placeholder="-------> Pilih Jalur Pendaftaran <-------">
-                                <option value=""> </option>
-                                <?php
-                                foreach (load_array('jalur') as $val) {
-                                    $selected = ($edit['jalur_mhs'] == $val) ? 'selected' : '';
-                                    echo '<option value="'.$val.'"  '.$selected.'>'.$val.'</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Status Mahasiswa :</label>
-                    <div class="col-xs-12 col-sm-3">
+                    <div class="col-xs-12 col-sm-2">
                         <div class="clearfix">
                             <select class="select2 width-100" name="status" id="status" data-placeholder="---> Pilih Status <---">
                                 <option value=""> </option>
@@ -129,7 +121,28 @@ $opsi3 = element(1, $exp, '');
                         </div>
                     </div>
                 </div>
+                <div class="space-6"></div>
+                <div class="social-or-login center">
+                    <span class="bigger-110 bolder">Form Keterangan</span>
+                </div>
+                <div class="space-6"></div>
                 <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Jalur Pendaftaran :</label>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="clearfix">
+                            <select class="select2 width-100" name="jalur" id="jalur" data-placeholder="----> Pilih Jalur Pendaftaran <----">
+                                <option value=""> </option>
+                                <?php
+                                foreach (load_array('jalur') as $val) {
+                                    $selected = ($edit['jalur_mhs'] == $val) ? 'selected' : '';
+                                    echo '<option value="'.$val.'"  '.$selected.'>'.$val.'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group <?= empty($edit['id_mhs']) ? 'hide' : '' ?>">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Atribut Diambil :</label>
                     <div class="col-xs-12 col-sm-8">
                         <div class="clearfix">
@@ -168,8 +181,8 @@ $opsi3 = element(1, $exp, '');
                     </div>
                     <span class="help-inline col-xs-8 col-md-offset-4">
                         <span class="middle">
-                            <a class="red" target="_blank" href="https://nisn.data.kemdikbud.go.id/index.php/Cindex/formcaribynama">
-                                <i class="fa fa-external-link bigger-120"></i> Klik untuk cek NISN
+                            <a class="blue" target="_blank" href="https://nisn.data.kemdikbud.go.id/index.php/Cindex/formcaribynama">
+                                <i class="fa fa-external-link bigger-110"></i> Klik untuk cek NISN
                             </a>
                         </span>
                     </span>
@@ -191,8 +204,8 @@ $opsi3 = element(1, $exp, '');
                     </div>
                     <span class="help-inline col-xs-8 col-md-offset-4">
                         <span class="middle">
-                            <a class="red" target="_blank" href="https://referensi.data.kemdikbud.go.id/index11.php">
-                                <i class="fa fa-external-link bigger-120"></i> Klik untuk cek NPSN Sekolah
+                            <a class="blue" target="_blank" href="https://referensi.data.kemdikbud.go.id">
+                                <i class="fa fa-external-link bigger-110"></i> Klik untuk cek NPSN Sekolah
                             </a>
                         </span>
                     </span>
@@ -205,15 +218,12 @@ $opsi3 = element(1, $exp, '');
                 <div class="space-6"></div>
                 
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">NIK :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Ibu Kandung :</label>
                     <div class="col-xs-12 col-sm-6">
                         <div class="clearfix">
-                            <input value="<?= $edit['nik'] ?>" type="text" name="nik" id="nik" class="col-xs-12  col-sm-6" placeholder="Nomor Induk Kependudukan" />
+                            <input value="<?= $edit['ibu_kandung'] ?>" type="text" name="ibu" id="ibu" class="col-xs-12  col-sm-6" placeholder="Nama Ibu Kandung" />
                         </div>
                     </div>
-                    <span class="help-inline col-xs-8 col-md-offset-4">
-                        <span class="middle blue">* NIK harus sesuai Kartu Keluarga</span>
-                    </span>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Nama Lengkap :</label>
@@ -227,12 +237,15 @@ $opsi3 = element(1, $exp, '');
                     </span>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Ibu Kandung :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">NIK :</label>
                     <div class="col-xs-12 col-sm-6">
                         <div class="clearfix">
-                            <input value="<?= $edit['ibu_kandung'] ?>" type="text" name="ibu" id="ibu" class="col-xs-12  col-sm-6" placeholder="Nama Ibu Kandung" />
+                            <input value="<?= $edit['nik'] ?>" type="text" name="nik" id="nik" class="col-xs-12  col-sm-6" placeholder="Nomor Induk Kependudukan" />
                         </div>
                     </div>
+                    <span class="help-inline col-xs-8 col-md-offset-4">
+                        <span class="middle blue">* NIK harus sesuai Kartu Keluarga</span>
+                    </span>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Tempat Lahir :</label>
@@ -249,6 +262,9 @@ $opsi3 = element(1, $exp, '');
                             <input value="<?= $edit['tgl_lahir'] ?>" type="text" name="lahir" id="lahir" class="col-xs-12  col-sm-6 date-picker" placeholder="Tanggal Lahir" />
                         </div>
                     </div>
+                    <span class="help-inline col-xs-6 col-sm-offset-4">
+                        <span class="middle blue bolder" id="txt-tgl"><?= format_date($edit['tgl_lahir'],1) ?></span>
+                    </span>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Jenis Kelamin :</label>
@@ -267,7 +283,7 @@ $opsi3 = element(1, $exp, '');
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Agama :</label>
-                    <div class="col-xs-12 col-sm-3">
+                    <div class="col-xs-12 col-sm-2">
                         <div class="clearfix">
                             <select class="select2 width-100" name="agama" id="agama" data-placeholder="---> Pilih Agama <---">
                                 <option value=""> </option>
@@ -332,7 +348,7 @@ $opsi3 = element(1, $exp, '');
                         <span class="input-icon">
                             <input value="<?= $edit['rt'] ?>" name="rt" id="rt" placeholder="RT" type="number" class="col-sm-6">
                         </span>
-
+                        <br>
                         <span class="input-icon">
                             <input value="<?= $edit['rw'] ?>" name="rw" id="rw" placeholder="RW" type="number" class="col-sm-6">
                         </span>
@@ -429,12 +445,16 @@ $opsi3 = element(1, $exp, '');
     load_js(array(
         "backend/assets/js/jquery.validate.js",
         "backend/assets/js/select2.js",
-        "backend/assets/js/date-time/bootstrap-datepicker.js"
+        "backend/assets/js/date-time/bootstrap-datepicker.js",
+        "backend/assets/js/bootbox.min.js"
     )); 
 ?>
 <script type="text/javascript">
     const module = "<?= site_url($module) ?>";  
+    const form = $("#validation-form");
     const img_ext = ["jpg", "png", "jpeg", "PNG", "JPG"];
+    const bulan = new Array(null,"Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember");
         
     $(document).ready(function() {
         load_wilayah();
@@ -466,6 +486,10 @@ $opsi3 = element(1, $exp, '');
             if(info.error_count['size']) myNotif('Peringatan!', 'Ukuran gambar maksimal 1 MB', 3);
         });
     });
+    $("#lahir").change(function () {
+        let tgl = this.value.split("-");
+        $("#txt-tgl").html(tgl[2]+' '+bulan[parseInt(tgl[1])]+' '+tgl[0]);
+    });
     $("#opsi1").change(function () {
         let data = $("#opsi1").select2('data');
         if(data !== null && data.text === 'S2 Ilmu Manajemen'){
@@ -489,7 +513,7 @@ $opsi3 = element(1, $exp, '');
                 dataType: 'json',
                 delay: 250,
                 data: function (term, page) {
-                    return { q: term };
+                    return { key: term, opsi: "Kec" };
                 },
                 results: function (data, page) {
                     return { results: data };
@@ -517,7 +541,7 @@ $opsi3 = element(1, $exp, '');
                 dataType: 'json',
                 delay: 250,
                 data: function (term, page) {
-                    return { q: term };
+                    return { key: term, opsi: "Kab" };
                 },
                 results: function (data, page) {
                     return { results: data };
@@ -536,7 +560,15 @@ $opsi3 = element(1, $exp, '');
             }
         });
     }
-    $("#validation-form").validate({
+    form.submit(function(){
+        if(form.validate().checkForm()){
+            var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Menyimpan Data . . . </h4>';
+            var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
+                    ' Mohon menunggu, jangan menutup atau me-refresh halaman ini. <br>Silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
+            bootbox.dialog({ title: title, message: msg, closeButton: false });
+        }
+    });
+    form.validate({
         errorElement: 'div',
         errorClass: 'help-block',
         focusInvalid: false,

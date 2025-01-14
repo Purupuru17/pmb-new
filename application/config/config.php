@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $config['app.session'] 	= 'PMB';
 $config['app.name'] 	= 'PMB UNIMUDA Sorong';
-$config['app.status'] 	= 1;		// 0 = offline, 1 = online
+$config['app.status'] 	= 0;		// 0 = offline, 1 = online
 $config['app.debug'] 	= ENVIRONMENT; // 0 = tidak, 1 = ya
 
 // Limit banyak berita yang ditampilkan per page

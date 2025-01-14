@@ -138,6 +138,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 'backend/assets/js/bootstrap.js',
                 'backend/assets/js/jquery.gritter.js',
                 'backend/assets/js/lazy/lazysizes.min.js',
+                'backend/sweetalert.min.js',
                 
                 'backend/assets/js/ace/elements.scroller.js',
                 'backend/assets/js/ace/elements.colorpicker.js',

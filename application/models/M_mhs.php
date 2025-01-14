@@ -108,6 +108,7 @@ class M_mhs extends CI_Model {
     }
     function getEmpty() {
         $data['id_mhs'] = NULL;
+        $data['nim'] = NULL;
         $data['kode_reg'] = NULL;
         $data['prodi_id'] = NULL;
         $data['opsi_prodi'] = NULL;

@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="navbar-header pull-left">
             <!-- #section:basics/navbar.layout.brand -->
             <a href="<?= site_url() ?>" class="navbar-brand">
-                <span class="bolder"><?= $app['judul'] ?></span> [<?= $this->session->userdata('periode') ?>]
+                <span class="bolder"><?= $app['judul'] ?></span>
             </a>
         </div>
         <!-- #section:basics/navbar.dropdown -->

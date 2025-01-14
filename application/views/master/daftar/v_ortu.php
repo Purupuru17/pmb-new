@@ -16,14 +16,13 @@
                 <table class="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>Keterangan</th>
-                            <th>Nama</th>
-                            <th>Tanggal Lahir</th>
+                            <th>Ayah/Suami</th>
                             <th>Pendidikan</th>
                             <th>Pekerjaan</th>
-                            <th>Penghasilan</th>
+                            <th>Ibu/Istri</th>
+                            <th>Pekerjaan</th>
                             <th>Telepon</th>
-                            <th>Alamat</th>
+                            <th width="10%">Alamat</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -32,16 +31,21 @@
                         foreach ($ortu['data'] as $row) {
                             ?>
                             <tr>
-                                <td><?= ctk($row['jenis_ortu']); ?></td>
-                                <td><strong><?= ctk($row['nama_ortu']); ?></strong><hr class="margin-5">
-                                    <?= ctk($row['nik_ortu']); ?>
+                                <td><strong><?= ctk($row['nama_ayah']); ?></strong><br>
+                                    <?= ctk($row['nik_ayah']); ?><br>
+                                    <?= format_date($row['lahir_ayah'],1); ?>
                                 </td>
-                                <td><?= format_date($row['lahir_ortu'], 1); ?></td>
-                                <td><?= ctk($row['didik_ortu']); ?></td>
-                                <td><?= ctk($row['kerja_ortu']); ?></td>
-                                <td><?= ctk($row['hasil_ortu']); ?></td>
+                                <td><?= ctk($row['didik_ayah']); ?></td>
+                                <td><?= ctk($row['kerja_ayah']); ?><br>
+                                    <?= ctk($row['hasil_ayah']); ?>
+                                </td>
+                                <td><strong><?= ctk($row['nama_ibu']); ?></strong><br>
+                                    <?= ctk($row['nik_ibu']); ?><br>
+                                    <?= format_date($row['lahir_ibu'],1); ?>
+                                </td>
+                                <td><?= ctk($row['kerja_ibu']); ?></td>
                                 <td><?= ctk($row['telepon_ortu']); ?></td>
-                                <td><?= ctk($row['alamat_ortu']); ?></td>
+                                <td><small><?= ctk($row['alamat_ortu']); ?></small></td>
                             </tr>
                             <?php
                             $no++;

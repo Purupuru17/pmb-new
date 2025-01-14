@@ -4,13 +4,11 @@ class Wali_do extends KZ_Controller {
     
     private $module = 'mhs/wali';
     private $module_do = 'mhs/wali_do';
-    private $mid = NULL;
     
     function __construct() {
         parent::__construct();
         
         $this->load->model(array('m_ortu'));
-        $this->_getMhs();
     }
     function add() {
         if(!$this->_validation($this->rules)){
@@ -83,11 +81,7 @@ class Wali_do extends KZ_Controller {
             redirect($this->module.'/edit/'.$id);
         }
     }
-    //function
-    function _getMhs(){
-        $this->load->model(array('m_mhs'));
-        $this->mid = $this->m_mhs->getTMP(array('user_id' => $this->sessionid))['mhs_id'];
-    }
+
     private $rules = array(
         array(
             'field' => 'nik',

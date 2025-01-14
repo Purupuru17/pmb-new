@@ -4,7 +4,6 @@ class Berkas extends KZ_Controller {
     
     private $module = 'mhs/berkas';
     private $module_do = 'mhs/berkas_do';  
-    private $mid = NULL;
     
     function __construct() {
         parent::__construct();
@@ -70,11 +69,5 @@ class Berkas extends KZ_Controller {
             $this->session->set_flashdata('notif', notif('danger', 'Peringatan', 'Data gagal dihapus'));
             redirect($this->module);
         }
-    }
-    
-    //function
-    function _getMhs(){
-        $this->load->model(array('m_mhs'));
-        $this->mid = $this->m_mhs->getTMP(array('user_id' => $this->sessionid))['mhs_id'];
     }
 }

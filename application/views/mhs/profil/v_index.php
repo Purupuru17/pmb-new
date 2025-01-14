@@ -33,7 +33,7 @@
                             <li class="">
                                 <a href="<?= site_url('mhs/berkas') ?>">
                                     <i class="orange ace-icon fa fa-upload bigger-120"></i>
-                                    Upload Berkas & Beasiswa
+                                    Pengajuan Beasiswa
                                 </a>
                             </li>
                             <li class="">
@@ -43,7 +43,7 @@
                                 </a>
                             </li>
                             <li class="">
-                                <a data-toggle="tab" href="#card">
+                                <a target="_blank" href="<?= site_url($module.'/cetak') ?>">
                                     <i class="blue ace-icon fa fa-credit-card bigger-120"></i>
                                     KTM Sementara
                                 </a>
@@ -141,6 +141,12 @@
 
                                             <div class="col-xs-12 col-sm-6">
                                                 <div class="profile-user-info profile-user-info-striped">
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> Atribut Mahasiswa </div>
+                                                        <div class="profile-info-value">
+                                                            <span><?= $detail['atribut_mhs'] ?></span>
+                                                        </div>
+                                                    </div>
                                                     <div class="profile-info-row">
                                                         <div class="profile-info-name">Akun </div>
                                                         <div class="profile-info-value">
@@ -341,12 +347,6 @@
                                     ?>
                                 </div><!-- /.row -->
                             </div>
-                            <div id="card" class="tab-pane">
-                                <div class="profile-feed row">
-                                    <?php $this->load->view('mhs/profil/v_kartu'); ?>
-                                </div><!-- /.row -->
-                            </div><!-- /#feed -->
-                            
                         </div>
                     </div>
                 </div>

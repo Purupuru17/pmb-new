@@ -5,7 +5,6 @@ class Berkas_do extends KZ_Controller {
     private $module = 'mhs/berkas';
     private $module_do = 'mhs/berkas_do';
     private $path = 'app/upload/berkas/';
-    private $tmp = NULL;
     
     function __construct() {
         parent::__construct();
@@ -17,15 +16,15 @@ class Berkas_do extends KZ_Controller {
         if(!$this->_validation($this->rules)){
             redirect($this->module.'/add');
         }
-        $where['mhs_id'] = $data['mhs_id'] = $this->tmp['mhs_id'];
+        $where['mhs_id'] = $data['mhs_id'] = $this->mid;
         $where['upload_id'] = $data['upload_id'] = decode($this->input->post('jenis'));
         
         $berkas = $this->m_berkas->getUpId($where['upload_id']);
-        $filename = url_title($this->tmp['username'].' '.$berkas['kode_upload'].' '.random_string('numeric', 3), 'dash', TRUE);
+        $filename = url_title($this->sessionusr.' '.$berkas['kode_upload'].' '.random_string('numeric', 3), 'dash', TRUE);
         
         $this->load->library(array('storage'));
         if(!empty($_FILES['file']['name'])){
-            $upload = $this->storage->putFile('file', $filename, $this->path.$this->tmp['username'].'/');
+            $upload = $this->storage->putFile('file', $filename, $this->path.$this->sessionusr.'/');
             if(empty($upload->fullPath)){
                 redirect($this->module.'/add');
             }
@@ -62,11 +61,11 @@ class Berkas_do extends KZ_Controller {
         }
         $upload_id = decode($this->input->post('jenis'));
         $berkas = $this->m_berkas->getUpId($upload_id);
-        $filename = url_title($this->tmp['username'].' '.$berkas['kode_upload'].' '.random_string('numeric', 3), 'dash', TRUE);
+        $filename = url_title($this->sessionusr.' '.$berkas['kode_upload'].' '.random_string('numeric', 3), 'dash', TRUE);
         
         $this->load->library(array('storage'));
         if(!empty($_FILES['file']['name'])){
-            $upload = $this->storage->putFile('file', $filename, $this->path.$this->tmp['username'].'/');
+            $upload = $this->storage->putFile('file', $filename, $this->path.$this->sessionusr.'/');
             if(empty($upload->fullPath)){
                 redirect($this->module.'/edit/'.$id);
             }
@@ -91,11 +90,6 @@ class Berkas_do extends KZ_Controller {
             $this->session->set_flashdata('notif', notif('danger', 'Peringatan', 'Data gagal diubah'));
             redirect($this->module.'/edit/'.$id);
         }
-    }
-    //function
-    function _getMhs(){
-        $this->load->model(array('m_mhs'));
-        $this->tmp = $this->m_mhs->getTMP(array('user_id' => $this->sessionid));
     }
     private $rules = array(
         array(

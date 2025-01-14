@@ -5,7 +5,6 @@ class Profil_do extends KZ_Controller {
     private $module = 'mhs/profil';
     private $module_do = 'mhs/profil_do';
     private $path = 'app/upload/mhs/';
-    private $mid = NULL;
             
     function __construct() {
         parent::__construct();
@@ -71,10 +70,8 @@ class Profil_do extends KZ_Controller {
             redirect($this->module.'/edit');
         }
     }
-    //Function
-    function _getMhs(){
-        $this->mid = $this->m_mhs->getTMP(array('user_id' => $this->sessionid))['mhs_id'];
-    }
+    
+    //function
     function _valid_date($tgl) {
         list($yyyy,$mm,$dd) = explode('-',$tgl);
         $now = intval(date('Y'));

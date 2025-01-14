@@ -7,7 +7,9 @@ class KZ_Controller extends CI_Controller {
     public $sessionname = null;
     public $sessiongroup = null;
     public $sessionfoto = null;
-    public $sessionperiode = null;
+    
+    public $periode = null;
+    public $mid = null;
     
     function __construct() {
         parent::__construct();
@@ -30,7 +32,7 @@ class KZ_Controller extends CI_Controller {
         $this->sessiongroup = $this->session->userdata('groupid');
         $this->sessionfoto = $this->session->userdata('foto');
         
-        $this->sessionperiode = $this->session->userdata('periode');
+        $this->periode = $this->session->userdata('periode');
     }
     function _authentication() {
         $this->load->model(array('m_authentication'));
@@ -173,5 +175,15 @@ class KZ_Controller extends CI_Controller {
         $this->output->set_header("Cache-Control: private, no-store, max-age=0, no-cache, must-revalidate, post-check=0, pre-check=0");
         // HTTP/1.0
         $this->output->set_header("Pragma: no-cache");
+    }
+    //tmp id
+    function _getMhs() {
+        if(empty($this->session->userdata('mid'))){
+            $rs = $this->db->get_where('tmp_mhs', array('user_id' => $this->sessionid));
+            if($rs->num_rows() > 0){
+                $this->session->set_userdata(array('mid' => $rs->row_array()['mhs_id']));
+            }
+        }
+        $this->mid = $this->session->userdata('mid');
     }
 }

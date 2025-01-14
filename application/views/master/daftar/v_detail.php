@@ -59,10 +59,6 @@
                                             <i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
                                             <span class="">Ubah Profil</span>
                                         </a>
-                                        <button id="btn-check" class="btn btn-block btn-bold btn-sm btn-danger btn-white">
-                                            <i class="ace-icon fa fa-paste"></i>
-                                            <span class="">Seleksi Mandiri</span>
-                                        </button>
                                     </div><!-- /.col -->
                                     <div class="col-xs-12 col-sm-10">
                                         <h4 class="blue">
@@ -74,18 +70,18 @@
                                                     <div class="profile-info-row">
                                                         <div class="profile-info-name"> Kode Registrasi </div>
                                                         <div class="profile-info-value">
-                                                            <span class="bolder bigger-120">#<?= $detail['kode_reg'] ?></span>
+                                                            <span class="bolder bigger-110">#<?= $detail['kode_reg'] ?></span>
                                                         </div>
                                                     </div>
                                                     <div class="profile-info-row">
                                                         <div class="profile-info-name"> Program Studi </div>
                                                         <?php
-                                                            $opsi_prodi = explode('|', $detail['opsi_prodi']);
+                                                            $prodi = explode('|', $detail['opsi_prodi']);
                                                         ?>
                                                         <div class="profile-info-value">
-                                                            <span class="bolder blue bigger-110">1.  <?= element('nama_prodi', $detail, '') ?></span><br/>
-                                                            <span class="red">2. <?= element(0, $opsi_prodi, '') ?></span><br/>
-                                                            <span class="red">3. <?= element(1, $opsi_prodi, '') ?></span>
+                                                            <span class="bolder green bigger-110"><?= element('nama_prodi', $detail, '') ?></span><br/>
+                                                            Pilihan 2 : <span class="bolder"><?= element(0, $prodi, '') ?></span><br/>
+                                                            Pilihan 3 : <span class="bolder grey"><?= element(1, $prodi, '') ?></span>
                                                         </div>
                                                     </div>
                                                     <div class="profile-info-row">
@@ -142,6 +138,12 @@
 
                                             <div class="col-xs-12 col-sm-6">
                                                 <div class="profile-user-info profile-user-info-striped">
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> KIP Mahasiswa </div>
+                                                        <div class="profile-info-value">
+                                                            <span><?= $detail['kip_mhs'] ?></span>
+                                                        </div>
+                                                    </div>
                                                     <div class="profile-info-row">
                                                         <div class="profile-info-name"> Atribut Mahasiswa </div>
                                                         <div class="profile-info-value">
@@ -269,13 +271,13 @@
                                                     <div class="profile-info-row">
                                                         <div class="profile-info-name"> Kecamatan </div>
                                                         <div class="profile-info-value">
-                                                            <span><?= $detail['kecamatan'] ?></span>
+                                                            <span><?= element('nama_wilayah', $kecamatan) ?></span>
                                                         </div>
                                                     </div>
                                                     <div class="profile-info-row">
                                                         <div class="profile-info-name"> Kota/Kabupaten </div>
                                                         <div class="profile-info-value">
-                                                            <span><?= $detail['kabupaten'] ?></span>
+                                                            <span><?= element('nama_wilayah', $kabupaten) ?></span>
                                                         </div>
                                                     </div>
                                                     <div class="profile-info-row ">
@@ -316,42 +318,3 @@
         <!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.page-content -->
-<?php
-load_js(array(
-    'backend/assets/js/bootbox.min.js'
-));
-?>
-<script type="text/javascript">
-    $("#btn-check").click(function(e) {
-        $("#rs-check").html('');
-        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i>' +
-                ' Mohon tunggu . . . </h4>';
-        var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
-                ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
-        var progress = bootbox.dialog({ title: title, message: msg, closeButton: false });
-        $.ajax({
-            url: "<?= $url_auth ?>",
-            dataType: "json",
-            type: "POST",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest"
-            },
-            data: JSON.stringify(<?= $params ?>),
-            contentType: "application/json",
-            success: function (rs) {
-                if (rs.status === 0) {
-                    progress.modal("hide");
-                    $("#rs-check").html(rs.data);
-                    myNotif('Informasi', rs.message, 1);
-                } else {
-                    myNotif('Peringatan', rs.message, 2);
-                    progress.modal("hide");
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                console.log('Failed fetch data from server : ' + xhr.responseText);
-                progress.modal("hide");
-            }
-        });
-    });
-</script>

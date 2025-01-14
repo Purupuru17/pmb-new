@@ -15,7 +15,7 @@ class Rekap extends KZ_Controller {
         $this->data['berkas'] = $this->m_berkas->getUpload();
         
         $this->data['module'] = $this->module;
-        $this->data['act_berkas'] = $this->module.'/edit';
+        $this->data['action'] = $this->module.'/edit';
         $this->data['title'] = array('Rekap','List Data');
         $this->data['breadcrumb'] = array( 
             array('title'=>'Mahasiswa', 'url'=>'#'),
@@ -91,22 +91,20 @@ class Rekap extends KZ_Controller {
             $no++;
             $rows = array();
             
-            $hide = ($row['status_berkas'] == '1') ? 'hide' : '';
-            $aksi = '<div class="action-buttons '.$hide.'">
-                        <a href="#" itemid="'. encode($row['id_berkas']) .'" itemprop="'. $row['nama_upload'] .'" id="edit-btn" class="tooltip-warning btn btn-white btn-warning btn-round btn-sm" data-rel="tooltip" title="Ubah Data">
-                            <span class="orange"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></span>
-                        </a></div>';
-            $link = '<a target="_blank" href="' . site_url('master/daftar/detail/' . encode($row['id_mhs'])) . '">
-                        <strong>'. $row['nama_mhs'] .'</strong>
-                    </a>';
+            $btn_aksi = ($this->periode != $row['angkatan'] || $row['status_berkas'] == '1') ? '' : '<a href="#" itemid="'. encode($row['id_berkas']) .'" itemprop="'. $row['nama_upload'] .'" id="edit-btn" class="tooltip-warning btn btn-white btn-warning btn-round btn-sm" data-rel="tooltip" title="Ubah Data">
+                    <span class="orange"><i class="ace-icon fa fa-question bigger-120"></i></span> Validasi
+                </a>';
+            $btn_aksi .= '<a target="_blank" href="'. site_url('master/daftar/detail/'. encode($row['id_mhs'])) .'" class="tooltip-info btn btn-white btn-info btn-round btn-sm" data-rel="tooltip" title="Lihat Data">
+                    <span class="blue"><i class="ace-icon fa fa-search-plus bigger-120"></i></span>
+                </a>';
             
             $rows[] = ctk($no);
-            $rows[] = $link .'<br>#'.ctk($row['kode_reg']);
-            $rows[] = $row['nama_prodi'] .'<hr class="margin-5">'.ctk($row['jalur_mhs']);
-            $rows[] = st_mhs($row['status_mhs']).'<br/>'.format_date($row['update_mhs'],2);
-            $rows[] = '<strong class="blue">'.ctk($row['nama_upload']).'</strong><hr class="margin-5">'.ctk($row['tipe_upload']);
-            $rows[] = st_span($row['status_berkas']).'<br/>'.st_file($row['file_berkas'], 1);
-            $rows[] = ($this->sessionperiode != $row['angkatan']) ? '' : $aksi;
+            $rows[] = '<strong>'. $row['nama_mhs'] .'</strong><br><small>#'.$row['kode_reg'].'</small>';
+            $rows[] = $row['nama_prodi'] .'<br><small>'.ctk($row['jalur_mhs']).'</small>';
+            $rows[] = st_mhs($row['status_mhs']).'<br/><small>'.format_date($row['update_mhs'],2).'</small>';
+            $rows[] = '<strong class="blue">'.ctk($row['nama_upload']).'</strong><br/>'.ctk($row['tipe_upload']);
+            $rows[] = st_span($row['status_berkas']).' '.st_file($row['file_berkas'], 1);
+            $rows[] = '<div class="action-buttons">'.$btn_aksi.'</div>';
 
             $data[] = $rows;
         }
@@ -141,35 +139,10 @@ class Rekap extends KZ_Controller {
             $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Tidak ada data Mahasiswa pada pilihan anda'));
             redirect($this->module);
         }
-        
-        $filename = url_title('MABA ' . $where['m.status_mhs'] .' '. $where['m.angkatan'] .' '.$title.' '. format_date(date('Y-m-d H:i:s'),1), '-', true);
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle($where['m.angkatan']. '-' . $where['m.status_mhs']);
-
-        $sheet->getColumnDimension('A')->setWidth(5);
-        $sheet->getColumnDimension('B')->setWidth(40);
-        $sheet->getColumnDimension('C')->setWidth(20);
-        $sheet->getColumnDimension('D')->setWidth(30);
-        $sheet->getColumnDimension('E')->setWidth(20);
-
-        $sheet->getColumnDimension('F')->setWidth(20);
-        $sheet->getColumnDimension('G')->setWidth(30);
-        $sheet->getColumnDimension('H')->setWidth(20);
-        $sheet->getColumnDimension('I')->setWidth(20);
-        $sheet->getColumnDimension('J')->setWidth(30);
-
-        $sheet->getColumnDimension('K')->setWidth(20);
-        $sheet->getColumnDimension('L')->setWidth(10);
-        $sheet->getColumnDimension('M')->setWidth(50);
-        $sheet->getColumnDimension('N')->setWidth(50);
-        $sheet->getColumnDimension('O')->setWidth(20);
-
-        $sheet->getColumnDimension('P')->setWidth(30);
-        $sheet->getColumnDimension('Q')->setWidth(20);
-        $sheet->getColumnDimension('R')->setWidth(40);
-        $sheet->getColumnDimension('S')->setWidth(20);
-        //16 Field
+        
         $fields = array('No', 'Kode Registrasi & Berkas', 'Jalur Pendaftaran', 'Program Studi', 'NIM', 
             'NIK', 'Nama Lengkap', 'Tempat Lahir', 'Tanggal Lahir', 'Ibu Kandung',
             'Jenis Kelamin', 'Agama', 'Alamat Sorong', 'Alamat Asal', 'Telepon', 
@@ -177,10 +150,13 @@ class Rekap extends KZ_Controller {
         $col = 1;
         foreach ($fields as $field) {
             $sheet->setCellValueByColumnAndRow($col, 1, $field);
+            $sheet->getColumnDimensionByColumn($col)->setAutoSize(true);
             $col++;
         }
         $no = 1;
         $row = 2;
+        $filename = url_title('MABA ' . $where['m.status_mhs'] .' '. $where['m.angkatan'].' '
+            .$title.' '. format_date(date('Y-m-d H:i:s'),1), '-', true) . '.xls';
         foreach ($list['data'] as $data) {
             $alamat_asal = 'Jln. '. $data['jalan'].' RT '.$data['rt'].' RW '.$data['rw'].' Kelurahan '.$data['kelurahan'];
 

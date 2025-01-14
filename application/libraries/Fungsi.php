@@ -1,4 +1,8 @@
 <?php
+
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 class Fungsi{
     
     protected $ci;
@@ -6,13 +10,29 @@ class Fungsi{
     function __construct() {
         $this->ci = get_instance();
     }
-    function PdfGenerate($html, $file, $paper, $orientation) {
-        $dompdf = new \Dompdf\Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper($paper,$orientation);
-        $dompdf->render();
+    function PdfGenerate($html, $filename='', $attach = 0 ,$paper = 'A4', $orientation = 'portrait', $stream = TRUE) {
+        $tmp = sys_get_temp_dir();
         ob_end_clean();
-        $dompdf->stream($file.'.pdf', array('Attachment' => 0));
+        $options = new Options();
+        $options->set('logOutputFile', '');
+        $options->set('isRemoteEnabled', TRUE);
+        $options->set('isFontSubsettingEnabled', TRUE);
+        $options->set('defaultMediaType', 'all');
+        
+        $options->set('fontDir', $tmp);
+        $options->set('fontCache', $tmp);
+        $options->set('tempDir', $tmp);
+        $options->set('chroot', $tmp);
+        
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper($paper, $orientation);
+        $dompdf->render();
+        if ($stream) {
+            $dompdf->stream($filename.".pdf", array("Attachment" => $attach));
+        } else {
+            return $dompdf->output();
+        }
     }
     function SetPaging($url = NULL, $rows = NULL, $limit = NULL) {
         $this->ci->load->library(array('pagination'));
@@ -81,7 +101,7 @@ class Fungsi{
         
         $this->ci->load->library('email');
         $this->ci->email->initialize($config);
-        $this->ci->email->from($from['user'], $this->ci->config->item('app.name'));
+        $this->ci->email->from($from['user'], APP_NAME);
         if(!empty($reply)){
             $this->ci->email->reply_to($reply);
         }
@@ -97,4 +117,3 @@ class Fungsi{
         ];
     }
 }
-

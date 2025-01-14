@@ -16,7 +16,7 @@ $this->load->view('sistem/v_breadcrumb');
             <?= $this->session->flashdata('notif'); ?>
         </div>
         <div class="col-xs-12">
-            <form id="search-form" action="#" name="form" class="form-horizontal" method="POST">
+            <form id="search-form" action="<?= site_url($module.'_do/export') ?>" name="form" class="form-horizontal" method="POST">
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-2 no-padding-right">Program Studi :</label>
                     <div class="col-xs-12 col-sm-4">
@@ -50,13 +50,13 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-2 no-padding-right">Jalur Pendaftaran :</label>
-                    <div class="col-xs-12 col-sm-3">
+                    <label class="control-label col-xs-12 col-sm-2 no-padding-right">Status :</label>
+                    <div class="col-xs-12 col-sm-2">
                         <div class="clearfix">
-                            <select class="select2 width-100" name="jalur" id="jalur" data-placeholder="-------> Pilih Jalur <-------">
+                            <select class="select2 width-100" name="status" id="status" data-placeholder="----> Pilih Status <----">
                                 <option value=""> </option>
                                 <?php
-                                foreach (load_array('jalur') as $val) {
+                                foreach (load_array('status') as $val) {
                                     echo '<option value="'.$val.'">'.$val.'</option>';
                                 }
                                 ?>
@@ -65,13 +65,13 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-2 no-padding-right">Status :</label>
+                    <label class="control-label col-xs-12 col-sm-2 no-padding-right">Jalur Pendaftaran :</label>
                     <div class="col-xs-12 col-sm-3">
                         <div class="clearfix">
-                            <select class="select2 width-100" name="status" id="status" data-placeholder="-------> Pilih Status <-------">
+                            <select class="select2 width-100" name="jalur" id="jalur" data-placeholder="-------> Pilih Jalur <-------">
                                 <option value=""> </option>
                                 <?php
-                                foreach (load_array('status') as $val) {
+                                foreach (load_array('jalur') as $val) {
                                     echo '<option value="'.$val.'">'.$val.'</option>';
                                 }
                                 ?>
@@ -96,9 +96,14 @@ $this->load->view('sistem/v_breadcrumb');
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-6">
-                        <button class="btn btn-primary btn-white" name="cari" id="btn-search" type="button">
+                        <button class="btn btn-primary btn-white btn-bold" name="cari" id="btn-search" type="button">
                             <i class="ace-icon fa fa-search-plus"></i>
                             Pencarian
+                        </button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-success btn-white btn-bold" name="export" id="btn-export" type="submit">
+                            <i class="ace-icon fa fa-file-excel-o"></i>
+                            Export
                         </button>
                     </div>
                 </div>
@@ -128,7 +133,7 @@ $this->load->view('sistem/v_breadcrumb');
                                     <th>Pendaftaran</th>
                                     <th>Nama Lengkap</th>
                                     <th>Program Studi</th>
-                                    <th>Asal Sekolah</th>
+                                    <th>NISN - KIP</th>
                                     <th>Data Diri</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
