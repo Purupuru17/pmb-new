@@ -137,8 +137,7 @@ class User extends KZ_Controller {
             $row[] = ctk($items['nama_group']);
             $row[] = st_aktif($items['status_user']);
             $row[] = format_date($items['buat_user'], 2);
-            $row[] = is_online($items['last_login']).
-                    '<br/><span>'.$items['ip_user'].'</span>';
+            $row[] = is_online($items['last_login']).'<br/><small>'.$items['ip_user'].'</small>';
             $row[] = $aksi;
 
             $data[] = $row;

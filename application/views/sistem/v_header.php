@@ -34,7 +34,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <li class="transparent hidden-xs hidden-sm">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <i class="ace-icon fa fa-calendar"></i>
-                        <span class="jam"></span>
+                        <span class="jam"><?= format_date(date('Y-m-d H:i:s'),0) ?></span>
                     </a>
                 </li>
                 <li class="transparent hide">
@@ -49,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </ul>
                         </li>
                         <li class="dropdown-header">
-                            <a href="<?= site_url('sistem/notif') ?>" class="center">
+                            <a href="#" class="center">
                                 <span id="new-notif">0</span> pemberitahuan baru &nbsp;<i class="fa fa-arrow-right"></i>
                             </a>
                         </li>
@@ -59,7 +59,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <?php
                     if(!$this->session->userdata('logged')){
                         echo '<a href="'.site_url('non_login/login').'">
-                            <img class="nav-user-photo" src="'.load_file(null,1).'" alt="Profil" />
+                            <img class="nav-user-photo" src="'.load_file($this->session->userdata('foto'),1).'" alt="Profil" />
                             <span class="user-info">
                                 <small>Selamat datang,</small>
                                 <i class="ace-icon fa fa-lock"></i> Login
@@ -79,7 +79,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                     <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
                         <li>
-                            <a href="<?= site_url('sistem/profil'); ?>">
+                            <a href="<?= site_url('sistem/akun'); ?>">
                                 <i class="ace-icon fa fa-user"></i>
                                 Akun Saya
                             </a>
@@ -92,9 +92,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </li>
                         <li class="divider"></li>
                         <?php
-                            foreach ($group_role['data'] as $role) {
-                                echo '<li>
-                                    <a href="'. site_url('non_login/login_do/changed/'. encode($role['group_id'])).'">
+                            foreach ($this->session->userdata('group_role')['data'] as $role) {
+                                echo $this->session->userdata('groupid') == $role['group_id'] ? '' : '<li>
+                                    <a href="'. site_url('non_login/login/changed/'. encode($role['group_id']).'/'.encode($role['level'])).'">
                                         <i class="ace-icon fa fa-users"></i>
                                         As '.$role['nama_group'].'
                                     </a>

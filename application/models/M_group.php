@@ -52,13 +52,14 @@ class M_group extends CI_Model {
         ];
     }
     function getRole($where = NULL) {
+        $this->db->select('r.*,u.fullname,u.username,g.nama_group,g.level');
         $this->db->from('yk_group_role r');
         $this->db->join('yk_group g', 'r.group_id = g.id_group', 'inner');
         $this->db->join('yk_user u', 'r.user_id = u.id_user', 'inner');
         if(!is_null($where)){
             $this->db->where($where);
         }
-        
+        $this->db->order_by('r.group_id','asc');
         $get = $this->db->get();
         return [
             'rows' => $get->num_rows(),

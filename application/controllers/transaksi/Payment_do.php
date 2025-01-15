@@ -39,18 +39,6 @@ class Payment_do extends KZ_Controller {
         $virtual = '';
         if(empty($va_mhs) || !is_array($va_mhs)){
             switch ($bank) {
-                case 'BNI':
-                    $this->load->library(array('bni'));
-                    $virtual = $this->bni->virtual($mhs);
-                    break;
-                case 'BRI':
-                    $this->load->library(array('bri'));
-                    $virtual = $this->bri->virtual($mhs);
-                    break;
-                case 'BTN':
-                    $this->load->library(array('btn'));
-                    $virtual = $this->btn->virtual($mhs);
-                    break;
                 case 'MUAMALAT':
                     $this->load->library(array('bmi'));
                     $virtual = $this->bmi->virtual($mhs);
@@ -73,18 +61,6 @@ class Payment_do extends KZ_Controller {
                 jsonResponse(array('data' => $virtual, 'status' => true, 'msg' => 'Data ditemukan'));
             }else{
                 switch ($bank) {
-                    case 'BNI':
-                        $this->load->library(array('bni'));
-                        $virtual = $this->bni->virtual($mhs);
-                        break;
-                    case 'BRI':
-                        $this->load->library(array('bri'));
-                        $virtual = $this->bri->virtual($mhs);
-                        break;
-                    case 'BTN':
-                        $this->load->library(array('btn'));
-                        $virtual = $this->btn->virtual($mhs);
-                        break;
                     case 'MUAMALAT':
                         $this->load->library(array('bmi'));
                         $virtual = $this->bmi->virtual($mhs);
@@ -148,46 +124,6 @@ class Payment_do extends KZ_Controller {
             jsonResponse(array('status' => false, 'msg' => $data['invoice'].' Invoice sudah ada sebelumnya'));
         }
         switch ($data['bank_payment']) {
-            case 'BNI':
-                $this->load->library(array('bni'));
-                $create = array(
-                    'va' => $data['va_payment'], 'invoice' => $data['invoice'],
-                    'amount' => $data['total_payment'], 'name' => $mhs['nama_mhs'],
-                    'email' => $data['email_payment'], 'phone' => '',
-                    'description' => $data['note_payment'], 'expired' => self::EXPIRED_HOUR
-                );
-                $rs_api = $this->bni->create($create);
-                if(!$rs_api['status']){
-                    log_message('error', $data['invoice'].' - Create VA : '.$rs_api['msg']);
-                    jsonResponse(array('status' => false, 'msg' => 'Pembayaran gagal dibuat : '.$rs_api['msg']));
-                }
-                break;
-            case 'BRI':
-                $this->load->library(array('bri'));
-                $create = array(
-                    'va' => $data['va_payment'], 'invoice' => $data['invoice'],
-                    'amount' => strval($data['total_payment']), 'name' => $mhs['nama_mhs'],
-                    'description' => $data['note_payment'], 'expired' => self::EXPIRED_HOUR
-                );
-                $rs_api = $this->bri->create($create);
-                if(!$rs_api['status']){
-                    log_message('error', $data['invoice'].' - Create VA : '.$rs_api['msg']);
-                    jsonResponse(array('status' => false, 'msg' => 'Pembayaran gagal dibuat : '.$rs_api['msg']));
-                }
-                break;
-            case 'BTN':
-                $this->load->library(array('btn'));
-                $create = array(
-                    'va' => $data['va_payment'], 'invoice' => str_replace('-','',$data['invoice']),
-                    'amount' => strval($data['total_payment']), 'name' => $mhs['nama_mhs'],
-                    'description' => $data['note_payment'], 'expired' => self::EXPIRED_HOUR
-                );
-                $rs_api = $this->btn->create($create);
-                if(!$rs_api['status']){
-                    log_message('error', $data['invoice'].' - Create VA : '.$rs_api['msg']);
-                    jsonResponse(array('status' => false, 'msg' => 'Pembayaran gagal dibuat : '.$rs_api['msg']));
-                }
-                break;
             case 'MUAMALAT':
                 $data['status_inquiry'] = '1';
                 $data['expired_payment'] = null;

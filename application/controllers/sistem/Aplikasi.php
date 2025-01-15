@@ -1,5 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
+use Ifsnop\Mysqldump as IMysqldump;
+
 class Aplikasi extends KZ_Controller {
 
     private $module = 'sistem/aplikasi';
@@ -9,10 +11,11 @@ class Aplikasi extends KZ_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model(array('m_aplikasi'));
+        $this->load->helper(array('directory','file','download'));
     }
     function index() {
-        $this->data['is_admin'] = $this->sessiongroup;
-        
+        $this->data['is_admin'] = ($this->sessionlevel == '1') ? true : false;
+        $this->data['log_path'] = $this->config->item('log_path');
         $this->data['module'] = $this->module;
         $this->data['action'] = $this->module . '/edit/';
         $this->data['title'] = array('Aplikasi', 'Ubah Pengaturan');
@@ -21,6 +24,39 @@ class Aplikasi extends KZ_Controller {
             array('title' => $this->uri->segment(2), 'url' => '')
         );
         $this->load_view('sistem/aplikasi/v_ubah', $this->data);
+    }
+    function add($get = null) {
+        if(empty($get)){
+            redirect($this->module);
+        }
+        $table = array_filter(explode('@', $get));
+        if(!is_array($table)){
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Format tidak sesuai'));
+            redirect($this->module);
+        }
+        $title = url_title(APP_NAME.' '.date('d m Y H i s'),'-',true);
+        $file = "app/log/{$title}.sql";
+        
+        $dumpSettings = array('exclude-tables' => $table);
+        try {
+            $dump = new IMysqldump\Mysqldump($this->db->dsn, $this->db->username, $this->db->password, $dumpSettings);
+            $dump->start($file);
+            force_download($file, NULL);
+        } catch (\Exception $e) {
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Backup Database gagal dilakukan : '.$e->getMessage()));
+            redirect($this->module);
+        }
+    }
+    function delete($id = NULL) {
+        if(empty(decode($id))){
+            redirect($this->module);
+        }
+        $path = $this->config->item('log_path').decode($id);
+        if (is_file($path)) {
+            unlink($path);
+            $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Data berhasil dihapus'));
+            redirect($this->module);
+        }
     }
     function edit($id = NULL) {
         if(empty(decode($id))) {
@@ -79,7 +115,7 @@ class Aplikasi extends KZ_Controller {
         $this->load->library(array('upload'));
         if (!empty($_FILES['foto']['name'])) {
             $img = url_title($data['judul'].' '.random_string('alnum', 4),'dash',TRUE);
-            $upload = $this->_upload_img('foto', $img, $this->path, 700, TRUE);
+            $upload = $this->_upload_img('foto', $img, $this->path, 1050, FALSE, 150);
             if(is_null($upload)){
                 redirect($this->module);
             }
@@ -87,10 +123,6 @@ class Aplikasi extends KZ_Controller {
             $old_img = $this->input->post('exfoto');
             (is_file($old_img)) ? unlink($old_img) : '';
         }
-        //Periode Pendaftaran
-        $this->load->library(array('session'));
-        $this->session->set_userdata(array('periode' => element('periode', $param)));
-
         $result = $this->m_aplikasi->update(decode($id), $data);
         if ($result) {
             $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Data berhasil diubah'));
@@ -114,7 +146,7 @@ class Aplikasi extends KZ_Controller {
             }
         }
     }
-    //Function
+    //function
     function _list_visitor() {
         $this->load->model(array('m_visitor'));
         

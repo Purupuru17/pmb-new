@@ -3,20 +3,22 @@
 class Beranda extends KZ_Controller {
     
     private $module = 'non_login/beranda';
-    private $url_route = array('id', 'source', 'type');
-            
+    private $url_route = array('id', 'source', 'type'); 
+    
     function __construct() {
         parent::__construct();
         $this->load->model(array('m_mhs'));
     }
     function index() {
+        empty($this->sessionid) ?? redirect('non_login/login');
+        
         $this->data['groupid'] = $this->sessiongroup;
         $this->_statistik();
         
         $this->data['module'] = $this->module;
         $this->data['title'] = array('Beranda','');
         $this->data['breadcrumb'] = array( 
-            array('title'=>'', 'url'=>'#')
+            array('title'=>'Beranda', 'url'=>'#')
         );
         $this->load_view('non_login/v_home', $this->data);
     }
@@ -53,7 +55,7 @@ class Beranda extends KZ_Controller {
         $awal = empty($this->input->post('awal')) ? date('Y-m-d') : $this->input->post('awal');
         $akhir = empty($this->input->post('akhir')) ? date('Y-m-d') : $this->input->post('akhir');
         $range = format_date($awal,1).' s/d '.format_date($akhir,1);
-        
+    
         $where['m.angkatan'] = $this->input->post('tahun');
         $rs = $this->m_mhs->get_chart_range($where, 'prodi', $awal, $akhir);
         

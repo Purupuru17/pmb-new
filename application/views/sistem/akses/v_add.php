@@ -17,19 +17,12 @@ $this->load->view('sistem/v_breadcrumb');
         </div>
         <div class="col-xs-12">
             <form id="validation-form" action="<?= site_url($action); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="group" value="<?= encode($group['id_group']) ?>">
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">User Aplikasi :</label>
                     <div class="col-xs-12 col-sm-3">
                         <div class="clearfix">
-                            <input type="hidden" name="group" value="<?= encode($group['id_group']) ?>">
-                            <select class="select2 width-100" name="user" id="user" data-placeholder="-------> Pilih User Aplikasi <-------">
-                                <option value="">  </option>
-                                <?php
-                                foreach ($user['data'] as $val) {
-                                    echo '<option value="'.encode($val['id_user']).'">'.$val['fullname'].' - '.$val['username'].'</option>';
-                                }
-                                ?>
-                            </select>
+                            <input required="" type="hidden" name="user" id="user" class="width-100"/>
                         </div>
                     </div>
                 </div>
@@ -75,7 +68,7 @@ $this->load->view('sistem/v_breadcrumb');
                                     <td nowrap>
                                         <div class="action-buttons">
                                             <a href="#" name="<?= encode($row['group_id']) ?>" itemprop="<?= encode($row['user_id']) ?>" id="delete-btn" class="tooltip-error btn btn-white btn-danger btn-sm btn-round" data-rel="tooltip" title="Hapus Data">
-                                                 <span class="red"><i class="ace-icon fa fa-trash-o bigger-130"></i></span>
+                                                <span class="red"><i class="ace-icon fa fa-trash-o bigger-130"></i></span>
                                             </a>
                                         </div>
                                     </td>
@@ -101,6 +94,51 @@ load_js(array(
 ));
 ?>
 <script type="text/javascript">
+    const module = "<?= site_url($module) ?>";
+    let table;
+    $(document).ready(function() {
+        $('[data-rel="tooltip"]').tooltip({placement: 'top'});
+        $(".select2").select2({allowClear: true});
+        
+        $("#user").select2({
+            placeholder: "-------> Pilih User Aplikasi <-------",
+            ajax: {
+                url: module + "/ajax/type/list/source/user",
+                type: "POST",
+                dataType: 'json',
+                delay: 250,
+                data: function (key) {
+                    return { key: key };
+                },
+                results: function (data) {
+                    return { results: data };
+                },
+                cache: true
+            }
+        });
+        table = $('#dynamic-table')
+        .dataTable({
+            bScrollCollapse: true,
+            bAutoWidth: false,
+            aaSorting: [],
+            aoColumnDefs: [
+                {bSortable: false, aTargets: [0,4]},
+                {bSearchable: false, aTargets: [0,4]},
+                {sClass: "center", aTargets: [1, 2, 3]},
+                {sClass: "center nowrap", aTargets: [4]}
+            ],
+            oLanguage: {
+                sSearch: "Cari : ",
+                sInfoEmpty: "Menampilkan dari 0 sampai 0 dari total 0 data",
+                sInfo: "Menampilkan dari _START_ sampai _END_ dari total _TOTAL_ data",
+                sLengthMenu: "_MENU_ data per halaman",
+                sZeroRecords: "Maaf tidak ada data yang ditemukan",
+                sInfoFiltered: "(Menyaring dari _MAX_ total data)",
+                sProcessing: "<i class='fa fa-spinner fa-spin fa-fw fa-2x'></i> Loading . . ."
+            }
+        });
+        table.fnAdjustColumnSizing();
+    });
     $(document.body).on("click", "#delete-btn", function(event) {
         var id = $(this).attr("name");
         var name = $(this).attr("itemprop");
@@ -123,47 +161,9 @@ load_js(array(
             },
             callback: function(result) {
                 if (result === true) {
-                    window.location.replace("<?= site_url($module . '/delete/'); ?>" + id + "/" + name);
+                    window.location.replace(module + "/delete/" + id + "/" + name);
                 }
             }
         });
-    });
-</script>
-<script type="text/javascript">
-    var table;
-    $(document).ready(function() {
-        $('[data-rel="tooltip"]').tooltip({placement: 'top'});
-        $(".select2").select2({allowClear: true})
-            .on('change', function() {
-                $(this).closest('form').validate().element($(this));
-        });
-        $(".select2-chosen").addClass("center");
-        
-        table = $('#dynamic-table')
-            .dataTable({
-                bScrollCollapse: true,
-                bAutoWidth: false,
-                aaSorting: [],
-                aoColumnDefs: [
-                    {
-                        bSortable: false,
-                        aTargets: [0, 4]
-                    },
-                    {
-                        bSearchable: false,
-                        aTargets: [0, 4]
-                    },
-                    {   sClass: "center", aTargets: [0, 1, 2, 3, 4]}
-                ],
-                oLanguage: {
-                    sSearch: "Cari : ",
-                    sInfoEmpty: "Menampilkan dari 0 sampai 0 dari total 0 data",
-                    sInfo: "Menampilkan dari _START_ sampai _END_ dari total _TOTAL_ data",
-                    sLengthMenu: "Menampilkan _MENU_ data per halaman",
-                    sZeroRecords: "Maaf tidak ada data yang ditemukan",
-                    sInfoFiltered: "(Menyaring dari _MAX_ total data)"
-                }
-            });
-        table.fnAdjustColumnSizing();
     });
 </script>                    

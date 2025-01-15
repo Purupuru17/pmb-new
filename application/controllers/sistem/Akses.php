@@ -4,6 +4,7 @@ class Akses extends KZ_Controller {
     
     private $module = 'sistem/akses';
     private $module_do = 'sistem/akses_do';
+    private $url_route = array('id', 'source', 'type');
     
     function __construct() {
         parent::__construct();
@@ -24,11 +25,8 @@ class Akses extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        $this->load->model(array('m_user'));
-        
         $this->data['group'] = $this->m_group->getId(decode($id));
         $this->data['role'] = $this->m_group->getRole(array('r.group_id' => decode($id)));
-        $this->data['user'] = $this->m_user->getAll();
         
         $this->data['module'] = $this->module;
         $this->data['action'] = $this->module_do.'/add';
@@ -68,5 +66,30 @@ class Akses extends KZ_Controller {
             $this->session->set_flashdata('notif', notif('danger', 'Peringatan', 'Data gagal dihapus'));
             redirect($this->module.'/add/'.$id);
         }
+    }
+    function ajax() {
+        $routing_module = $this->uri->uri_to_assoc(4, $this->url_route);
+        if(is_null($routing_module['type'])){
+            redirect('');
+        }
+        if($routing_module['type'] == 'list') {
+            //TABLE
+            if($routing_module['source'] == 'user') {
+                $this->_get_user();
+            }
+        }
+    }
+    //function
+    function _get_user(){
+        $key = $this->input->post('key');
+        
+        $result = $this->db->like('fullname', $key, 'both')
+            ->get_where('yk_user')->result_array();
+        $data = array();
+        foreach ($result as $val) {
+            $text = ctk($val['fullname']).' ['.ctk($val['username']).']';
+            $data[] = array("id" => encode($val['id_user']), "text" => $text);
+        }
+        jsonResponse($data);
     }
 }

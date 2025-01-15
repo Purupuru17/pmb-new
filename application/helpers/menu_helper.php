@@ -23,8 +23,9 @@ if (!function_exists('sub_active')) {
 
         $menu = $CI->uri->segment(1);
         $sub = $CI->uri->segment(2);
+        $sub .= empty(element('q', $_GET)) ? '':'?q='. strtolower(element('q', $_GET));
         $text = strtolower(str_replace('/', '', $module));
-
+        
         $status = "";
         if ($text == $menu . $sub || $text . '_do' == $menu . $sub) {
             $status = "active";
@@ -65,13 +66,13 @@ if (!function_exists('sidebar')) {
 }
 if (!function_exists('breadcrumb')) {
     
-    function breadcrumb($breadcrumb) {
+    function breadcrumb($breadcrumb, $meta = null) {
         if (isset($breadcrumb) && is_array($breadcrumb)) {
 
             $buffString = "";
             foreach ($breadcrumb as $values) {
 
-                $title = $values['title'];
+                $title = strtoupper($values['title']);
                 $url = $values['url'];
 
                 $breadcrumContent = "";
@@ -83,7 +84,17 @@ if (!function_exists('breadcrumb')) {
                 }
                 $buffString .= '<li>' . $breadcrumContent . '</li>';
             }
-            return $buffString;
+            krsort($breadcrumb);
+            $lastKey = key(array_slice($breadcrumb, -1, 1, true));
+            $metaTitle = "";
+            foreach ($breadcrumb as $index => $items) {
+                $metaTitle .= strtoupper($items['title']);
+                //if ($index !== array_key_last($breadcrumb)) {
+                if ($index !== $lastKey) {
+                        $metaTitle .= ' > ';
+                }
+            }
+            return !empty($meta) ? $metaTitle : $buffString;
         }
     }
 
@@ -98,13 +109,13 @@ if (!function_exists('navbar')) {
             foreach ($data[$parrent] as $value) {
                 $child = navbar($data, $value['id_nav'], $module);
                 if ($child) {
-                    $str .= '<li class="parent">
+                    $str .= '<li>
                                 <a href="'. site_url($module . $value['url_nav']) .'">
                                 <span>'. $value['judul_nav'] .'</span></a>
-                                <ul class="sub-menu"><li class="arrow"></li>'.$child.'</ul>
+                                <ul>'.$child.'</ul>
                             </li>';
                 }else{
-                    if($value['link_nav'] === '1'){
+                    if($value['link_nav'] == '1'){
                         $str .= '<li>
                                 <a target="_blank" href="'. $value['url_nav'] .'">'. $value['judul_nav'] .'</a>
                             </li>';

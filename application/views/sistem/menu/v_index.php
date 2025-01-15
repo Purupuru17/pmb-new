@@ -26,7 +26,7 @@ $this->load->view('sistem/v_breadcrumb');
                     <div class="widget-toolbar no-border">
                         <div class="btn-group btn-overlap">
                             <a href="<?= site_url($module.'/add') ?>" class="btn btn-white btn-primary btn-bold">
-                                <i class="fa fa-plus-square bigger-110 blue"></i> Tambah Data
+                                <i class="fa fa-plus-square bigger-120 blue"></i> Tambah Data
                             </a>
                         </div>
                     </div>

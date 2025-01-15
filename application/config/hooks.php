@@ -23,7 +23,7 @@ $hook['post_controller_constructor'][] = array(
 );
 $hook['display_override'][] = array(
     'class' => 'App_hooks',
-    'function' => 'compress',
+    'function' => 'is_compress',
     'filename' => 'App_hooks.php',
     'filepath' => 'hooks'
 );

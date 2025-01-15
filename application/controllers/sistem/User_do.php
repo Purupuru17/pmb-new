@@ -13,7 +13,7 @@ class User_do extends KZ_Controller {
             redirect($this->module.'/add');
         }
         $data['fullname'] = $this->input->post('nama');
-        $data['username'] = ($this->input->post('username'));
+        $data['username'] = $this->input->post('username');
         $data['password'] = password_hash($this->input->post('confirm'), PASSWORD_DEFAULT);
         $data['status_user'] = $this->input->post('status');
         $data['id_group'] = decode($this->input->post('group'));
@@ -38,7 +38,7 @@ class User_do extends KZ_Controller {
             redirect($this->module.'/edit/'.$id);
         }
         $data['fullname'] = $this->input->post('nama');
-        $data['username'] = ($this->input->post('username'));
+        $data['username'] = $this->input->post('username');
         $data['status_user'] = $this->input->post('status');
         $data['id_group'] = decode($this->input->post('group'));
         

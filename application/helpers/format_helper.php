@@ -31,12 +31,9 @@ if (!function_exists('ctk')) {
 if (!function_exists('limit_text')) {
     
     function limit_text($text, $limit) {
-        if (str_word_count($text, 0) > $limit) {
-          $words = str_word_count($text, 2);
-          $pos = array_keys($words);
-          $text = substr($text, 0, $pos[$limit]) . '...';
+        if (mb_strlen($text) > $limit) {
+            return ctk(mb_substr($text, 0, $limit)). '...';
         }
-        $text = substr($text, 0, $limit) . '...';
         return ctk($text);
     }
 }
@@ -155,6 +152,33 @@ if (!function_exists('selisih_wkt')) {
         return $val;
     }
 }
+if (!function_exists('range_date')) {
+
+    function range_date($check_date, $start_date, $end_date) {
+        // Convert to timestamp
+        $start_ts = strtotime($start_date);
+        $end_ts = strtotime($end_date);
+        $check_ts = strtotime($check_date);
+        
+        $diff = $end_ts - $check_ts;
+        $jam   = floor($diff / (60 * 60));
+        $menit = $diff - ( $jam * (60 * 60) );
+        $detik = $diff % 60;
+        
+        if( ($check_ts >= $start_ts) && ($check_ts <= $end_ts) ){
+            $st = TRUE;
+            $rs = $jam .  ' Jam - ' . floor( $menit / 60 ) . ' Menit - ' . $detik . ' Detik' ;
+            //$rs = $jam .  ':' . floor( $menit / 60 ) . ':' . $detik;
+        }else if($check_ts < $start_ts){
+            $st = FALSE;
+            $rs = 'Sesi Ini Belum Dimulai';
+        }else{
+            $st = FALSE;
+            $rs = 'Sesi Ini Telah Berakhir';
+        }
+        return [ 'rs' => $rs, 'st' => $st ];
+    }
+}
 if (!function_exists('is_online')) {
 
     function is_online($tgl) {        
@@ -171,6 +195,18 @@ if (!function_exists('is_online')) {
                 </span>';
         return ($diff < 12) ? $online : $offline; 
         
+    }
+}
+if (!function_exists('is_beetwen')) {
+
+    function is_beetwen($from, $till, $input) {
+        $f = DateTime::createFromFormat('!H:i', $from);
+        $t = DateTime::createFromFormat('!H:i', $till);
+        $i = DateTime::createFromFormat('!H:i', $input);
+        if ($f > $t) {
+            $t->modify('+1 day');
+        }
+        return ($f <= $i && $i <= $t) || ($f <= $i->modify('+1 day') && $i <= $t);
     }
 }
 if (!function_exists('element')) {
@@ -191,6 +227,19 @@ if (!function_exists('element')) {
         } else {
             return (!is_array($default)) ? trim($default) : $default;
         }
+    }
+}
+if (!function_exists('array_find')) {
+
+    function array_find($item, $array = array()) {
+        if (!is_array($array)) {
+            return null;
+        }
+        $id = (count($array) == 14) ? 'huruf' : 'id';
+        $txt = (count($array) == 14) ? 'angka' : 'txt';
+        $key = array_search($item, array_column($array, $id));
+        
+        return (is_int($key)) ? $array[$key][$txt] : null;
     }
 }
 if (!function_exists('dash')) {

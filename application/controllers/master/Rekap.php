@@ -91,7 +91,7 @@ class Rekap extends KZ_Controller {
             $no++;
             $rows = array();
             
-            $btn_aksi = ($this->periode != $row['angkatan'] || $row['status_berkas'] == '1') ? '' : '<a href="#" itemid="'. encode($row['id_berkas']) .'" itemprop="'. $row['nama_upload'] .'" id="edit-btn" class="tooltip-warning btn btn-white btn-warning btn-round btn-sm" data-rel="tooltip" title="Ubah Data">
+            $btn_aksi = ($row['status_berkas'] == '1') ? '' : '<a href="#" itemid="'. encode($row['id_berkas']) .'" itemprop="'. $row['nama_upload'] .'" id="edit-btn" class="tooltip-warning btn btn-white btn-warning btn-round btn-sm" data-rel="tooltip" title="Ubah Data">
                     <span class="orange"><i class="ace-icon fa fa-question bigger-120"></i></span> Validasi
                 </a>';
             $btn_aksi .= '<a target="_blank" href="'. site_url('master/daftar/detail/'. encode($row['id_mhs'])) .'" class="tooltip-info btn btn-white btn-info btn-round btn-sm" data-rel="tooltip" title="Lihat Data">

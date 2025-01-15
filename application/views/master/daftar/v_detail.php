@@ -45,6 +45,12 @@
                                     Orang Tua/Wali
                                 </a>
                             </li>
+                            <li>
+                                <a data-toggle="tab" href="#payment">
+                                    <i class="orange ace-icon fa fa-money bigger-120"></i>
+                                    Pembayaran
+                                </a>
+                            </li>
                         </ul>
                         <div class="tab-content no-border padding-24">
                             
@@ -307,6 +313,12 @@
                             <div id="card" class="tab-pane">
                                 <div class="profile-feed row">
                                     <?php $this->load->view('master/daftar/v_berkas'); ?>
+                                </div><!-- /.row -->
+                            </div>
+                            
+                            <div id="payment" class="tab-pane">
+                                <div class="profile-feed row">
+                                    <?php $this->load->view('master/daftar/v_payment'); ?>
                                 </div><!-- /.row -->
                             </div>
                         </div>

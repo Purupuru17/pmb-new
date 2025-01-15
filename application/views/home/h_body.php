@@ -151,13 +151,13 @@
                     "app/frontend/eventon/js/plugins.js",
                     "app/frontend/eventon/js/main.js"
                 ];
-               UpUp.start({
-                   'cache-version': '<?= SW_VERSION ?>',
-                   'content-url': '<?= site_url() ?>',
-                   'content': 'No Internet Connection',
-                   'service-worker-url': "<?= base_url('sw.js') ?>",
-                   'assets': filesToCache
-               });
+                UpUp.start({
+                    'cache-version': '<?= APP_VER ?>',
+                    'content-url': '<?= site_url() ?>',
+                    'content': 'No Internet Connection',
+                    'service-worker-url': "<?= base_url('sw.js') ?>",
+                    'assets': filesToCache
+                });
             });
         </script>
         <script type="text/javascript">

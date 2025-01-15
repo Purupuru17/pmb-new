@@ -53,8 +53,14 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-$define = define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 0);
-define('SW_VERSION', 'v1' );
+define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 0);
+define('APP_NAME', 'PMB');
+define('APP_STATUS', 1); // 0 = offline, 1 = online
+define('APP_DSN', (ENVIRONMENT == 0) ? 'mysql:host=10.3.5.216:8081;dbname=pmb_db':'mysql:host=app-db;dbname=pmb_db');
+define('APP_USER', (ENVIRONMENT == 0) ? 'pusdatin_remote':'dev_user');
+define('APP_PASS', (ENVIRONMENT == 0) ? 'Firman2412!remote':'dev_pass');
+define('APP_VER', '2024v1');
+define('APP_THEME', 'edu');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -63,7 +69,7 @@ define('SW_VERSION', 'v1' );
  * Different environments will require different levels of error reporting.
  * By default development will show errors but testing and live will hide them.
  */
-switch ($define)
+switch (ENVIRONMENT)
 {
 	case 1:
 		error_reporting(-1);

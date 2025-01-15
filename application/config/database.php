@@ -77,39 +77,24 @@ $dsn_default  = '';
 $user_default = '';
 $pass_default = '';
 
-switch(ENVIRONMENT) {
-    case 0 :
-        $dsn_default = 'mysql:host=10.3.5.216:8081;dbname=pmb_db';
-        $user_default= 'pusdatin_remote';
-        $pass_default= 'Firman2412!remote';
-        break;
-    case 1 :
-        $dsn_default = 'mysql:host=app-db;dbname=pmb_db';
-        $user_default= 'dev_user';
-        $pass_default= 'dev_pass';
-        break;
-    default:
-        exit('Please Specify Database environment');
-}
-
 $db['default'] = array(
-	'dsn'	=> $dsn_default,
-	'hostname' => '',
-	'username' => $user_default,
-	'password' => $pass_default,
-	'database' => '',
-	'dbdriver' => 'pdo',
-	'dbprefix' => '',
-	'pconnect' => FALSE,
-	'db_debug' => (ENVIRONMENT !== 'production'),
-	'cache_on' => FALSE,
-	'cachedir' => 'app/log',
-	'char_set' => 'latin1',
-	'dbcollat' => 'latin1_swedish_ci',
-	'swap_pre' => '',
-	'encrypt' => FALSE,
-	'compress' => FALSE,
-	'stricton' => FALSE,
-	'failover' => array(),
-	'save_queries' => TRUE
+    'dsn'      => APP_DSN,
+    'hostname' => '',
+    'username' => APP_USER,
+    'password' => APP_PASS,
+    'database' => '',
+    'dbdriver' => 'pdo',
+    'dbprefix' => '',
+    'pconnect' => FALSE,
+    'db_debug' => (ENVIRONMENT !== 'production'),
+    'cache_on' => FALSE,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
+    'failover' => array(),
+    'save_queries' => TRUE
 );

@@ -6,7 +6,7 @@ use Firebase\JWT\Key;
 class Bmi {
     
     const client_id = '7949';
-    const produk_id = '01';
+    const produk_id = '02';
     const username = 'unimuda@sorong';
     const password = '@bmiunimuda14!#';
     

@@ -162,6 +162,10 @@ class Payment extends KZ_Controller {
             $btn_aksi = '<a href="'. site_url($this->module .'/detail/'. encode($items['id_payment'])) .'" 
                 class="tooltip-info btn btn-white btn-info btn-sm btn-round" data-rel="tooltip" title="Lihat Data">
                     <span class="blue"><i class="ace-icon fa fa-search-plus bigger-120"></i></span>
+                </a>
+                <a target="_blank" href="'. site_url('master/daftar/detail/'. encode($items['id_mhs'])) .'" 
+                class="tooltip-info btn btn-white btn-default btn-mini btn-round" data-rel="tooltip" title="Mahasiswa">
+                    <span class=""><i class="ace-icon fa fa-external-link"></i></span>
                 </a>';
             
             $is_total = ($items['status_payment'] == '1') ? 'grey' : 'red';

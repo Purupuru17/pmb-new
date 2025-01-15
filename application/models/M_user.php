@@ -13,10 +13,10 @@ class M_user extends CI_Model {
     }
     //INSERT
     function insert($data) {
-        $data['buat_user'] = date('Y-m-d H:i:s');
+        $this->db->set($this->id, 'UUID()', FALSE);
         
         $this->db->insert($this->table, $data);
-        return $this->db->insert_id();
+        return $this->db->affected_rows() > 0 ? true : false;
     }
     function insertLog($id, $data) {
         $log = array(
@@ -25,8 +25,8 @@ class M_user extends CI_Model {
             'msg_log' => $data['log_user'],
             'buat_log' => date('Y-m-d H:i:s')
         );
-        $row = $this->db->insert('yk_user_log', $log);
-        return $row;
+        $this->db->insert('yk_user_log', $log);
+        return $this->db->affected_rows() > 0 ? true : false;
     }
     //UPDATE
     function update($id, $data, $log = NULL) {
@@ -39,9 +39,13 @@ class M_user extends CI_Model {
     }
     //DELETE
     function delete($id) {
-        $this->db->where($this->id, $id);
-        $row = $this->db->delete($this->table);
-        return $row;
+        if(is_array($id)){
+            $this->db->where($id);
+        }else{
+            $this->db->where($this->id, $id);
+        }
+        $this->db->delete($this->table);
+        return $this->db->affected_rows() > 0 ? true : false;
     }
     function resetLog($day) {
         $this->db->where('DATE(buat_log) <= DATE(CURRENT_DATE - INTERVAL '.$day.' DAY)');

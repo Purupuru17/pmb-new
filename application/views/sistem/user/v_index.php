@@ -52,11 +52,11 @@ $this->load->view('sistem/v_breadcrumb');
                     </h5>
                     <div class="widget-toolbar no-border">
                         <div class="btn-group btn-overlap">
-                            <a href="<?= site_url($module.'/add') ?>" class="btn btn-white btn-primary btn-bold" style="margin-right: 10px">
-                                <i class="fa fa-plus-square bigger-110 blue"></i> Tambah Data
+                            <a href="<?= site_url($module.'/add') ?>" class="btn btn-white btn-primary btn-bold">
+                                <i class="fa fa-plus-square bigger-120 blue"></i> Tambah Data
                             </a>
                             <button onclick="confirm()" type="button" class="btn btn-white btn-danger btn-bold">
-                                <i class="fa fa-refresh bigger-110 red"></i> Reset Log
+                                <i class="fa fa-refresh bigger-120 red"></i> Reset Log
                             </button>
                         </div>
                     </div>
@@ -131,6 +131,8 @@ load_js(array(
             }
         });
     });
+    
+    
 </script>
 <script type="text/javascript">
     function confirm(){
@@ -204,7 +206,8 @@ load_js(array(
                     sInfo: "Menampilkan dari _START_ sampai _END_ dari total _TOTAL_ data",
                     sLengthMenu: "_MENU_ data per halaman",
                     sZeroRecords: "Maaf tidak ada data yang ditemukan",
-                    sInfoFiltered: "(Menyaring dari _MAX_ total data)"
+                    sInfoFiltered: "(Menyaring dari _MAX_ total data)",
+                    sProcessing: "<i class='fa fa-spinner fa-spin fa-fw fa-2x'></i> Loading . . ."
                 }
             });
         table.fnAdjustColumnSizing();

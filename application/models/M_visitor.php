@@ -14,8 +14,8 @@ class M_visitor extends CI_Model {
     //INSERT
     function insert($data) {
         $this->db->set($this->id, 'UUID()', FALSE);
-        $this->db->insert($this->table, $data);
         
+        $this->db->insert($this->table, $data);
         return $this->db->affected_rows() > 0 ? true : false;
     }
     //UPDATE

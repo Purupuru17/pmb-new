@@ -22,16 +22,13 @@ $this->load->view('sistem/v_breadcrumb');
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">User :</label>
                     <div class="col-xs-12 col-sm-4">
                         <div class="clearfix">
-                            <select class="select2 width-100" name="user" id="user" data-placeholder="-------> Pilih User <-------">
+                            <input type="hidden" name="user" id="user" class="width-100"/>
+<!--                            <select class="select2 width-100" name="user" id="user" data-placeholder="">
                                 <option value="">  </option>
                                 <option class="bolder" value="shop"> Semua Toko </option>
                                 <option class="bolder" value="cst"> Semua Pelanggan </option>
-                                <?php
-                                foreach ($user['data'] as $val) {
-                                    echo '<option value="'.encode($val['id_user']).'">'.$val['fullname'].'</option>';
-                                }
-                                ?>
-                            </select>
+                                
+                            </select>-->
                         </div>
                     </div>
                 </div>
@@ -82,12 +79,26 @@ $this->load->view('sistem/v_breadcrumb');
     "backend/assets/js/select2.js"
 )); ?>
 <script type="text/javascript">
+    const module = "<?= site_url($module) ?>";
+     
     $(document).ready(function () {
         $(".select2").select2({allowClear: true})
-            .on('change', function () {
-            $(this).closest('form').validate().element($(this));
+        $("#user").select2({
+            placeholder: "-------> Pilih User Aplikasi <-------",
+            ajax: {
+                url: module + "/ajax/type/list/source/user",
+                type: "POST",
+                dataType: 'json',
+                delay: 250,
+                data: function (key) {
+                    return { key: key };
+                },
+                results: function (data) {
+                    return { results: data };
+                },
+                cache: true
+            }
         });
-        $(".select2-chosen").addClass("center");
     });
     $("#validation-form").validate({
         errorElement: 'div',

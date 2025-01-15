@@ -44,7 +44,7 @@ $this->load->view('sistem/v_breadcrumb');
                                         <td><?= $no; ?></td>
                                         <td><?= $row['nama_group']; ?></td>
                                         <td><?= $row['keterangan_group']; ?></td>
-                                        <td><?= st_aktif($row['level'],1) ?></td>
+                                        <td><?= st_aktif($row['level'] == '1') ?></td>
                                         <td nowrap>
                                             <div class="action-buttons">
                                                 <a href="<?= site_url($module . '/add/' . encode($row['id_group'])) ?>" class="tooltip-success btn btn-white btn-success btn-sm btn-round" data-rel="tooltip" title="Tambah Hak Akses">
@@ -80,7 +80,7 @@ load_js(array(
 ?>
 <script type="text/javascript">
     var table;
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('[data-rel="tooltip"]').tooltip({placement: 'top'});
 
         table = $('#dynamic-table')
@@ -89,9 +89,15 @@ load_js(array(
                 bAutoWidth: false,
                 aaSorting: [],
                 aoColumnDefs: [
-                    { bSortable: false, aTargets: [0,4] },
-                    { bSearchable: false, aTargets: [0,4] },
-                    { sClass: "center", aTargets: [0,1,2,3,4] }
+                    {
+                        bSortable: false,
+                        aTargets: [0, 4]
+                    },
+                    {
+                        bSearchable: false,
+                        aTargets: [0, 4]
+                    },
+                    {sClass: "center", aTargets: [0, 1, 2, 3, 4]}
                 ],
                 oLanguage: {
                     sSearch: "Cari : ",

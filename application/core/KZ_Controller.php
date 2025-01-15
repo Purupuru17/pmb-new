@@ -6,11 +6,11 @@ class KZ_Controller extends CI_Controller {
     public $sessionusr = null;
     public $sessionname = null;
     public $sessiongroup = null;
+    public $sessionlevel = null;
     public $sessionfoto = null;
     
-    public $periode = null;
     public $mid = null;
-    
+            
     function __construct() {
         parent::__construct();
         
@@ -19,25 +19,36 @@ class KZ_Controller extends CI_Controller {
         
         $this->_refresh();
         $this->_session();
-        $this->_authentication();
+        $this->_authentication(); 
     }
-    //auth
+    //session
     function _session() {
         $this->load->library(array('session'));
+        $this->load->model(array('m_aplikasi','m_group'));
         
         $this->loggedin = $this->session->userdata('logged');
         $this->sessionid = $this->session->userdata('id');
         $this->sessionusr = $this->session->userdata('usr');
         $this->sessionname = $this->session->userdata('name');
         $this->sessiongroup = $this->session->userdata('groupid');
+        $this->sessionlevel = $this->session->userdata('level');
         $this->sessionfoto = $this->session->userdata('foto');
         
-        $this->periode = $this->session->userdata('periode');
+        if(empty($this->session->userdata('app'))){
+            $app = $this->m_aplikasi->getAll();   
+            $this->session->set_userdata(array('app' => $app));
+        }
+        if(empty($this->session->userdata('role')) && !empty($this->sessiongroup)){
+            $role = $this->m_group->getRole(array('r.user_id' => $this->sessionid));
+            $this->session->set_userdata(array('role' => 1, 'group_role' => $role));
+        }
     }
+    //auth
     function _authentication() {
         $this->load->model(array('m_authentication'));
         
-        $module_non_login = array('non_login','login','register','home','pages','galeri','artikel','tag');
+        $module_non_login = array('error_404','error_module','register','non_login','login',
+            'home','pages','galeri','artikel','tag');
         $module_login = array('beranda','logout');
 
         $module = ($this->uri->segment(1) == '' ? 'home' : $this->uri->segment(1));
@@ -50,22 +61,25 @@ class KZ_Controller extends CI_Controller {
         //Check XSS
         $url_param = $module.' '.$class.' '.$fungsi.' '.$_SERVER['QUERY_STRING'];
         if ($this->security->xss_clean($url_param, TRUE) === FALSE){
-            redirect('non_login/beranda/err_404');
+            redirect('error_404');
         }
         //Check Module
         if (in_array($module, $module_non_login)) {
         } else if (in_array($module, $module_login) AND isset($this->sessionid)) {
+        } else if ($this->sessionlevel != '1' AND is_beetwen('23:30', '03:00', date('H:i'))) {
+            redirect('error_404');
         } else if(strpos($fungsi, 'ajax') !== false){
+            if(empty($this->sessionid)){ jsonResponse(array('status' => false, 'msg' => 'Sesi berakhir. Silahkan login kembali')); }
         } else if ($this->m_authentication->cekModule($module, $class, $fungsi, $this->sessiongroup)) {
         } else if (!$this->m_authentication->cekModule($module, $class, $fungsi, $this->sessiongroup) AND $this->sessionid) {
-            redirect('non_login/beranda/err_module');
+            redirect('error_module');
         } else {
-            redirect('');
+            redirect();
         }
-    }    
-    //Load view
+    }
+    //loadview
     function load_view($template, $data = '') {
-        $this->load->model(array('m_menu','m_aplikasi','m_nav','m_group'));
+        $this->load->model(array('m_menu'));
         
         $sidebar = $this->m_menu->getNavMenu($this->sessiongroup);
         $arrside = array();
@@ -75,15 +89,14 @@ class KZ_Controller extends CI_Controller {
             }
             $data['sidebar'] = $arrside;
         }
-        $data['app'] = $this->m_aplikasi->getAll();
-        $data['theme'] = explode(",",$data['app']['tema']);  
-        $data['group_role'] = $this->m_group->getRole(array('r.user_id' => $this->sessionid,'r.group_id !=' => $this->sessiongroup));
+        $data['app'] = $this->session->userdata('app');
+        $data['theme'] = explode(",",$data['app']['tema']);
         
         $this->data['content'] = $this->load->view($template, $data, TRUE);
         $this->load->view('sistem/v_body', $this->data);
     }
     function load_home($template, $data = '') {
-        $this->load->model(array('m_aplikasi','m_nav'));
+        $this->load->model(array('m_nav'));
         
         $topbar = $this->m_nav->getNav();
         $arrtop = array();
@@ -92,14 +105,14 @@ class KZ_Controller extends CI_Controller {
                 $arrtop[$top['parent_nav']][] = $top;
             }
             $data['navbar'] = $arrtop;
-        }
-        $data['app'] = $this->m_aplikasi->getAll();
+        } 
+        $data['app'] = $this->session->userdata('app');
         $data['theme'] = explode(",",$data['app']['tema']);
         
         $this->data['content'] = $this->load->view($template, $data, TRUE);
         $this->load->view('home/h_body', $this->data);
-    }    
-    //Library
+    }
+    //validation
     function _validation($rules, $delimiter = NULL) {
         $this->load->library(array('form_validation'));
         
@@ -115,13 +128,15 @@ class KZ_Controller extends CI_Controller {
             $this->form_validation->set_error_delimiters('', '<br/>');
         }
         if ($this->form_validation->run() == FALSE) {
-            $this->session->set_flashdata('notif', notif('danger', 'Peringatan', validation_errors()));
+            if(is_null($delimiter)){
+                $this->session->set_flashdata('notif', notif('danger', 'Peringatan', validation_errors()));
+            }
             return FALSE;
         }else{
             return TRUE;
         }
     }
-    //Upload Image
+    //upload image
     function _upload_img($post, $name, $path, $width = 0, $ratio = FALSE, $height = 0){
         $this->load->library(array('upload','image_lib'));
         
@@ -165,14 +180,14 @@ class KZ_Controller extends CI_Controller {
             return NULL;
         }
     }
-    //Cache
+    //cache
     function _refresh(){
         // any valid date in the past
         $this->output->set_header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
         // always modified right now
         $this->output->set_header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         // HTTP/1.1
-        $this->output->set_header("Cache-Control: private, no-store, max-age=0, no-cache, must-revalidate, post-check=0, pre-check=0");
+        $this->output->set_header("Cache-Control: public, no-store, max-age=0, no-cache, must-revalidate, post-check=0, pre-check=0");
         // HTTP/1.0
         $this->output->set_header("Pragma: no-cache");
     }

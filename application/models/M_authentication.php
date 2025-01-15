@@ -32,7 +32,8 @@ class M_authentication extends CI_Model {
     }
     function getAuth($username) {
         $data = array();
-        $this->db->from('yk_user');
+        $this->db->from('yk_user u');
+        $this->db->join('yk_group g', 'g.id_group = u.id_group', 'inner');
         $this->db->where('username', $username); 
         $this->db->or_where('email', $username); 
         $query = $this->db->get();     

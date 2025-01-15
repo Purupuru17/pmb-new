@@ -72,11 +72,11 @@ $this->load->view('sistem/v_breadcrumb');
                         <div class="clearfix">
                             <label class="control-label">
                                 <input name="status" value="1" type="radio" class="ace" />
-                                <span class="lbl"> AKTIF </span>
+                                <span class="lbl"> AKTIF</span>
                             </label>&nbsp;&nbsp;&nbsp;
                             <label class="control-label">
                                 <input name="status" value="0" type="radio" class="ace" />
-                                <span class="lbl"> TIDAK AKTIF </span>
+                                <span class="lbl"> TIDAK AKTIF</span>
                             </label>
                         </div>
                     </div>

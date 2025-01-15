@@ -1,10 +1,10 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Profil extends KZ_Controller {
+class Akun extends KZ_Controller {
     
-    private $module = 'sistem/profil';
-    private $module_do = 'sistem/profil_do';
-    private $path = 'app/upload/profil/';
+    private $module = 'sistem/akun';
+    private $module_do = 'sistem/akun_do';
+    private $path = 'app/upload/akun/';
     
     public function __construct() {
         parent::__construct();
@@ -19,21 +19,21 @@ class Profil extends KZ_Controller {
             array('title'=>$this->uri->segment(1), 'url'=>'#'),
             array('title'=>$this->uri->segment(2), 'url'=> '')
         );
-        $this->load_view('sistem/user/v_profil', $this->data);
+        $this->load_view('sistem/user/v_akun', $this->data);
     }
     public function edit() {
-        if(!$this->_validation($this->rules)){
+        if($this->_validation($this->rules) == FALSE){
             redirect($this->module);
         }            
         $data['fullname'] = $this->input->post('nama');
-        $data['username'] = ($this->input->post('username'));
+        $data['username'] = strtolower($this->input->post('username'));
         $data['email'] = $this->input->post('email');
         $data['update_user'] = date('Y-m-d H:i:s');
         $data['log_user'] = $this->sessionname . ' ubah profil User';
         $data['ip_user'] = ip_agent();
         
         if(!empty($_FILES['foto']['name'])){
-            $img = url_title($data['fullname'].' '.random_string('alnum', 4), 'dash', TRUE);
+            $img = url_title($data['fullname'].' '.random_string('alnum', 2), 'dash', TRUE);
             $upload = $this->_upload_img('foto', $img, $this->path, 200);
             if(is_null($upload)){
                 redirect($this->module);

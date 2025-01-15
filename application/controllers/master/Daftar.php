@@ -56,13 +56,15 @@ class Daftar extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        $this->load->model(array('m_ortu','m_berkas'));
+        $this->load->model(array('m_ortu','m_berkas','m_payment'));
         
         $detail = $this->m_mhs->getId(decode($id));
         
         $this->data['user'] = $this->m_mhs->getTMP(array('mhs_id' => decode($id)));
         $this->data['ortu'] = $this->m_ortu->getAll(array('mhs_id' => decode($id)));
         $this->data['berkas'] = $this->m_berkas->getAll(array('mhs_id' => decode($id)));
+        $this->data['payment'] = $this->m_payment->getAll(array('mhs_id' => decode($id)));
+        
         $this->data['kecamatan'] = $this->db->get_where('m_wilayah', ['id_wilayah' => $detail['kecamatan']])->row_array();
         $this->data['kabupaten'] = $this->db->get_where('m_wilayah', ['id_wilayah' => $detail['kabupaten']])->row_array();
         

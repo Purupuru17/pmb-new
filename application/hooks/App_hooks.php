@@ -11,7 +11,7 @@ class App_hooks {
     public function redirect_ssl() {
         $class = $this->ci->router->fetch_class();
         $exclude = array('');  // add more controller name to exclude ssl.
-        if ($this->ci->config->item('app.debug') === 0) {
+        if (ENVIRONMENT === 0) {
             if (!in_array($class, $exclude)) {
                 // redirecting to ssl.
                 $this->ci->config->config['base_url'] = str_replace('http://', 'https://', $this->ci->config->config['base_url']);
@@ -26,7 +26,7 @@ class App_hooks {
         }
     }
 
-    public function compress() {
+    public function is_compress() {
         ini_set("pcre.recursion_limit", "16777");
         $buffer = $this->ci->output->get_output();
         // BUFFER 1
@@ -63,7 +63,7 @@ class App_hooks {
             );
         $new_buffer = preg_replace($search, $replace, $buffer);
         */
-        if ($new_buffer === null || $this->ci->config->item('app.debug') === 0) {
+        if ($new_buffer === null || ENVIRONMENT === 0) {
              $buffer = $new_buffer;
         }
         $this->ci->output->set_output($buffer);
@@ -71,10 +71,9 @@ class App_hooks {
     }
 
     public function is_offline() {
-        if ($this->ci->config->item('app.status') == 0) {
+        if (APP_STATUS == 0) {
             include (APPPATH . 'views/errors/html/error_offline.php');
             die();
         }
     }
-
 }

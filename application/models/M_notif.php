@@ -10,8 +10,10 @@ class M_notif extends CI_Model {
     }
     //INSERT
     function insert($data) {
-        $row = $this->db->insert($this->table, $data);
-        return $row;
+        $this->db->set($this->id, 'UUID()', FALSE);
+        
+        $this->db->insert($this->table, $data);
+        return $this->db->affected_rows() > 0 ? true : false;
     }
     function insertAll($value, $level) {
         $this->db->trans_start();
@@ -24,12 +26,12 @@ class M_notif extends CI_Model {
                 break;
             /*Opsi
             case 2 :
-                $this->db->select('user_id')->from('m_shop')->where(array('id_shop' => $value['send_id']));
+                $this->db->select('user_id')->from('tmp_shop')->where('shop_id', $value['send_id']);
                 $user_id = $this->db->get()->row_array()['user_id'];
                 break;
             */
             case 3 :
-                $this->db->select('user_id')->from('m_costumer')->where(array('id_costumer' => $value['send_id']));
+                $this->db->select('user_id')->from('tmp_cst')->where('cst_id', $value['send_id']);
                 $user_id = $this->db->get()->row_array()['user_id'];
                 break;
             //Admin
@@ -57,14 +59,14 @@ class M_notif extends CI_Model {
         switch($post['user']) {
             /*
             case 'shop' :
-                $this->db->select('user_id')->from('m_shop');
+                $this->db->select('user_id')->from('tmp_shop');
+                $rs_user = $this->db->get()->result_array();
+                break;
+            case 'cst' :
+                $this->db->select('user_id')->from('tmp_cst');
                 $rs_user = $this->db->get()->result_array();
                 break;
             */
-            case 'cst' :
-                $this->db->select('user_id')->from('m_costumer');
-                $rs_user = $this->db->get()->result_array();
-                break;
             default:
                 $row['from_id'] = $from_id;
                 $row['send_id'] = decode($post['user']);
@@ -98,26 +100,38 @@ class M_notif extends CI_Model {
     }
     //UPDATE
     function update($id, $data) {
-        $this->db->where($this->id, $id);
-        $row = $this->db->update($this->table, $data);
-        return $row;
+        if(is_array($id)){
+            $this->db->where($id);
+        }else{
+            $this->db->where($this->id, $id);
+        }
+        $this->db->update($this->table, $data);
+        return $this->db->affected_rows() > 0 ? true : false;
     }
     //DELETE
     function delete($id) {
         if(is_array($id)){
-            $this->db->where_in($this->id, $id);
+            $this->db->where($id);
         }else{
             $this->db->where($this->id, $id);
         }
         $this->db->delete($this->table);
+        return $this->db->affected_rows() > 0 ? true : false;
+    }
+    function deleteAll($id) {
+        $this->db->trans_start();
         
+        $notif_id = explode(",", $id);
+        foreach ($notif_id as $val) {
+            $this->delete(decode($val));
+        }
         $this->db->trans_complete();
         return $this->db->trans_status();
     }
     //GET
     function getAll($where = NULL, $limit = NULL, $orwhere = NULL) {
         $this->db->from('yk_notif n');
-        $this->db->join('yk_user u','n.send_id = u.id_user','inner');
+        $this->db->join('yk_user u','n.send_id = u.id_user','left');
         if(!is_null($where)){
             $this->db->where($where);
         }
@@ -135,13 +149,6 @@ class M_notif extends CI_Model {
             'rows' => $get->num_rows(),
             'data' => $get->result_array()
         ];
-    }
-    function unRead($id = NULL) {
-        $this->db->from($this->table);
-        $this->db->where('send_id', $id);
-        $this->db->where('status_notif =', '0');
-        $get = $this->db->get();
-        return $get->num_rows();
     }
     function getId($id) {
         $this->db->from($this->table)->where($this->id, $id);

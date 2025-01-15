@@ -16,6 +16,7 @@ $this->load->view('sistem/v_breadcrumb');
             <?= $this->session->flashdata('notif'); ?>
         </div>
         <div class="col-xs-12">
+            <p id="dynamic-spin" class="bigger-130 blue" align="center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> Loading . . .</p>
             <div class="widget-box widget-color-red">
                 <div class="widget-header">
                     <h5 class="widget-title bigger lighter">
@@ -24,11 +25,11 @@ $this->load->view('sistem/v_breadcrumb');
                     </h5>
                     <div class="widget-toolbar no-border">
                         <div class="btn-group btn-overlap">
-                            <a href="<?= site_url($module.'/add') ?>" class="btn btn-white btn-primary btn-bold <?= ($admin != '1') ? 'hide' : '' ?>" style="margin-right: 10px;">
-                                <i class="fa fa-plus-square bigger-110 blue"></i> Tambah Data
+                            <a href="<?= site_url($module.'/add') ?>" class="btn btn-white btn-primary btn-bold">
+                                <i class="fa fa-plus-square bigger-120 blue"></i> Tambah Data
                             </a>
                             <button id="delete-all" class="btn btn-white btn-danger btn-bold">
-                                <i class="fa fa-trash-o bigger-110 red"></i> Hapus Data
+                                <i class="fa fa-trash-o bigger-120 red"></i> Hapus Data
                             </button>
                         </div>
                     </div>
@@ -40,57 +41,18 @@ $this->load->view('sistem/v_breadcrumb');
                                 <tr>
                                     <th>
                                         <label class="pos-rel">
-                                            <input type="checkbox" class="ace" id="id-toggle-all" />
+                                            <input type="checkbox" class="ace"/>
                                             <span class="lbl"></span>
                                         </label>
                                     </th>
-                                    <th>#</th>
                                     <th>User</th>
                                     <th>Judul</th>
-                                    <th width="50%">Pesan</th>
+                                    <th width="30%">Pesan</th>
                                     <th>Waktu</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            <?php
-                                $no = 1;
-                                foreach ($notif['data'] as $row) {
-                            ?>
-                                <tr class="<?= ($row['status_notif'] == '0') ? 'un-read' : '' ?>">
-                                    <td>
-                                        <label class="pos-rel">
-                                            <input value="<?= encode($row['id_notif']) ?>" type="checkbox" class="ace" id="checkboxData" name="dataCheckbox[]" />
-                                            <span class="lbl"></span>
-                                        </label>
-                                    </td>
-                                    <td><?= ctk($no); ?></td>
-                                    <td><?= ctk($row['fullname']); ?></td>
-                                    <td><?= ctk($row['subject_notif']); ?></td>
-                                    <td><?= ctk($row['msg_notif']); ?></td>
-                                    <td><?= selisih_wkt($row['buat_notif']) ?></td> 
-                                    <td nowrap>
-                                        <div class="action-buttons">
-                                            <?php
-                                                if($admin == '1'){
-                                            ?>
-                                                <a href="<?= site_url($row['link_notif']) ?>" name="<?= encode($row['id_notif']) ?>" class="tooltip-warning btn btn-white btn-warning btn-sm" id="link-btn" data-rel="tooltip" title="Link">
-                                                    <span class="orange">
-                                                        <i class="ace-icon fa fa-external-link bigger-130"></i>
-                                                    </span>
-                                                </a>
-                                            <?php } ?>
-                                            <a href="#" name="<?= encode($row['id_notif']) ?>" itemprop="<?= ctk($row['fullname'].' - '.$row['subject_notif']); ?>" id="delete-btn" class="tooltip-error btn btn-white btn-danger btn-sm" data-rel="tooltip" title="Hapus Data">
-                                                <span class="red"><i class="ace-icon fa fa-trash-o bigger-130"></i></span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php
-                                $no++;
-                                }
-                            ?>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
@@ -106,9 +68,13 @@ load_js(array(
 ));
 ?>
 <script type="text/javascript">
-    var table;
-    var module = "<?= site_url($module); ?>";
-    
+    const module = "<?= site_url($module) ?>";
+    let table;
+    $(function() {
+        $('[data-rel="tooltip"]').tooltip({placement: 'top'});
+        load_table();
+        load_data();
+    });
     $(document.body).on("click", "#delete-btn", function(event) {
         var id = $(this).attr("name");
         var name = $(this).attr("itemprop");
@@ -131,46 +97,50 @@ load_js(array(
             },
             callback: function(result) {
                 if (result === true) {
-                    window.location.replace("<?= site_url($module . '/delete/'); ?>" + id);
+                    window.location.replace(module + "/delete/" + id);
                 }
             }
         });
     });
     $(document).on('click', '#link-btn', function(){
-        var id = $(this).attr("name");
-        notif_user(id);
+        autoload_module($(this).attr("name"));
     });
-    $('#id-toggle-all').click(function(e) {
-        var $row = $("tr > td:first-child input[type='checkbox']");
-        if($(this).hasClass('checkedAll')) {
-            $row.prop('checked', false).closest('tr').removeClass('danger');   
-            $(this).removeClass('checkedAll');
+    $(document.body).on("click", "#log-msg", function(event) {
+        var json = JSON.parse(atob($(this).attr("itemname")));
+        bootbox.dialog({title: `<h4 class="center">${$(this).attr("itemid")}</h4>`, 
+            message: `<pre>${JSON.stringify(json, null, 4)}</pre>`, size: 'large', backdrop: true, onEscape: true});
+        console.log(json);
+    });
+    $("#dynamic-table > thead > tr > th input[type=checkbox]").eq(0).on('click', function(){
+        var $row = $("#dynamic-table > tbody > tr > td:first-child input[type='checkbox']");
+        if(!this.checked){
+            $row.prop('checked', false).closest('tr').removeClass('danger');
         } else {
             $row.prop('checked', true).closest('tr').addClass('danger');
-            $(this).addClass('checkedAll');
         }
     });
-    $('#dynamic-table').on('click', 'td input[type=checkbox]' , function(){
+    $("#dynamic-table").on('click', 'td input[type=checkbox]' , function(){
         var $row = $(this).closest('tr');
         if(this.checked) $row.addClass('danger');
         else $row.removeClass('danger');
     });
-    $('#delete-all').click(function(e) {
+    $("#delete-all").click(function(e) {
         var rowcollection = table.$("#checkboxData:checked", {"page": "all"});
         var id = "";
+        var qty = 0;
         rowcollection.each(function(index, elem) {
             var checkbox_value = $(elem).val();
             id += checkbox_value + ',';
+            qty++;
         });
-        console.log(id);
         if(id === ""){
-            myNotif('Peringatan', 'Tidak ada data yang dipilih', 3);
+            myNotif('Peringatan', 'Tidak ada data yang dipilih', 2);
             return;
         }
         var title = '<h4 class="red center"><i class="ace-icon fa fa-exclamation-triangle red"></i>' + 
                 ' Peringatan !</h4>';
         var msg = '<p class="center grey bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' + 
-                ' Apakah anda yakin dengan data - data yang telah anda pilih ?  </p>';
+                ' <strong class="bigger-130 red"> ' + qty + '</strong><br/>Apakah anda yakin dengan data yang anda pilih ?</p>';
         bootbox.confirm({
             title: title,
             message: msg, 
@@ -186,47 +156,37 @@ load_js(array(
             },
             callback: function(result) {
                 if (result === true) {
-                    deleteAll(id);
+                    delete_all(id);
                 }
             }
         });
     });
 </script>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('[data-rel="tooltip"]').tooltip({placement: 'top'});
-	
-        table = $('#dynamic-table')
-            .dataTable({
-                bScrollCollapse: true,
-                bAutoWidth: false,
-                aaSorting: [],
-                aoColumnDefs: [
-                {
-                    bSortable: false,
-                    aTargets: [0,1,6]
-                },
-                {
-                    bSearchable: false,
-                    aTargets: [0,1,6]
-                },
-                {
-                    sClass: "center", aTargets: [0,1,2,3,4,5,6]
+    function load_data() {
+        $.ajax({
+            url: module + "/ajax/type/table/source/index",
+            type: "POST",
+            dataType: "json",
+            success: function (rs) {
+                table.fnClearTable();
+                if (rs.status) {
+                    $.each(rs.data.table, function (index, value) {
+                        table.fnAddData(value);
+                    });
+                } else {
+                    myNotif('Peringatan', rs.msg, 2);
                 }
-            ],
-            oLanguage: {
-                sSearch: "Cari : ",
-                sInfoEmpty: "Menampilkan dari 0 sampai 0 dari total 0 data",
-                sInfo: "Menampilkan dari _START_ sampai _END_ dari total _TOTAL_ data",
-                sLengthMenu: "Menampilkan _MENU_ data per halaman",
-                sZeroRecords: "Maaf tidak ada data yang ditemukan",
-                sInfoFiltered: "(Menyaring dari _MAX_ total data)"
+                table.fnDraw();
+                $("#dynamic-spin").addClass("hide");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $("#dynamic-spin").addClass("hide");
+                myNotif('Peringatan', 'Tidak dapat memuat data dengan baik', 3);
             }
         });
-        table.fnAdjustColumnSizing();
-    });
-    
-    function deleteAll(id){
+    }
+    function delete_all(id){
         var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i>' + 
                     ' Mohon tunggu . . . </h4>';
         var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' + 
@@ -247,9 +207,9 @@ load_js(array(
                 progress.modal("hide");
                 if (rs.status) {
                     myNotif('Informasi', rs.msg, 1);
-                    setInterval(function(){ window.location.replace(module); }, 2000);
+                    load_data();
                 }else{
-                    myNotif('Peringatan', rs.msg, 3);
+                    myNotif('Peringatan', rs.msg, 2);
                 }
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -257,5 +217,28 @@ load_js(array(
                 progress.modal("hide");
             }
         });
+    }
+    function load_table() {
+        table = $("#dynamic-table")
+        .dataTable({
+            bScrollCollapse: true,
+            bAutoWidth: false,
+            aaSorting: [],
+            aoColumnDefs: [
+                {bSortable: false, aTargets: [0,5]},
+                {bSearchable: false, aTargets: [0,5]},
+                {sClass: "center", aTargets: [0, 1, 2, 3, 4]},
+                {sClass: "center nowrap", aTargets: [5]}
+            ],
+            oLanguage: {
+                sSearch: "Cari : ",
+                sInfoEmpty: "Menampilkan dari 0 sampai 0 dari total 0 data",
+                sInfo: "Menampilkan dari _START_ sampai _END_ dari total _TOTAL_ data",
+                sLengthMenu: "_MENU_ data per halaman",
+                sZeroRecords: "Maaf tidak ada data yang ditemukan",
+                sInfoFiltered: "(Menyaring dari _MAX_ total data)"
+            }
+        });
+        table.fnAdjustColumnSizing();
     }
 </script>                  
