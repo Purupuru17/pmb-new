@@ -18,7 +18,7 @@ class Payment extends KZ_Controller {
         $this->data['prodi'] = $this->m_prodi->getAll();
         $this->data['tagihan'] = $this->db->get_where('tmp_item');
         $this->data['bank'] = ['MUAMALAT'];
-        $this->data['is_mahasiswa'] = $this->mid;
+        $this->data['is_mahasiswa'] = ($this->sessiongroup != '1') ? $this->mid : NULL;
         
         $this->data['module'] = $this->module;
         $this->data['title'] = array('Pembayaran','List Data');
@@ -30,7 +30,7 @@ class Payment extends KZ_Controller {
     }
     function add() {
         $this->data['bank'] = ['MUAMALAT'];
-        $this->data['is_mahasiswa'] = $this->mid;
+        $this->data['is_mahasiswa'] = ($this->sessiongroup != '1') ? $this->mid : NULL;
         
         $this->data['module'] = $this->module;
         $this->data['title'] = array('Pembayaran','Tambah Data');
@@ -130,7 +130,7 @@ class Payment extends KZ_Controller {
         $bulan = $this->input->post('bulan');
         
         $where = null;
-        if(!empty($this->mid)){
+        if(!empty($this->mid) && $this->sessiongroup != '1'){
             $where['mhs_id'] = $this->mid;
         }
         if ($prodi != '') {
@@ -240,16 +240,19 @@ class Payment extends KZ_Controller {
     }
     function _get_mhs(){
         $key = $this->input->post('key');
-        $id = !empty($this->mid) ? $this->mid : decode($this->input->get('id'));
+        $id = (!empty($this->mid) && $this->sessiongroup != '1') ? $this->mid : decode($this->input->get('id'));
         
-        $this->db->join('m_prodi p', 'm.prodi_id = p.id_prodi', 'left');
+        $where = null;
+        if(!empty($id)){
+            $where['id_mhs'] = $id;
+        }
+        $this->db->join('m_prodi p', 'm.prodi_id = p.id_prodi', 'left')->order_by('nama_mhs', 'ASC');
         if(!empty($key)){
             $this->db->group_start()
             ->like('kode_reg', $key, 'both')
-            ->or_like('nama_mhs', $key, 'both')->group_end()
-            ->order_by('nama_mhs', 'ASC');
+            ->or_like('nama_mhs', $key, 'both')->group_end();
         }
-        $result = $this->db->get_where('m_mhs m', array('id_mhs' => $id));
+        $result = $this->db->get_where('m_mhs m', $where);
         $data = array();
         foreach ($result->result_array() as $val) {
             $text = $val['kode_reg'].' - '.$val['nama_mhs'].' ['.$val['angkatan'].' - '.$val['nama_prodi'].']';

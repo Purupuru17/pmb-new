@@ -2,7 +2,7 @@
 $this->load->view('sistem/v_breadcrumb');
 ?>
 <div class="page-content">
-    <div class="page-header <?= ($groupid != '1') ? 'hide' : '' ; ?>">
+    <div class="page-header <?= ($groupid != '1') ? 'hide' : 'hide' ; ?>">
         <div class="infobox-container center">
             <div class="infobox infobox-orange">
                 <div class="infobox-icon">

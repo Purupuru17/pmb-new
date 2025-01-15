@@ -116,6 +116,7 @@ class M_mhs extends CI_Model {
         $data['jalur_mhs'] = NULL;
         $data['angkatan'] = (date('m') == '12') ? date('Y') + 1 : date('Y');
         
+        $data['kip_mhs'] = NULL;
         $data['nisn'] = NULL;
         $data['sekolah'] = NULL;
         $data['npsn'] = NULL;
