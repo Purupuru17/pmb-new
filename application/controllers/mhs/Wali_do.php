@@ -9,6 +9,7 @@ class Wali_do extends KZ_Controller {
         parent::__construct();
         
         $this->load->model(array('m_ortu'));
+        $this->_getMhs();
     }
     function add() {
         if(!$this->_validation($this->rules)){

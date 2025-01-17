@@ -12,7 +12,7 @@ class Login extends KZ_Controller {
         $this->load->model(array('m_authentication', 'm_user'));
     }
     function index() {
-        !empty($this->sessionid) ?? redirect('beranda');
+        !empty($this->sessionid) ? redirect('beranda') : null;
         
         $this->load->library(array('recaptcha'));
         

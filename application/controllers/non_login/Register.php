@@ -10,9 +10,8 @@ class Register extends KZ_Controller {
         $this->load->model(array('m_mhs','m_prodi'));
     }
     function index() {
-        if (!empty($this->sessionid) || ($this->sessionid != '')) {
-            redirect('beranda');
-        }
+        !empty($this->sessionid) ? redirect('beranda') : null;
+        
         $this->load->library(array('recaptcha'));
         $this->load->helper(array('form'));
         

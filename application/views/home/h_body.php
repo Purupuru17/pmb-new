@@ -69,8 +69,6 @@
         
         <?php
         load_css(array(
-            "backend/puru.css",
-            
             "frontend/eventon/css/font-awesome.min.css",
             "frontend/eventon/css/bootstrap.min.css",
             "frontend/eventon/css/source-sans.css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic",
@@ -197,4 +195,3 @@
         </script>
     </body>
 </html>
-

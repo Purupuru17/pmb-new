@@ -10,7 +10,7 @@ class Beranda extends KZ_Controller {
         $this->load->model(array('m_mhs'));
     }
     function index() {
-        empty($this->sessionid) ?? redirect('non_login/login');
+        empty($this->sessionid) ? redirect('non_login/login') : null;
         
         $this->data['groupid'] = $this->sessiongroup;
         $this->_statistik();

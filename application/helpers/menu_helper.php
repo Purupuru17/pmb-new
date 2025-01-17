@@ -109,13 +109,13 @@ if (!function_exists('navbar')) {
             foreach ($data[$parrent] as $value) {
                 $child = navbar($data, $value['id_nav'], $module);
                 if ($child) {
-                    $str .= '<li>
+                    $str .= '<li class="parent">
                                 <a href="'. site_url($module . $value['url_nav']) .'">
                                 <span>'. $value['judul_nav'] .'</span></a>
-                                <ul>'.$child.'</ul>
+                                <ul class="sub-menu"><li class="arrow"></li>'.$child.'</ul>
                             </li>';
                 }else{
-                    if($value['link_nav'] == '1'){
+                    if($value['link_nav'] === '1'){
                         $str .= '<li>
                                 <a target="_blank" href="'. $value['url_nav'] .'">'. $value['judul_nav'] .'</a>
                             </li>';
