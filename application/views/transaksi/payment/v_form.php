@@ -190,6 +190,7 @@ load_js(array(
         });
     }
     function get_virtual() {
+        $("#virtual").val('');
         $("#one-spin").show();
         $.ajax({
             url: module + "_do/ajax/type/action/source/virtual",

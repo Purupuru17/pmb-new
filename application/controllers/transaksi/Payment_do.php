@@ -35,52 +35,33 @@ class Payment_do extends KZ_Controller {
         if(empty($mhs)){
             jsonResponse(array('status' => false, 'msg' => 'Mahasiswa tidak ditemukan'));
         }
-        $va_mhs = json_decode($mhs['virtual_mhs'], true);
-        $virtual = '';
-        if(empty($va_mhs) || !is_array($va_mhs)){
-            switch ($bank) {
-                case 'MUAMALAT':
-                    $this->load->library(array('bmi'));
-                    $virtual = $this->bmi->virtual($mhs);
-                    break;
-                default:
-                    $virtual = '';
-                    break;
+        $va_mhs = $mhs['virtual_mhs'];
+        if(empty($va_mhs)){
+            $va_mhs = $mhs['angkatan'].random_string('numeric',4);
+            
+            $check = $this->db->get_where('m_mhs', array('virtual_mhs' => $va_mhs));
+            if($check->num_rows() > 0){
+                jsonResponse(array('status' => false, 'msg' => 'Mohon ulangi atau pilih bank lainnya'));
             }
-            $va_mhs[] = ['bank' => $bank, 'va' => $virtual];
-        }else{
-            $bankFound = false;
-            foreach ($va_mhs as $item) {
-                if ($item['bank'] === $bank) {
-                    $virtual = $item['va'];
-                    $bankFound = true;
-                    break;
-                }
-            }
-            if ($bankFound) {
-                jsonResponse(array('data' => $virtual, 'status' => true, 'msg' => 'Data ditemukan'));
-            }else{
-                switch ($bank) {
-                    case 'MUAMALAT':
-                        $this->load->library(array('bmi'));
-                        $virtual = $this->bmi->virtual($mhs);
-                        break;
-                    default:
-                        $virtual = '';
-                        break;
-                }
-                $va_mhs[] = ['bank' => $bank, 'va' => $virtual];
+            $update = $this->m_mhs->update($id, array('virtual_mhs' => $va_mhs, 
+                'update_mhs' => date('Y-m-d H:i:s'), 'log_mhs' => $this->sessionname.' create VA'));
+            if(!$update){
+                jsonResponse(array('status' => false, 'msg' => 'Data gagal diperbarui'));
             }
         }
-        $check = $this->db->like('virtual_mhs', $virtual, 'both')->get_where('m_mhs');
-        if($check->num_rows() > 0){
-            jsonResponse(array('status' => false, 'msg' => 'Mohon ulangi atau pilih bank lainnya'));
+        if(strlen($va_mhs) != 8){
+            jsonResponse(array('status' => false, 'msg' => 'VA tidak sesuai. Mohon ulangi atau pilih bank lainnya'));
         }
-        $update = $this->m_mhs->update($id, array('virtual_mhs' => json_encode($va_mhs), 'update_mhs' => date('Y-m-d H:i:s')));
-        if(!$update){
-            jsonResponse(array('status' => false, 'msg' => 'Data gagal diperbarui'));
+        switch ($bank) {
+            case 'MUAMALAT':
+                $this->load->library(array('bmi'));
+                $virtual = $this->bmi->virtual();
+                break;
+            default:
+                $virtual = '';
+                break;
         }
-        jsonResponse(array('data' => $virtual, 'status' => true, 'msg' => 'Data berhasil diperbarui'));
+        jsonResponse(array('data' => $virtual.$va_mhs, 'status' => true, 'msg' => 'Data berhasil diperbarui'));
     }
     function _invoice_add() {
         if(!$this->_validation($this->rules, 'ajax')){

@@ -85,7 +85,7 @@ class Payment extends KZ_Controller {
         }
         $check = $this->m_payment->getId(decode($id));
         if(in_array($check['status_payment'], ['1'])){
-            $this->session->set_flashdata('notif', notif('danger', 'Peringatan', 'Data gagal dihapus'));
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Data gagal dihapus. Status Pembayaran telah Lunas'));
             redirect($this->module);
         }
         $result = $this->m_payment->delete(decode($id));
@@ -164,8 +164,12 @@ class Payment extends KZ_Controller {
                     <span class="blue"><i class="ace-icon fa fa-search-plus bigger-120"></i></span>
                 </a>
                 <a target="_blank" href="'. site_url('master/daftar/detail/'. encode($items['id_mhs'])) .'" 
-                class="tooltip-info btn btn-white btn-default btn-mini btn-round" data-rel="tooltip" title="Mahasiswa">
-                    <span class=""><i class="ace-icon fa fa-external-link"></i></span>
+                    class="tooltip-info btn btn-white btn-default btn-mini btn-round" data-rel="tooltip" title="Mahasiswa">
+                        <span class=""><i class="ace-icon fa fa-external-link"></i></span>
+                </a>';
+            $btn_aksi .= ($items['status_payment'] == '1') ? '' : '<a href="#" itemid="'. encode($items['id_payment']) .'" itemprop="'. ctk($items['invoice']) .'" id="delete-btn" 
+                    class="tooltip-error btn btn-white btn-danger btn-mini btn-round" data-rel="tooltip" title="Hapus Data">
+                    <span class="red"><i class="ace-icon fa fa-trash-o"></i></span>
                 </a>';
             
             $is_total = ($items['status_payment'] == '1') ? 'grey' : 'red';
@@ -195,6 +199,43 @@ class Payment extends KZ_Controller {
             "data" => $data,
         );
         jsonResponse($output);
+    }
+    function _get_mhs(){
+        $key = $this->input->post('key');
+        $id = (!empty($this->mid) && $this->sessiongroup != '1') ? $this->mid : decode($this->input->get('id'));
+        
+        $where = null;
+        if(!empty($id)){
+            $where['id_mhs'] = $id;
+        }
+        $this->db->join('m_prodi p', 'm.prodi_id = p.id_prodi', 'left')->order_by('nama_mhs', 'ASC');
+        if(!empty($key)){
+            $this->db->group_start()
+            ->like('kode_reg', $key, 'both')
+            ->or_like('nama_mhs', $key, 'both')->group_end();
+        }
+        $result = $this->db->get_where('m_mhs m', $where);
+        $data = array();
+        foreach ($result->result_array() as $val) {
+            $text = $val['kode_reg'].' - '.$val['nama_mhs'].' ['.$val['angkatan'].' - '.$val['nama_prodi'].']';
+            $status = ($val['status_mhs'] == 'AKTIF') ? true : false;
+            $data[] = array("id" => encode($val['id_mhs']), "text" => $text, "status" => $status);
+        }
+        jsonResponse($data);
+    }
+    function _get_tagihan(){
+        $where['status_item'] = '0';
+        if(empty($this->mid)){
+            $where = null;
+        }
+        $result = $this->db->order_by('status_item', 'ASC')
+            ->get_where('tmp_item', $where);
+        $data = array();
+        foreach ($result->result_array() as $val) {
+            $text = $val['nama_item'].' ['. rupiah($val['total_item']) .']';
+            $data[] = array("id" => encode($val['id_item']), "text" => $text, "total" => $val['total_item']);
+        }
+        jsonResponse($data);
     }
     function _chart_pay() {
         $prodi = decode($this->input->post('prodi'));
@@ -241,38 +282,5 @@ class Payment extends KZ_Controller {
         $data['range'] = $bulan;
         
         jsonResponse(array('data' => $data, 'status' => true, 'msg' => 'Data ditemukan'));
-    }
-    function _get_mhs(){
-        $key = $this->input->post('key');
-        $id = (!empty($this->mid) && $this->sessiongroup != '1') ? $this->mid : decode($this->input->get('id'));
-        
-        $where = null;
-        if(!empty($id)){
-            $where['id_mhs'] = $id;
-        }
-        $this->db->join('m_prodi p', 'm.prodi_id = p.id_prodi', 'left')->order_by('nama_mhs', 'ASC');
-        if(!empty($key)){
-            $this->db->group_start()
-            ->like('kode_reg', $key, 'both')
-            ->or_like('nama_mhs', $key, 'both')->group_end();
-        }
-        $result = $this->db->get_where('m_mhs m', $where);
-        $data = array();
-        foreach ($result->result_array() as $val) {
-            $text = $val['kode_reg'].' - '.$val['nama_mhs'].' ['.$val['angkatan'].' - '.$val['nama_prodi'].']';
-            $status = ($val['status_mhs'] == 'AKTIF') ? true : false;
-            $data[] = array("id" => encode($val['id_mhs']), "text" => $text, "status" => $status);
-        }
-        jsonResponse($data);
-    }
-    function _get_tagihan(){
-        $result = $this->db->order_by('status_item', 'DESC')
-            ->get_where('tmp_item');
-        $data = array();
-        foreach ($result->result_array() as $val) {
-            $text = $val['nama_item'].' ['. rupiah($val['total_item']) .']';
-            $data[] = array("id" => encode($val['id_item']), "text" => $text, "total" => $val['total_item']);
-        }
-        jsonResponse($data);
     }
 }

@@ -5,10 +5,10 @@ use Firebase\JWT\Key;
 
 class Bmi {
     
-    const client_id = '7949';
-    const produk_id = '02';
-    const username = 'unimuda@sorong';
-    const password = '@bmiunimuda14!#';
+    const CLIENT_ID = '7949';
+    const PAYMENT_CODE = '0200';
+    const USERNAME = 'unimuda@sorong';
+    const PASSWORD = '@bmiunimuda14!#';
     
     const JWT_KEY = '1ffe87384e37bf47efd18ee506c14i10g1f0';
     const JWT_ALGO = 'HS256';
@@ -19,10 +19,10 @@ class Bmi {
     function __construct() {
         $this->CI = & get_instance();
     }
-    public function virtual($data) {
+    public function virtual() {
         //BIN4  PRODUK2  RAND10
-        //XXXX + XX + XXXXXXXXXX
-        return self::client_id.self::produk_id.$data['angkatan'].random_string('numeric',6);
+        //7949 + 02 + 00 + 2024 + 5678
+        return self::CLIENT_ID.self::PAYMENT_CODE;
     }
     public function auth() {
         $clientIP = $this->CI->input->server('REMOTE_ADDR');
@@ -53,7 +53,7 @@ class Bmi {
         if (!$this->Validation($decodeJson, $this->rules)) {
             $this->response(['ERR' => '55', 'MSG' => 'Username/Password/Method Not Found']);
         }
-        if (($decodeJson['USERNAME'] != self::username) || ($decodeJson['PASSWORD'] != self::password)){
+        if (($decodeJson['USERNAME'] != self::USERNAME) || ($decodeJson['PASSWORD'] != self::PASSWORD)){
             $this->response(['ERR' => '55', 'METHOD' => $decodeJson['METHOD'], 'MSG' => 'Username/Password/Encrypt Key Not Valid']);
         }
         return $decodeJson;

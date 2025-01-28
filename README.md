@@ -27,8 +27,10 @@ Done
 - Export status KIP dan orang tua
 - Tambah export seleksi dan daftar
 - Cetak KTM
+- Tagihan d admin
+- Export kelurahan kecamatan
+- Hapus payment
+- Item pembayaran khusus admin
 
 Rev
 - Seleksi CAT
-- Tagihan d admin
-- Export kelurahan kecamatan

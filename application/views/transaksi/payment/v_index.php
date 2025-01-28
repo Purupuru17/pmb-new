@@ -221,6 +221,24 @@ $this->load->view('sistem/v_breadcrumb');
         });
         load_table();
     });
+    $(document.body).on("click", "#delete-btn", function(event) {
+        var id = $(this).attr("itemid");
+        var name = $(this).attr("itemprop");
+        var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
+        var msg = "<p class='center grey bigger-120'><i class='ace-icon fa fa-hand-o-right blue'></i>" + 
+                " Apakah anda yakin akan menghapus data <br/><b>" + name + "</b> ? </p>";
+        bootbox.confirm({title: title, message: msg, 
+            buttons: {
+                cancel: {label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal",className: "btn btn-sm"},
+                confirm: {label: "<i class='ace-icon fa fa-trash-o bigger-110'></i> Hapus",className: "btn btn-sm btn-danger"}
+            },
+            callback: function(result) {
+                if (result === true) {
+                    window.location.replace(module + '/delete/' + id);
+                }
+            }
+        });
+    });
     $("#chartType").change(function() {
         var selectedType = $(this).val();
         chart_pay.update({
