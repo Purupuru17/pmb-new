@@ -67,7 +67,7 @@ $this->load->view('sistem/v_breadcrumb');
         <!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.page-content -->
-<?php load_js(array("backend/assets/js/jquery.validate.js")); ?>
+<?php load_js(array("theme/aceadmin/assets/js/jquery.validate.js")); ?>
 <script type="text/javascript">
     $('#validation-form').validate({
         errorElement: 'div',

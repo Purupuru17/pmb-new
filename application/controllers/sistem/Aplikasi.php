@@ -5,7 +5,7 @@ use Ifsnop\Mysqldump as IMysqldump;
 class Aplikasi extends KZ_Controller {
 
     private $module = 'sistem/aplikasi';
-    private $path = 'app/img/';
+    private $path = 'theme/img/';
     private $url_route = array('id', 'source', 'type');
     
     function __construct() {
@@ -35,7 +35,7 @@ class Aplikasi extends KZ_Controller {
             redirect($this->module);
         }
         $title = url_title(APP_NAME.' '.date('d m Y H i s'),'-',true);
-        $file = "app/log/{$title}.sql";
+        $file = "log/{$title}.sql";
         
         $dumpSettings = array('exclude-tables' => $table);
         try {

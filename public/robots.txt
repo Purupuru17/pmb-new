@@ -1,0 +1,14 @@
+User-agent: *
+
+Disallow: /.env.php
+Disallow: /index.php
+Disallow: /index.php/login
+Disallow: /login
+
+Disallow: /log/
+Disallow: /upload/private/
+
+Allow: /theme/
+Allow: /upload/
+
+Sitemap: https://pmb.unimudasorong.ac.id/sitemap.xml

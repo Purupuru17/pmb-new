@@ -56,7 +56,6 @@ class S3 {
                 'key'    => $this->CI->config->item('AWS_ACCESS_KEY'),
                 'secret' => $this->CI->config->item('AWS_SECRET_ACCESS_KEY'),
             ),
-            'use_aws_shared_config_files' => false,
         ));
 
         $this->bucket = $this->CI->config->item('S3_BUCKET');

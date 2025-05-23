@@ -140,9 +140,9 @@ $this->load->view('sistem/v_breadcrumb');
 
 <?php
 load_js(array(
-    "backend/assets/js/jquery.validate.js",
-    "backend/assets/js/select2.js",
-    "backend/assets/js/typeahead.jquery.js"
+    "theme/aceadmin/assets/js/jquery.validate.js",
+    "theme/aceadmin/assets/js/select2.js",
+    "theme/aceadmin/assets/js/typeahead.jquery.js"
 ));
 ?>
 

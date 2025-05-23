@@ -1,5 +1,9 @@
-/app/
-/nbproject/
-/system/
-/vendor/
-/.well-known/
+public/.well-known/
+public/theme/
+public/log/
+
+upload/
+system/
+vendor/
+
+nbproject/

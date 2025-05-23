@@ -137,8 +137,8 @@ $this->load->view('sistem/v_breadcrumb');
 </div><!-- /.page-content -->
 <?php
 load_js(array(
-    'backend/assets/js/date-time/bootstrap-datepicker.js',
-    'backend/assets/js/select2.js'
+    'theme/aceadmin/assets/js/date-time/bootstrap-datepicker.js',
+    'theme/aceadmin/assets/js/select2.js'
 ));
 ?>
 <script src="https://code.highcharts.com/highcharts.js"></script>

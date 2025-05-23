@@ -3,12 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 // Limit banyak berita yang ditampilkan per page
 $config['app.post_limit']   = 20;
-
 // Default Upload
 $config['app.max_size']   = 10100;
 $config['app.allowed_types']   = '*';
-$config['app.upload_path']   = './app/upload';
-
+$config['app.upload_path']   = './upload';
 // Default Image Upload
 $config['app.max_file']   = 10100;
 $config['app.max_img']   = 3100;
@@ -16,10 +14,10 @@ $config['app.max_width']   = 1200;
 $config['app.max_height']   = 1200;
 $config['app.resize']   = 600;
 $config['app.allowed_img']   = 'jpg|png|jpeg|JPG|PNG';
-
 // Storage s3 or local
 $config['app.storage'] = 's3';
-
+// Allowed Domain Origin
+$config['app.allowed_domain'] = ['localhost'];
 // To use reCAPTCHA, you need to sign up for an API key pair for your site.
 $config['recaptcha_site_key'] = '6Le6BHoUAAAAAAQ_9M_GqTGDADcoiLdk3EBr8PTB';
 $config['recaptcha_secret_key'] = '6Le6BHoUAAAAAJfGMW46EoDoWt_Bc2jh_-2leh60';
@@ -163,7 +161,7 @@ $config['subclass_prefix'] = 'KZ_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = 'vendor/autoload.php';
+$config['composer_autoload'] = '../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -261,7 +259,7 @@ $config['log_threshold'] = array(1);
 | application/logs/ directory. Use a full server path with trailing slash.
 |
 */
-$config['log_path'] = 'app/log/';
+$config['log_path'] = 'log/';
 
 /*
 |--------------------------------------------------------------------------

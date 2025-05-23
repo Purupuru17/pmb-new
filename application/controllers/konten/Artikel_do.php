@@ -4,7 +4,7 @@ class Artikel_do extends KZ_Controller {
     
     private $module = 'konten/artikel';
     private $module_do = 'konten/artikel_do';  
-    private $path = 'app/upload/artikel/';
+    private $path = 'upload/artikel/';
             
     function __construct() {
         parent::__construct();

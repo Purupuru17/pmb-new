@@ -34,9 +34,6 @@ class Storage
         $this->CI = &get_instance();
         $this->CI->load->library(array('upload','image_lib','s3'));
         
-        //load aws configuration
-        //$this->CI->config->load('storage');
-
         $this->storage = config_item('app.storage');
         $this->config();
 
@@ -117,25 +114,26 @@ class Storage
      * @return UploadFile
      * @throws Exception
      */
-    public function putFile($field = 'file', $name, $path)
+    public function putFile($field = 'file', $name = '', $path = array())
     {
         $this->file = new UploadFile($_FILES[$field]);
             
         if ($this->storage == 's3') {
-            $new_path = str_replace('app/upload/', '', $path);
+            $new_path = $path['s3'].'/';
             if (!empty($name)) {
                 $this->file->customName = $new_path . $name;
             }
             $this->CI->s3->upload($this->file);
         }
         if ($this->storage == 'local') {
+            $new_path = $path['local'].'/';
             //Config Upload
             $this->config['file_name'] = $name;
-            $this->config['upload_path'] = './' . $path;
+            $this->config['upload_path'] = './' . $new_path;
             $this->CI->upload->initialize($this->config);
             //Upload File
             if($this->CI->upload->do_upload($field)) {
-                $this->data($this->CI->upload->data(), $path);
+                $this->data($this->CI->upload->data(), $new_path);
             }else{
                 $this->CI->session->set_flashdata('notif', notif('danger', 'Peringatan', strip_tags($this->CI->upload->display_errors())));
                 return $this->file;
@@ -144,18 +142,19 @@ class Storage
         return $this->file;
     }
     
-    public function putImg($field = 'file', $name, $path, $width = 0, $ratio = FALSE, $height = 0)
+    public function putImg($field = 'file', $name = '', $path = array(), $width = 0, $ratio = FALSE, $height = 0)
     {
         $this->file = new UploadFile($_FILES[$field]);
-            
+        
         if ($this->storage == 's3') {
-            $new_path = str_replace('app/upload/', '', $path);
+            $new_path = $path['s3'].'/';
             if (!empty($name)) {
                 $this->file->customName = $new_path . $name;
             }
             $this->CI->s3->upload($this->file);
         }
         if ($this->storage == 'local') {
+            $new_path = $path['local'].'/';
             
             $config = &get_config();
             $file = $_FILES[$field]['tmp_name'];
@@ -169,8 +168,8 @@ class Storage
             }
             //Config Upload
             $this->config['file_name'] = $name.'-'.$get_width.'-'.$get_height;
-            $this->config['upload_path'] = './' . $path;
-            $this->config['allowed_types'] = $config['app.allow_img'];
+            $this->config['upload_path'] = './' . $new_path;
+            $this->config['allowed_types'] = $config['app.allowed_img'];
             $this->config['max_size'] = $config['app.max_img'];
             $this->CI->upload->initialize($this->config);
             //Upload Image
@@ -178,20 +177,20 @@ class Storage
                 $upload = $this->CI->upload->data('file_name');
                 //Compress Config
                 $resize['image_library'] = 'gd2';
-                $resize['source_image'] = './' . $path . $upload;
+                $resize['source_image'] = './' . $new_path . $upload;
                 $resize['create_thumb'] = FALSE;
                 $resize['maintain_ratio'] = ($ratio) ? TRUE : FALSE;
                 $resize['quality'] = '100%';
                 $resize['width'] = ($width == 0) ?  $config['app.resize'] : $width;
                 $resize['height'] = ($height == 0) ? $width : $height;
-                $resize['new_image']= './' . $path . $upload;
+                $resize['new_image']= './' . $new_path . $upload;
                 //Compress Image
                 $this->CI->image_lib->initialize($resize);
                 if($this->CI->image_lib->resize()){
                     //Return Image
-                    $this->data($this->CI->upload->data(), $path);
+                    $this->data($this->CI->upload->data(), $new_path);
                 }else{
-                    (is_file($path . $upload)) ? unlink($path . $upload) : '';    
+                    (is_file($new_path . $upload)) ? unlink($new_path . $upload) : '';    
                     $this->CI->session->set_flashdata('notif', notif('danger', 'Peringatan Foto', strip_tags($this->CI->image_lib->display_errors())));
                     return $this->file;
                 }

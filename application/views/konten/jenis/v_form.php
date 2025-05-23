@@ -64,8 +64,8 @@ $this->load->view('sistem/v_breadcrumb');
 
 <?php 
     load_js(array(
-        "backend/assets/js/jquery.validate.js",
-        "backend/assets/js/bootstrap-colorpicker.js"
+        "theme/aceadmin/assets/js/jquery.validate.js",
+        "theme/aceadmin/assets/js/bootstrap-colorpicker.js"
     )); 
 ?>
 <script type="text/javascript">

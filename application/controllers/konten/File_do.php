@@ -4,7 +4,7 @@ class File_do extends KZ_Controller {
     
     private $module = 'konten/file';
     private $module_do = 'konten/file_do';  
-    private $path = 'app/upload/file/';
+    private $path = 'upload/file/';
             
     function __construct() {
         parent::__construct();

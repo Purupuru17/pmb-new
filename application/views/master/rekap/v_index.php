@@ -210,10 +210,10 @@ $this->load->view('sistem/v_breadcrumb');
 </div>
 <?php
     load_js(array(
-        'backend/assets/js/dataTables/jquery.dataTables.js',
-        'backend/assets/js/dataTables/jquery.dataTables.bootstrap.js',
-        'backend/assets/js/select2.js',
-        'backend/assets/js/jquery.validate.js'
+        'theme/aceadmin/assets/js/dataTables/jquery.dataTables.js',
+        'theme/aceadmin/assets/js/dataTables/jquery.dataTables.bootstrap.js',
+        'theme/aceadmin/assets/js/select2.js',
+        'theme/aceadmin/assets/js/jquery.validate.js'
     ));
 ?>
 <script type="text/javascript">

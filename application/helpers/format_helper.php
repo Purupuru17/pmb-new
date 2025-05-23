@@ -37,6 +37,17 @@ if (!function_exists('limit_text')) {
         return ctk($text);
     }
 }
+if (!function_exists('is_keyword')) {
+    
+    function is_keyword($kalimat, $keyword = []) {
+        foreach ($keyword as $kata) {
+            if (stripos($kalimat, $kata) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
 if (!function_exists('format_date')) {
 
     function format_date($tanggal, $format = NULL) {

@@ -4,7 +4,7 @@ class Halaman_do extends KZ_Controller {
     
     private $module = 'konten/halaman';
     private $module_do = 'konten/halaman_do';   
-    private $path = 'app/upload/page/';
+    private $path = 'upload/page/';
             
     function __construct() {
         parent::__construct();

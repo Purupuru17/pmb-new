@@ -5,7 +5,7 @@ class M_payment extends CI_Model {
     var $id = 'id_payment';
     var $table = 'm_payment';
     var $column_order = array(null,'nama_mhs','nama_prodi','va_payment','buat_payment','status_payment','saldo_payment', null); //set column field database for datatable orderable
-    var $column_search = array('nim','nama_mhs','nama_prodi','angkatan','va_payment','total_payment','saldo_payment'); //set column field database for datatable searchable 
+    var $column_search = array('kode_reg','nim','nama_mhs','nama_prodi','angkatan','va_payment','total_payment','saldo_payment'); //set column field database for datatable searchable 
     var $order = array('update_payment' => 'desc'); // default order 
 
     function __construct() {

@@ -15,7 +15,7 @@ if (!function_exists('load_css')) {
 
     function load_css(array $array) {
         foreach ($array as $uri) {
-            echo '<link rel="stylesheet" type="text/css" href="' . base_url('app/'.$uri) . '" />';
+            echo '<link rel="stylesheet" type="text/css" href="' . base_url(''.$uri) . '" />';
         }
     }
 
@@ -25,9 +25,9 @@ if (!function_exists('load_js')) {
     function load_js(array $array, $async = FALSE) {
         foreach ($array as $uri) {
             if(!$async){
-                echo '<script type="text/javascript"  src="' . base_url('app/'.$uri) . '"></script>';
+                echo '<script type="text/javascript"  src="' . base_url(''.$uri) . '"></script>';
             }else{
-                echo '<script async type="text/javascript"  src="' . base_url('app/'.$uri) . '"></script>';
+                echo '<script async type="text/javascript"  src="' . base_url(''.$uri) . '"></script>';
             }
         }
     }
@@ -36,40 +36,41 @@ if (!function_exists('load_js')) {
 if (!function_exists('load_file')) {
 
     function load_file($src, $img = NULL) {
-        $null_ava_img = !is_null($img) ? 'app/img/no-avatar.png' : 'app/img/no-img.jpg';
-        if(empty($src)){
-            return base_url($null_ava_img);
+        $default_img = base_url(empty($img) ? 'theme/img/no-img.jpg' : 'theme/img/no-avatar.png');
+        if (empty($src)) {
+            return $default_img;
         }
-        if(substr($src, 0, 3) != 'app'){
+        if(!is_keyword($src, ['img','upload'])){
             $CI = &get_instance();
             $CI->load->library(array('s3'));
-            $link = $CI->s3->url($src);
-        }else{
-            $link = is_file($src) ? base_url($src) : base_url($null_ava_img);
+            return $CI->s3->url($src);
         }
-        return $link;
+        $full_path = FCPATH . $src;
+        if (file_exists($full_path)) {
+            return base_url($src);
+        }
+        return $default_img;
     }
 
 }
 if (!function_exists('st_file')) {
 
     function st_file($src, $file = NULL) {
-        $rs = '<i class="bigger-130 fa fa-times red"></i>';
-        $down = '&nbsp; | &nbsp;<a class="bigger-120" href="'. load_file($src) .'" target="_blank"><i class="fa fa-download"></i></a>';
-        
         if(empty($src)){
-            return $rs;
+            return '<i class="bigger-130 fa fa-times red"></i>';
         }
-        if(substr($src, 0, 3) != 'app'){
-            $rs = '<i class="bigger-120 fa fa-check-square-o green"></i>';
-            $rs .= is_null($file) ? '' : $down;
-        }else{
-            if(is_file($src)){
-                $rs = '<i class="bigger-120 fa fa-check green"></i>';
-                $rs .= is_null($file) ? '' : $down;
-            }
+        $download = '&nbsp; | &nbsp;<a class="bigger-120" href="'. htmlspecialchars(load_file($src)) .'" target="_blank"><i class="fa fa-download"></i></a>';
+        if(!is_keyword($src, ['img','upload'])){
+            $status = '<i class="bigger-120 fa fa-check-square-o green"></i>';
+            $status .= is_null($file) ? '' : $download;
+            return $status;
         }
-        return $rs; 
+        if (file_exists(FCPATH . $src)) {
+            $status = '<i class="bigger-120 fa fa-check green"></i>';
+            $status .= is_null($file) ? '' : $download;
+            return $status;
+        }
+        return '<i class="bigger-130 fa fa-times red"></i>';
     }
 }
 if (!function_exists('delete_file')) {
@@ -78,12 +79,27 @@ if (!function_exists('delete_file')) {
         if(empty($src)){
             return false;
         }
-        if(substr($src, 0, 3) != 'app'){
-            $CI = &get_instance();
-            $CI->load->library(array('s3'));
-            $CI->s3->remove($src);
-        }else{
-            (is_file($src)) ? unlink($src) : '';
+        if(!is_keyword($src, ['img','upload'])){
+            try {
+                $CI = &get_instance();
+                $CI->load->library(array('s3'));
+                
+                $delete = $CI->s3->remove($src);
+                if ($delete['@metadata']['statusCode'] === 204) {
+                    return true;
+                }
+                return false;
+            } catch (Exception $ex) {
+                return false;
+            }
+        }
+        if (file_exists(FCPATH . $src)) {
+            try {
+                unlink($src);
+                return true;
+            } catch (Exception $ex) {
+                return false;
+            }
         }
     }
 }
@@ -288,21 +304,22 @@ if (!function_exists('ip_agent')) {
     function ip_agent() {
         $CI = &get_instance();
         $CI->load->library('user_agent');
-
-        $agent = $CI->input->ip_address();
+        
+        $ip = $CI->input->ip_address();
+        $platform = $CI->agent->platform() ?: 'Unknown Platform';
+        $browser = $CI->agent->browser();
+        $version = $CI->agent->version();
+        
         if ($CI->agent->is_robot()) {
-            $agent .= ' | Robot ' . $CI->agent->robot();
-        } else if ($CI->agent->is_mobile()) {
-            $agent .= ' | Mobile ' . $CI->agent->mobile();
-        } else if ($CI->agent->is_browser()) {
-            $agent .= ' | Desktop ';
+            $device = 'Robot: ' . $CI->agent->robot();
+        } elseif ($CI->agent->is_mobile()) {
+            $device = 'Mobile: ' . $CI->agent->mobile();
+        } elseif ($CI->agent->is_browser()) {
+            $device = 'Desktop';
         } else {
-            $agent .= ' | '.$CI->agent->agent_string();
+            $device = 'Unknown: ' . $CI->agent->agent_string();
         }
-        $agent .= ' - ' . $CI->agent->platform();
-        $agent .= ' | ' . $CI->agent->browser() . ' ' . $CI->agent->version();
-
-        return $agent;
+        return "{$ip} | {$device} | {$platform} | {$browser} {$version}";
     }
 }
 if (!function_exists('jsonResponse')) {
@@ -310,13 +327,29 @@ if (!function_exists('jsonResponse')) {
     function jsonResponse($output, $code = 200) {
         $CI = &get_instance();
         $ajax_request = $CI->input->is_ajax_request();
-
-        if (ENVIRONMENT == 0) {
-            (!$ajax_request) ? exit('No direct script access allowed') : '';
+        $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+        
+        $is_allowed = true;
+        if (!empty($origin)) {
+            $host = parse_url($origin, PHP_URL_HOST);
+            $is_allowed =
+                preg_match('/(^|\.)unimudasorong\.ac\.id$/', $host) ||
+                in_array($host, $CI->config->item('app.allowed_domain'));
         }
-        $CI->output->set_status_header($code)->set_content_type('application/json', 'utf-8')
-        ->set_output(json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
-        ->_display();
+        if (ENVIRONMENT === 'production') {
+            if (!$is_allowed || !$ajax_request) {
+                $CI->output->set_status_header(403)->set_output('Forbidden Access : '.$origin)->_display();
+                exit();
+            }
+            $CI->output->set_header("Access-Control-Allow-Origin: $origin")
+                ->set_header("Access-Control-Allow-Credentials: true");
+        }
+        $CI->output
+            ->set_status_header($code)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_header('Cache-Control: no-store, no-cache, must-revalidate')
+            ->set_output(json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
+            ->_display();
         exit();
     }
 }

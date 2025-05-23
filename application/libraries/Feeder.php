@@ -8,7 +8,8 @@ class Feeder {
     const pass_pddikti = 'Musimhujan2412!';
     
     protected $_CI;
-    public $token = '';
+    private $token = '';
+    private $baseURI = (ENVIRONMENT === 'production') ? '10.3.5.216' : '103.226.138.149';
 
     function __construct() {
         $this->_CI = & get_instance();
@@ -17,8 +18,7 @@ class Feeder {
         }
     }
     private function _restAPI($data, $method = 'POST', $url = '', $option = array()) {
-        $uri = (ENVIRONMENT == 0) ? '10.3.5.216' : '103.226.138.149';
-        $client = new Client(['base_uri' => 'http://'.$uri.':3003/ws/live2.php', 'timeout' => 30]);
+        $client = new Client(['base_uri' => 'http://'.$this->baseURI.':3003/ws/live2.php', 'timeout' => 30]);
         try {
             $option['headers'] = ['Accept' => 'application/json'];
             $option['form_params'] = $data;

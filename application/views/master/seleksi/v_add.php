@@ -319,9 +319,9 @@
 </div><!-- /.page-content -->
 <?php
 load_js(array(
-    "backend/assets/js/jquery.validate.js",
-    "backend/assets/js/select2.js",
-    "backend/assets/js/bootbox.min.js",
+    "theme/aceadmin/assets/js/jquery.validate.js",
+    "theme/aceadmin/assets/js/select2.js",
+    "theme/aceadmin/assets/js/bootbox.min.js",
 ));
 ?>
 <script type="text/javascript">

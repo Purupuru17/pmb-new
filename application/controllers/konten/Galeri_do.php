@@ -4,7 +4,7 @@ class Galeri_do extends KZ_Controller {
     
     private $module = 'konten/galeri';
     private $module_do = 'konten/galeri_do';  
-    private $path = 'app/upload/galeri/';
+    private $path = 'upload/galeri/';
             
     function __construct() {
         parent::__construct();

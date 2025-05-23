@@ -133,10 +133,10 @@ $this->load->view('sistem/v_breadcrumb');
 
 <?php 
     load_js(array(
-        "backend/assets/js/jquery.validate.js",
-        "backend/assets/js/select2.js",
-        "frontend/ckeditor/ckeditor.js",
-        "frontend/ckeditor/adapters/jquery.js",
+        "theme/aceadmin/assets/js/jquery.validate.js",
+        "theme/aceadmin/assets/js/select2.js",
+        "theme/ckeditor/ckeditor.js",
+        "theme/ckeditor/adapters/jquery.js",
     )); 
 ?>
 <script type="text/javascript">

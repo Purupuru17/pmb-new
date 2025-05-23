@@ -53,14 +53,14 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 0);
+define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 define('APP_NAME', 'PMB');
 define('APP_STATUS', 1); // 0 = offline, 1 = online
 define('APP_DSN', (ENVIRONMENT == 0) ? 'mysql:host=10.3.5.216:8081;dbname=pmb_db':'mysql:host=app-db;dbname=pmb_db');
 define('APP_USER', (ENVIRONMENT == 0) ? 'pusdatin_remote':'dev_user');
 define('APP_PASS', (ENVIRONMENT == 0) ? 'Firman2412!remote':'dev_pass');
 define('APP_VER', '2024v1');
-define('APP_THEME', 'edu');
+define('APP_THEME', 'eventon');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -71,12 +71,12 @@ define('APP_THEME', 'edu');
  */
 switch (ENVIRONMENT)
 {
-	case 1:
+	case 'development':
 		error_reporting(-1);
 		ini_set('display_errors', 1);
 	break;
 	case 'testing':
-	case 0:
+	case 'production':
 		ini_set('display_errors', 0);
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
@@ -102,7 +102,7 @@ switch (ENVIRONMENT)
  * This variable must contain the name of your "system" directory.
  * Set the path if it is not in the same directory as this file.
  */
-	$system_path = 'system';
+	$system_path = '../system';
 
 /*
  *---------------------------------------------------------------
@@ -119,7 +119,7 @@ switch (ENVIRONMENT)
  *
  * NO TRAILING SLASH!
  */
-	$application_folder = 'application';
+	$application_folder = '../application';
 
 /*
  *---------------------------------------------------------------

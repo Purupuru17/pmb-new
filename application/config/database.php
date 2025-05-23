@@ -73,15 +73,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-$dsn_default  = '';
-$user_default = '';
-$pass_default = '';
+$dsn_default  = (ENVIRONMENT === 'production') ? 'mysql:host=10.3.5.216:8081;dbname=pmb_db':'mysql:host=app-db;dbname=pmb_db';
+$user_default = (ENVIRONMENT === 'production') ? 'pusdatin_remote':'dev_user';
+$pass_default = (ENVIRONMENT === 'production') ? 'Firman2412!remote':'dev_pass';
 
 $db['default'] = array(
-    'dsn'      => APP_DSN,
+    'dsn'      => $dsn_default,
     'hostname' => '',
-    'username' => APP_USER,
-    'password' => APP_PASS,
+    'username' => $user_default,
+    'password' => $pass_default,
     'database' => '',
     'dbdriver' => 'pdo',
     'dbprefix' => '',

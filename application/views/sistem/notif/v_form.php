@@ -75,8 +75,8 @@ $this->load->view('sistem/v_breadcrumb');
     </div><!-- /.row -->
 </div><!-- /.page-content -->
 <?php load_js(array(
-    "backend/assets/js/jquery.validate.js",
-    "backend/assets/js/select2.js"
+    "theme/aceadmin/assets/js/jquery.validate.js",
+    "theme/aceadmin/assets/js/select2.js"
 )); ?>
 <script type="text/javascript">
     const module = "<?= site_url($module) ?>";

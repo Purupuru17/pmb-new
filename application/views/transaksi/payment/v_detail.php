@@ -256,7 +256,7 @@
 </div>
 <?php
 load_js(array(
-    'backend/assets/js/bootbox.min.js'
+    'theme/aceadmin/assets/js/bootbox.min.js'
 ));
 ?> 
 <script type="text/javascript">

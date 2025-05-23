@@ -197,12 +197,12 @@ $this->load->view('sistem/v_breadcrumb');
 
 <?php
     load_js(array(
-        'backend/assets/js/dataTables/jquery.dataTables.js',
-        'backend/assets/js/dataTables/jquery.dataTables.bootstrap.js',
-        'backend/assets/js/select2.js',
-        'backend/assets/js/bootbox.min.js',
-        'backend/highcharts.js',
-        'backend/assets/js/date-time/bootstrap-datepicker.js'
+        'theme/aceadmin/assets/js/dataTables/jquery.dataTables.js',
+        'theme/aceadmin/assets/js/dataTables/jquery.dataTables.bootstrap.js',
+        'theme/aceadmin/assets/js/select2.js',
+        'theme/aceadmin/assets/js/bootbox.min.js',
+        'theme/aceadmin/highcharts.js',
+        'theme/aceadmin/assets/js/date-time/bootstrap-datepicker.js'
     ));
 ?>
 <script type="text/javascript">

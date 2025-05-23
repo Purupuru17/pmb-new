@@ -87,9 +87,9 @@ $this->load->view('sistem/v_breadcrumb');
 
 <?php
 load_js(array(
-    'backend/assets/js/dataTables/jquery.dataTables.js',
-    'backend/assets/js/dataTables/jquery.dataTables.bootstrap.js',
-    'backend/assets/js/bootbox.min.js'
+    'theme/aceadmin/assets/js/dataTables/jquery.dataTables.js',
+    'theme/aceadmin/assets/js/dataTables/jquery.dataTables.bootstrap.js',
+    'theme/aceadmin/assets/js/bootbox.min.js'
 ));
 ?>
 <script type="text/javascript">

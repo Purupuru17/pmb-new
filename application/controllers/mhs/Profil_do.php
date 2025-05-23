@@ -4,7 +4,7 @@ class Profil_do extends KZ_Controller {
     
     private $module = 'mhs/profil';
     private $module_do = 'mhs/profil_do';
-    private $path = 'app/upload/mhs/';
+    private $path = 'upload/mhs/';
             
     function __construct() {
         parent::__construct();
@@ -45,10 +45,12 @@ class Profil_do extends KZ_Controller {
             $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Data NISN sudah tersimpan atas nama : ' . $cek['nama_mhs']));
             redirect($this->module.'/edit');
         }
-        $filename = url_title($this->input->post('nama').' '.random_string('alnum',3), 'dash', TRUE);
         $this->load->library(array('storage'));
+        $filename = url_title($this->input->post('nama').' '.random_string('alnum',3), 'dash', TRUE);
+        //upload
+        $path = array('local' => $this->path, 's3' => $this->sessionusr);
         if(!empty($_FILES['foto']['name'])){
-            $upload =  $this->storage->putImg('foto', $filename, $this->path, 300);
+            $upload =  $this->storage->putImg('foto', $filename, $path, 300);
             if(empty($upload->fullPath)){
                 redirect($this->module);
             }

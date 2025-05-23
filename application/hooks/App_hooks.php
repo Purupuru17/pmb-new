@@ -11,7 +11,7 @@ class App_hooks {
     public function redirect_ssl() {
         $class = $this->ci->router->fetch_class();
         $exclude = array('');  // add more controller name to exclude ssl.
-        if (ENVIRONMENT === 0) {
+        if (ENVIRONMENT === 'production') {
             if (!in_array($class, $exclude)) {
                 // redirecting to ssl.
                 $this->ci->config->config['base_url'] = str_replace('http://', 'https://', $this->ci->config->config['base_url']);
@@ -63,7 +63,7 @@ class App_hooks {
             );
         $new_buffer = preg_replace($search, $replace, $buffer);
         */
-        if ($new_buffer === null || ENVIRONMENT === 0) {
+        if ($new_buffer === null || ENVIRONMENT === 'production') {
              $buffer = $new_buffer;
         }
         $this->ci->output->set_output($buffer);

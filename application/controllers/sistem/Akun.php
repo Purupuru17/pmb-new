@@ -4,7 +4,7 @@ class Akun extends KZ_Controller {
     
     private $module = 'sistem/akun';
     private $module_do = 'sistem/akun_do';
-    private $path = 'app/upload/akun/';
+    private $path = 'upload/akun/';
     
     public function __construct() {
         parent::__construct();

@@ -26,29 +26,29 @@
         <meta name="rating" content="general">
         
         <!-- Favicon -->
-        <link rel="shortcut icon" href="<?= load_file('app/img/logo.png') ?>">
+        <link rel="shortcut icon" href="<?= load_file('theme/img/logo.png') ?>">
         
         <?php
         load_css(array(
-            'backend/assets/css/bootstrap.css',
-            'backend/assets/css/font-awesome.css',
-            'backend/assets/css/ace-fonts.css',
-            'backend/assets/css/ace-rtl.css',
-            'backend/puru.css',
-            'backend/assets/css/jquery.gritter.css',
+            'theme/aceadmin/assets/css/bootstrap.css',
+            'theme/aceadmin/assets/css/font-awesome.css',
+            'theme/aceadmin/assets/css/ace-fonts.css',
+            'theme/aceadmin/assets/css/ace-rtl.css',
+            'theme/aceadmin/puru.css',
+            'theme/aceadmin/assets/css/jquery.gritter.css',
         ));
         load_js(array(
-            'backend/assets/js/ace-extra.js',
-            'backend/assets/js/jquery.js',
-            'backend/assets/js/bootstrap.js',
-            'backend/assets/js/ace/elements.fileinput.js',
-            'backend/assets/js/ace/ace.js',
-            'backend/assets/js/jquery.gritter.js',
-            'backend/assets/js/lazy/lazysizes.min.js'
+            'theme/aceadmin/assets/js/ace-extra.js',
+            'theme/aceadmin/assets/js/jquery.js',
+            'theme/aceadmin/assets/js/bootstrap.js',
+            'theme/aceadmin/assets/js/ace/elements.fileinput.js',
+            'theme/aceadmin/assets/js/ace/ace.js',
+            'theme/aceadmin/assets/js/jquery.gritter.js',
+            'theme/aceadmin/assets/js/lazy/lazysizes.min.js'
         ));
         ?>
         <!-- ace styles -->
-        <link rel="stylesheet" href="<?= base_url('app/backend/assets/css/ace.css') ?>" class="ace-main-stylesheet" id="main-ace-style" />
+        <link rel="stylesheet" href="<?= base_url('theme/aceadmin/assets/css/ace.css') ?>" class="ace-main-stylesheet" id="main-ace-style" />
 
     </head>
 
@@ -60,7 +60,7 @@
         </div><!-- /.main-container -->
         <script type="text/javascript">
             if ('ontouchstart' in document.documentElement)
-                document.write("<script src='<?= base_url('app/backend/assets/js/jquery.mobile.custom.js') ?>'>" + "<" + "/script>");
+                document.write("<script src='<?= base_url('theme/aceadmin/assets/js/jquery.mobile.custom.js') ?>'>" + "<" + "/script>");
             
             $(document).ready(function() {
                 var login = "<?= $theme[1] ?>";

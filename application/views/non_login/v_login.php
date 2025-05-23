@@ -127,9 +127,9 @@
 <?php
     echo $script_captcha;
     load_js(array(
-        'backend/assets/js/bootbox.min.js',
-        'backend/assets/js/jquery.validate.js',
-        'backend/sweetalert.min.js'
+        'theme/aceadmin/assets/js/bootbox.min.js',
+        'theme/aceadmin/assets/js/jquery.validate.js',
+        'theme/aceadmin/sweetalert.min.js'
     ));
 ?>
 <script type="text/javascript">

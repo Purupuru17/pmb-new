@@ -91,7 +91,7 @@
             <div class="container ">
                 <!-- logo -->
                 <div class="site-identity">
-                    <a href="<?= site_url() ?>"><img src="<?= load_file('app/img/logo.png') ?>" alt="<?= ctk($app['judul']) ?>"></a>
+                    <a href="<?= site_url() ?>"><img src="<?= load_file('theme/img/logo.png') ?>" alt="<?= ctk($app['judul']) ?>"></a>
                     <h1><a href="<?= site_url() ?>"><?= ctk($app['judul']) ?></a></h1>
                     <span style="text-transform: uppercase;font-size: 1.3em"><?= ctk($app['deskripsi']) ?></span><br/>
                     <span><?= ctk($app['cipta']) ?></span>

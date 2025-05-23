@@ -204,7 +204,7 @@ class Login extends KZ_Controller {
             //exit('404 not found');
         }
         $title = url_title(APP_NAME.'db '. format_date(date('Y-m-d H:i:s'),2),'-',true);
-        $file = "app/log/{$title}.sql";
+        $file = "log/{$title}.sql";
         $table = array('m_mhs','yk_user_log','yk_site_log');
         
         $dumpSettings = array('exclude-tables' => $table);

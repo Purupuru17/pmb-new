@@ -75,7 +75,7 @@ $this->load->view('sistem/v_breadcrumb');
 
 <?php 
     load_js(array(
-        "backend/assets/js/jquery.validate.js"
+        "theme/aceadmin/assets/js/jquery.validate.js"
     )); 
 ?>
 <script type="text/javascript">

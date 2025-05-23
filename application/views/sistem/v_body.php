@@ -30,7 +30,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <meta name="apple-mobile-web-app-status-bar-style" content="<?= $theme[10] ?>">
         <meta name="apple-mobile-web-app-title" content="<?php echo element('title', $meta, $meta_title_default).' | '.$app['judul']; ?>">   
         
-        <link rel="shortcut icon" type="image/x-icon" href="<?= load_file('app/img/logo.png') ?>"/>  
+        <link rel="shortcut icon" type="image/x-icon" href="<?= load_file('theme/img/logo.png') ?>"/>  
         <link rel="manifest" href="<?= base_url('manifest.json') ?>">
         <link rel="canonical" href="<?php echo element('url', $meta, $meta_url_default); ?>">
         <link rel="amphtml" href="<?php echo element('amp_url', $meta, $meta_url_default); ?>">
@@ -69,25 +69,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <meta name="twitter:domain" content="<?php echo element('url', $meta, $meta_url_default); ?>" />
         <?php
             load_css(array(
-                'backend/assets/css/bootstrap.css',
-                'backend/assets/css/font-awesome.css',
-                'backend/assets/css/select2.css',
-                'backend/assets/css/jquery.gritter.css',
-                'backend/assets/css/datepicker.css',
-                'backend/assets/css/colorpicker.css',
-                'backend/assets/css/ace-fonts.css',
-                'backend/assets/fonts/poppins/font.css?family=Poppins:300,400,500,600,700',
+                'theme/aceadmin/assets/css/bootstrap.css',
+                'theme/aceadmin/assets/css/font-awesome.css',
+                'theme/aceadmin/assets/css/select2.css',
+                'theme/aceadmin/assets/css/jquery.gritter.css',
+                'theme/aceadmin/assets/css/datepicker.css',
+                'theme/aceadmin/assets/css/colorpicker.css',
+                'theme/aceadmin/assets/css/ace-fonts.css',
+                'theme/aceadmin/assets/fonts/poppins/font.css?family=Poppins:300,400,500,600,700',
                 
-                'backend/puru.css',
+                'theme/aceadmin/puru.css',
                 
-                'frontend/shop/css/font-awesome/css/font-awesome.min.css'
+                'theme/shop/css/font-awesome/css/font-awesome.min.css'
             ));
             load_js(array(
-                'backend/assets/js/ace-extra.js',
-                'backend/assets/js/jquery.js'
+                'theme/aceadmin/assets/js/ace-extra.js',
+                'theme/aceadmin/assets/js/jquery.js'
             ));
         ?>
-        <link rel="stylesheet" href="<?= base_url('app/backend/assets/css/ace.css') ?>" class="ace-main-stylesheet" id="main-ace-style" />
+        <link rel="stylesheet" href="<?= base_url('theme/aceadmin/assets/css/ace.css') ?>" class="ace-main-stylesheet" id="main-ace-style" />
     </head>
     <body class="no-skin">
         <!-- #section:basics/navbar.layout -->
@@ -119,70 +119,70 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         <?php
             load_js(array(
-                'backend/assets/js/bootstrap.js',
-                'backend/assets/js/jquery.gritter.js',
-                'backend/assets/js/lazy/lazysizes.min.js',
-                'backend/sweetalert.min.js',
+                'theme/aceadmin/assets/js/bootstrap.js',
+                'theme/aceadmin/assets/js/jquery.gritter.js',
+                'theme/aceadmin/assets/js/lazy/lazysizes.min.js',
+                'theme/aceadmin/sweetalert.min.js',
                 
-                'backend/assets/js/ace/elements.scroller.js',
-                'backend/assets/js/ace/elements.colorpicker.js',
-                'backend/assets/js/ace/elements.fileinput.js',
-                'backend/assets/js/ace/elements.aside.js',
-                'backend/assets/js/ace/ace.js',
-                'backend/assets/js/ace/ace.ajax-content.js',
-                'backend/assets/js/ace/ace.touch-drag.js',
-                'backend/assets/js/ace/ace.sidebar.js',
-                'backend/assets/js/ace/ace.sidebar-scroll-1.js',
-                'backend/assets/js/ace/ace.submenu-hover.js',
-                'backend/assets/js/ace/ace.widget-box.js',
-                'backend/assets/js/ace/ace.settings.js',
-                'backend/assets/js/ace/ace.settings-skin.js',
-                'backend/assets/js/ace/ace.widget-on-reload.js'
+                'theme/aceadmin/assets/js/ace/elements.scroller.js',
+                'theme/aceadmin/assets/js/ace/elements.colorpicker.js',
+                'theme/aceadmin/assets/js/ace/elements.fileinput.js',
+                'theme/aceadmin/assets/js/ace/elements.aside.js',
+                'theme/aceadmin/assets/js/ace/ace.js',
+                'theme/aceadmin/assets/js/ace/ace.ajax-content.js',
+                'theme/aceadmin/assets/js/ace/ace.touch-drag.js',
+                'theme/aceadmin/assets/js/ace/ace.sidebar.js',
+                'theme/aceadmin/assets/js/ace/ace.sidebar-scroll-1.js',
+                'theme/aceadmin/assets/js/ace/ace.submenu-hover.js',
+                'theme/aceadmin/assets/js/ace/ace.widget-box.js',
+                'theme/aceadmin/assets/js/ace/ace.settings.js',
+                'theme/aceadmin/assets/js/ace/ace.settings-skin.js',
+                'theme/aceadmin/assets/js/ace/ace.widget-on-reload.js'
             ));
         ?>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/UpUp/1.0.0/upup.min.js"></script>
         <script async type="text/javascript">
             const filesToCache = [
-                'app/backend/assets/css/bootstrap.css',
-                'app/backend/assets/css/font-awesome.css',
-                'app/backend/assets/css/select2.css',
-                'app/backend/assets/css/jquery.gritter.css',
-                'app/backend/assets/css/datepicker.css',
-                'app/backend/assets/css/colorpicker.css',
-                'app/backend/assets/css/ace-fonts.css',
-                'app/backend/assets/fonts/poppins/font.css?family=Poppins:300,400,500,600,700',
-                'app/backend/assets/css/ace.css',
+                'theme/aceadmin/assets/css/bootstrap.css',
+                'theme/aceadmin/assets/css/font-awesome.css',
+                'theme/aceadmin/assets/css/select2.css',
+                'theme/aceadmin/assets/css/jquery.gritter.css',
+                'theme/aceadmin/assets/css/datepicker.css',
+                'theme/aceadmin/assets/css/colorpicker.css',
+                'theme/aceadmin/assets/css/ace-fonts.css',
+                'theme/aceadmin/assets/fonts/poppins/font.css?family=Poppins:300,400,500,600,700',
+                'theme/aceadmin/assets/css/ace.css',
 
-                'app/backend/puru.css',
-                'app/img/logo.png',
+                'theme/aceadmin/puru.css',
+                'theme/img/logo.png',
 
-                'app/frontend/shop/css/font-awesome/css/font-awesome.min.css',
+                'theme/shop/css/font-awesome/css/font-awesome.min.css',
 
-                'app/backend/assets/js/ace-extra.js',
-                'app/backend/assets/js/jquery.js',
+                'theme/aceadmin/assets/js/ace-extra.js',
+                'theme/aceadmin/assets/js/jquery.js',
 
-                'app/backend/assets/js/bootstrap.js',
-                'app/backend/assets/js/jquery.gritter.js',
-                'app/backend/assets/js/lazy/lazysizes.min.js',
-                'app/backend/sweetalert.min.js',
+                'theme/aceadmin/assets/js/bootstrap.js',
+                'theme/aceadmin/assets/js/jquery.gritter.js',
+                'theme/aceadmin/assets/js/lazy/lazysizes.min.js',
+                'theme/aceadmin/sweetalert.min.js',
 
-                'app/backend/assets/js/dataTables/jquery.dataTables.js',
-                'app/backend/assets/js/dataTables/jquery.dataTables.bootstrap.js',
+                'theme/aceadmin/assets/js/dataTables/jquery.dataTables.js',
+                'theme/aceadmin/assets/js/dataTables/jquery.dataTables.bootstrap.js',
 
-                'app/backend/assets/js/ace/elements.scroller.js',
-                'app/backend/assets/js/ace/elements.colorpicker.js',
-                'app/backend/assets/js/ace/elements.fileinput.js',
-                'app/backend/assets/js/ace/elements.aside.js',
-                'app/backend/assets/js/ace/ace.js',
-                'app/backend/assets/js/ace/ace.ajax-content.js',
-                'app/backend/assets/js/ace/ace.touch-drag.js',
-                'app/backend/assets/js/ace/ace.sidebar.js',
-                'app/backend/assets/js/ace/ace.sidebar-scroll-1.js',
-                'app/backend/assets/js/ace/ace.submenu-hover.js',
-                'app/backend/assets/js/ace/ace.widget-box.js',
-                'app/backend/assets/js/ace/ace.settings.js',
-                'app/backend/assets/js/ace/ace.settings-skin.js',
-                'app/backend/assets/js/ace/ace.widget-on-reload.js'
+                'theme/aceadmin/assets/js/ace/elements.scroller.js',
+                'theme/aceadmin/assets/js/ace/elements.colorpicker.js',
+                'theme/aceadmin/assets/js/ace/elements.fileinput.js',
+                'theme/aceadmin/assets/js/ace/elements.aside.js',
+                'theme/aceadmin/assets/js/ace/ace.js',
+                'theme/aceadmin/assets/js/ace/ace.ajax-content.js',
+                'theme/aceadmin/assets/js/ace/ace.touch-drag.js',
+                'theme/aceadmin/assets/js/ace/ace.sidebar.js',
+                'theme/aceadmin/assets/js/ace/ace.sidebar-scroll-1.js',
+                'theme/aceadmin/assets/js/ace/ace.submenu-hover.js',
+                'theme/aceadmin/assets/js/ace/ace.widget-box.js',
+                'theme/aceadmin/assets/js/ace/ace.settings.js',
+                'theme/aceadmin/assets/js/ace/ace.settings-skin.js',
+                'theme/aceadmin/assets/js/ace/ace.widget-on-reload.js'
             ];
             $(function() {
                 UpUp.start({
@@ -356,7 +356,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <!--ACE THEME JS-->
         <script type="text/javascript">
             if ('ontouchstart' in document.documentElement)
-                document.write("<script src='<?= base_url('app/backend/assets/js/jquery.mobile.custom.js') ?>'>" + "<" + "/script>");
+                document.write("<script src='<?= base_url('theme/aceadmin/assets/js/jquery.mobile.custom.js') ?>'>" + "<" + "/script>");
         </script>
         <script type="text/javascript">
             $(function() {

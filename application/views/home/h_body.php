@@ -10,7 +10,7 @@
             $meta_desc_default = $app['deskripsi'];
             $meta_author_default = $app['cipta'];
             $meta_url_default = current_url() . $param;
-            $meta_img_default = load_file('app/img/logo.png', 1);
+            $meta_img_default = load_file('theme/img/logo.png', 1);
         ?>
         <title><?php echo element('title', $meta, $meta_title_default).' | '.$app['judul']; ?></title>
         <meta charset="utf-8">
@@ -29,7 +29,7 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="<?= $theme[10] ?>">
         <meta name="apple-mobile-web-app-title" content="<?php echo element('title', $meta, $meta_title_default).' | '.$app['judul']; ?>">   
         
-        <link rel="shortcut icon" type="image/x-icon" href="<?= load_file('app/img/logo.png') ?>"/>  
+        <link rel="shortcut icon" type="image/x-icon" href="<?= load_file('theme/img/logo.png') ?>"/>  
         <link rel="manifest" href="<?= base_url('manifest.json') ?>">
         <link rel="canonical" href="<?php echo element('url', $meta, $meta_url_default); ?>">
         <link rel="amphtml" href="<?php echo element('amp_url', $meta, $meta_url_default); ?>">
@@ -69,18 +69,18 @@
         
         <?php
         load_css(array(
-            "frontend/eventon/css/font-awesome.min.css",
-            "frontend/eventon/css/bootstrap.min.css",
-            "frontend/eventon/css/source-sans.css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic",
-            "frontend/eventon/css/jquery.ui.theme.css",
-            "frontend/eventon/css/owl.carousel.css",
-            "frontend/eventon/css/main.css"
+            "theme/eventon/css/font-awesome.min.css",
+            "theme/eventon/css/bootstrap.min.css",
+            "theme/eventon/css/source-sans.css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic",
+            "theme/eventon/css/jquery.ui.theme.css",
+            "theme/eventon/css/owl.carousel.css",
+            "theme/eventon/css/main.css"
         ));
         
         load_js(array(
-            "frontend/eventon/js/vendor/jquery.min.js",
-            "frontend/eventon/js/vendor/modernizr-2.6.2.min.js",
-            "frontend/eventon/js/vendor/cloudflare.js"
+            "theme/eventon/js/vendor/jquery.min.js",
+            "theme/eventon/js/vendor/modernizr-2.6.2.min.js",
+            "theme/eventon/js/vendor/cloudflare.js"
         ));
         ?>
     </head>
@@ -121,33 +121,33 @@
         <?php $this->load->view('home/h_footer'); ?>
         <?php
         load_js(array(
-            "backend/assets/js/lazy/lazysizes.min.js",
-            "frontend/eventon/js/plugins.js",
-            "frontend/eventon/js/main.js"
+            "theme/aceadmin/assets/js/lazy/lazysizes.min.js",
+            "theme/eventon/js/plugins.js",
+            "theme/eventon/js/main.js"
         ));
         ?>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/UpUp/1.0.0/upup.min.js"></script>
         <script async type="text/javascript">
             $(document).ready(function() {
                 const filesToCache = [
-                    "app/backend/puru.css",
-                    "app/img/logo.png",
-                    "app/backend/assets/js/lazy/lazysizes.min.js",
+                    "theme/aceadmin/puru.css",
+                    "theme/img/logo.png",
+                    "theme/aceadmin/assets/js/lazy/lazysizes.min.js",
                     
-                    "app/frontend/eventon/css/font-awesome.min.css",
-                    "app/frontend/eventon/css/jquery.datetimepicker.css",
-                    "app/frontend/eventon/css/bootstrap.min.css",
-                    "app/frontend/eventon/css/main.css",
-                    "app/frontend/eventon/css/source-sans.css",
-                    "app/frontend/eventon/css/jquery.ui.theme.css",
-                    "app/frontend/eventon/css/owl.carousel.css",
+                    "theme/eventon/css/font-awesome.min.css",
+                    "theme/eventon/css/jquery.datetimepicker.css",
+                    "theme/eventon/css/bootstrap.min.css",
+                    "theme/eventon/css/main.css",
+                    "theme/eventon/css/source-sans.css",
+                    "theme/eventon/css/jquery.ui.theme.css",
+                    "theme/eventon/css/owl.carousel.css",
                     
-                    "app/frontend/eventon/js/vendor/modernizr-2.6.2.min.js",
-                    "app/frontend/eventon/js/vendor/cloudflare.js",
-                    "app/frontend/eventon/js/vendor/buttons.js",
-                    "app/frontend/eventon/js/vendor/jquery.min.js",
-                    "app/frontend/eventon/js/plugins.js",
-                    "app/frontend/eventon/js/main.js"
+                    "theme/eventon/js/vendor/modernizr-2.6.2.min.js",
+                    "theme/eventon/js/vendor/cloudflare.js",
+                    "theme/eventon/js/vendor/buttons.js",
+                    "theme/eventon/js/vendor/jquery.min.js",
+                    "theme/eventon/js/plugins.js",
+                    "theme/eventon/js/main.js"
                 ];
                 UpUp.start({
                     'cache-version': '<?= APP_VER ?>',
