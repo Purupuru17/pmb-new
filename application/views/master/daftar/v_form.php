@@ -363,18 +363,18 @@ $opsi3 = element(1, $exp, '');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Kecamatan :</label>
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="clearfix">
-                            <input value="<?= $edit['kecamatan'] ?>" type="hidden" name="camat" id="camat" class="col-xs-12  col-sm-6" />
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Kota/Kabupaten :</label>
                     <div class="col-xs-12 col-sm-6">
                         <div class="clearfix">
                             <input value="<?= $edit['kabupaten'] ?>" type="hidden" name="bupati" id="bupati" class="col-xs-12  col-sm-6" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Kecamatan :</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="clearfix">
+                            <input value="<?= $edit['kecamatan'] ?>" type="hidden" name="camat" id="camat" class="col-xs-12  col-sm-6" />
                         </div>
                     </div>
                 </div>
@@ -500,20 +500,21 @@ $opsi3 = element(1, $exp, '');
             $("#opsi2,#opsi3").val(null).trigger('change');
         }
     });
+    $("#bupati").change(function () {
+        $("#camat").select2('val','');
+    });
 </script>
 <script type="text/javascript">
     function load_wilayah() {
         $("#camat").select2({
             placeholder: "------> Pilih Kecamatan <------",
-            minimumInputLength: 3,
-            allowClear: true,
             ajax: { 
                 url: module + "/ajax/type/table/source/wilayah",
                 type: "POST",
                 dataType: 'json',
                 delay: 250,
                 data: function (term, page) {
-                    return { key: term, opsi: "Kec" };
+                    return { key: term, opsi: $("#bupati").val() };
                 },
                 results: function (data, page) {
                     return { results: data };

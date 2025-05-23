@@ -67,7 +67,7 @@
 
                         <div class="toolbar clearfix">
                             <div class="center">
-                                <a href="#" data-target="#forgot-box" class="hide forgot-password-link">
+                                <a href="#" data-target="#forgot-box" class="forgot-password-link">
                                     <i class="ace-icon fa fa-arrow-left"></i>
                                     Lupa Password ?
                                 </a>
@@ -83,14 +83,22 @@
                                 Memulihkan Password
                             </h4>
                             <div class="space-6"></div>
-                            <p>Masukkan email yang telah terdaftar pada aplikasi. Password baru akan dikirim melalui email anda.</p>
+                            <p class="bigger-110 grey">Lengkapi data berikut untuk memulihkan Akun anda</p>
                             <form id="validation-forgot" name="form-forgot" method="POST" action="#">
                                 <fieldset>
                                     <div class="form-group">
                                         <label class="block clearfix">
                                             <span class="block input-icon input-icon-right">
-                                                <input type="email" name="femail" id="femail" class="form-control" placeholder="Email Anda" />
-                                                <i class="ace-icon fa fa-envelope"></i>
+                                                <input type="text" name="fnik" id="fnik" class="form-control" placeholder="NIK Terdaftar" />
+                                                <i class="ace-icon fa fa-credit-card"></i>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="block clearfix">
+                                            <span class="block input-icon input-icon-right">
+                                                <input type="text" name="fphone" id="fphone" class="form-control" placeholder="Nomor HP Terdaftar" />
+                                                <i class="ace-icon fa fa-phone"></i>
                                             </span>
                                         </label>
                                     </div>
@@ -186,6 +194,36 @@
         });
         event.preventDefault();
     });
+    $("#validation-forgot").submit(function (e) {
+        const valid = $(this).validate().checkForm();
+        if (!valid) {
+            return;
+        }
+        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
+        var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
+                ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
+        var progress = bootbox.dialog({title: title, message: msg, closeButton: false});
+        $.ajax({
+            url: module + "/ajax/type/action/source/forgot",
+            dataType: "json",
+            type: "POST",
+            data: $("#validation-forgot").serialize(),
+            success: function (rs) {
+                if (rs.status) {
+                    $("#fnik,#fphone").val('');
+                    swal('Informasi', rs.msg, 'success');
+                } else {
+                    swal('Peringatan', rs.msg, 'error');
+                }
+                progress.modal("hide");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                progress.modal("hide");
+                console.log('Error : ' + xhr.responseText);
+            }
+        });
+        e.preventDefault();
+    });
     $("#validation-form").validate({
         errorElement: 'div',
         errorClass: 'help-block',
@@ -237,10 +275,17 @@
         focusInvalid: false,
         ignore: "",
         rules: {
-            femail: {
+            fnik: {
                 required: true,
-                email: true,
-                minlength: 5
+                digits: true,
+                minlength: 16,
+                maxlength: 16
+            },
+            fphone: {
+                required: true,
+                digits: true,
+                minlength: 11,
+                maxlength: 12
             }
         },
         highlight: function(e) {

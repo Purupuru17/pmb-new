@@ -2,46 +2,6 @@
 $this->load->view('sistem/v_breadcrumb');
 ?>
 <div class="page-content">
-    <div class="page-header <?= ($groupid != '1') ? 'hide' : 'hide' ; ?>">
-        <div class="infobox-container center">
-            <div class="infobox infobox-orange">
-                <div class="infobox-icon">
-                    <i class="ace-icon fa fa-bar-chart"></i>
-                </div>
-                <div class="infobox-data">
-                    <span class="infobox-data-number"><?= $fkip ?></span>
-                    <div class="infobox-content">FKIP</div>
-                </div>
-            </div>
-            <div class="infobox infobox-green2">
-                <div class="infobox-icon">
-                    <i class="ace-icon fa fa-bar-chart"></i>
-                </div>
-                <div class="infobox-data">
-                    <span class="infobox-data-number"><?= $fst ?></span>
-                    <div class="infobox-content">FST</div>
-                </div>
-            </div>
-            <div class="infobox infobox-blue">
-                <div class="infobox-icon">
-                    <i class="ace-icon fa fa-bar-chart-o"></i>
-                </div>
-                <div class="infobox-data">
-                    <span class="infobox-data-number"><?= $fishum ?></span>
-                    <div class="infobox-content">FISHUM</div>
-                </div>
-            </div>
-            <div class="infobox infobox-red">
-                <div class="infobox-icon">
-                    <i class="ace-icon fa fa-bar-chart-o"></i>
-                </div>
-                <div class="infobox-data">
-                    <span class="infobox-data-number"><?= $fkip + $fst + $fishum ?></span>
-                    <div class="infobox-content">TOTAL</div>
-                </div>
-            </div>
-        </div>
-    </div><!-- /.page-header -->
     <div class="row">
         <div class="col-xs-12">
             <?= $this->session->flashdata('notif'); ?>
@@ -156,6 +116,10 @@ $this->load->view('sistem/v_breadcrumb');
                         <a href="<?= site_url('mhs/profil') ?>" class="btn btn-default btn-app radius-4 btn-yellow">
                             <i class="ace-icon fa fa-user bigger-230"></i>
                             Profil
+                        </a>
+                        <a href="<?= site_url('transaksi/payment') ?>" class="btn btn-default btn-app radius-4 btn-danger">
+                            <i class="ace-icon fa fa-money bigger-230"></i>
+                            Biaya
                         </a>
                         <a href="<?= site_url('mhs/wali') ?>" class="btn btn-default btn-app radius-4 btn-primary">
                             <i class="ace-icon fa fa-users bigger-230"></i>

@@ -163,7 +163,14 @@ class Daftar extends KZ_Controller {
         if(!empty($id)){
             $this->db->where('id_wilayah', $id);
         }else{
-            $this->db->like('nama_wilayah', $opsi.'. '.$keyword);
+            if($opsi == 'Kab'){
+                $this->db->where('RIGHT(id_wilayah, 2) =', '00');
+                $this->db->where('RIGHT(id_wilayah, 4) !=', '0000');
+            }else{
+                $this->db->where('LEFT(id_wilayah, 4) =', substr($opsi, 0, 4));
+                $this->db->where('RIGHT(id_wilayah, 2) !=', '00');
+            }
+            $this->db->like('nama_wilayah', $keyword);
         }
         $result = $this->db->get('m_wilayah');
         

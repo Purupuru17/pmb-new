@@ -34,7 +34,7 @@
                 <div class="col-xs-12">
                     <div class="event">
                         <div class="event-content">
-                            <iframe width="100%" height="515" src="https://www.youtube.com/embed/ILYgYmgbCkA?autoplay=1&mute=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe width="100%" height="515" src="https://www.youtube.com/embed/hEzYkGaio6E?autoplay=1&mute=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>
@@ -108,22 +108,22 @@
     <div class="container">
         <div class="border-cover">
             <div class="background-content">
-                <h2 class="title">Jadwal Pendaftaran (Gelombang)</h2>
+                <h2 class="title">Jadwal Pendaftaran</h2>
                 <p></p> 
                 <div class="row ">
 
-                    <div class="col-md-4 col-sm-6">
+                    <div class="col-sm-12">
                         <div class="event">
                             <div class="eventsicon">
-                                <strong>I</strong>
+                                <strong><i class="fa fa-calendar"></i></strong>
                             </div>
                             <div class="event-content">
-                                <h3 style="color:#5ab4e6">11 November 2023 - 17 Mei 2024</h3>
+                                <h2 style="color:#5ab4e6">12 Desember 2024 - 30 Agustus 2025</h2>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4 col-sm-6">
+<!--                <div class="col-md-4 col-sm-6">
                         <div class="event">
                             <div class="eventsicon">
                                 <strong>II</strong>
@@ -143,7 +143,7 @@
                                 <h3 style="color:#5ab4e6">18 Agustus - 30 September 2024</h3>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
 
 
                 </div>

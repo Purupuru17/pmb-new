@@ -69,6 +69,8 @@ class Login extends KZ_Controller {
             //ACTION
             if ($routing_module['source'] == 'auth') {
                 $this->_auth_login();
+            }else if ($routing_module['source'] == 'forgot') {
+                $this->_forgot_password();
             }else if ($routing_module['source'] == 'cron') {
                 $this->_backup_db();
             }
@@ -95,6 +97,39 @@ class Login extends KZ_Controller {
 
         $this->session->set_flashdata('notif', notif('info', 'Selamat datang kembali', $data['fullname']));
         jsonResponse(array('data' => site_url('beranda'), 'status' => TRUE, 'msg' => 'Selamat datang kembali, '.$data['fullname']));
+    }
+    function _forgot_password() {
+        $this->load->library(array('form_validation'));
+        
+        $this->form_validation->set_rules($this->rules_forgot)->set_error_delimiters('', '');
+        if ($this->form_validation->run() == FALSE) {
+            jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
+        }
+        $nik = $this->input->post('fnik');
+        $phone = $this->input->post('fphone');
+        
+        $check = $this->db->get_where('m_mhs', array('nik' => $nik, 'telepon_mhs' => $phone));
+        if($check->num_rows() < 1 ){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Tidak ada Akun terdaftar dengan data tersebut'));
+        }
+        $akun = $this->m_authentication->getAuth($check->row_array()['kode_reg']);
+        if(empty($akun)){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Kode Registrasi tidak sesuai dengan Akun'));
+        }
+        $newpass = random_string('numeric', 6);
+        //Update Data
+        $data['password'] = password_hash($newpass, PASSWORD_DEFAULT);
+        $data['update_user'] = date('Y-m-d H:i:s');
+        $data['log_user'] = $akun['fullname'] . ' Reset Password';
+        $data['ip_user'] = ip_agent();
+        
+        $result = $this->m_user->update($akun['id_user'], $data, 1);
+        if($result) {
+            jsonResponse(array('data' => $newpass, 'status' => TRUE, 
+                'msg' => 'Password berhasil dipulihkan. Password saat ini : '.$newpass));
+        }else{
+            jsonResponse(array('status' => FALSE, 'msg' => 'Password gagal direset (dipulihkan)'));
+        }
     }
     function _autoload_module() {
         if(!$this->loggedin){
@@ -129,6 +164,39 @@ class Login extends KZ_Controller {
         }
         jsonResponse(array('data' => $data, 'html' => $html, 'item' => $result['rows'] ,'status' => true));
     }
+    function _validate() {
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        
+        if(!is_string($username) || !is_string($password)){
+            $this->form_validation->set_message("_validate", "Username tidak sesuai");
+            return FALSE;
+        }
+        $data = $this->m_authentication->getAuth($username);
+        if (sizeof($data) < 1) {
+            $this->form_validation->set_message("_validate", "Username anda belum terdaftar di sistem kami");
+            return FALSE;
+        }   
+        if($data['status_user'] == '0') {
+            $this->form_validation->set_message("_validate", "Mohon maaf untuk sementara Akun tidak aktif. Hubungi Administrator");
+            return FALSE;
+        }
+        if(!password_verify($password, $data['password'])){
+            $this->form_validation->set_message("_validate", "Password yang anda masukkan salah");
+            return FALSE;
+        }
+        return TRUE;           
+    }
+    function _captcha_google($str){
+        $this->load->library('recaptcha');
+        $rs = $this->recaptcha->verifyResponse($str);
+        if($rs['success']){
+            return TRUE;
+        }else{
+            $this->form_validation->set_message('_captcha_google', 'Berikan tanda centang terlebih dahulu');
+            return FALSE;
+        }
+    }
     function _backup_db() {
         $this->load->helper(array('download'));
         $is_cli = $this->input->is_cli_request();
@@ -149,54 +217,6 @@ class Login extends KZ_Controller {
             exit();
         }
     }
-    function _validate() {
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
-        
-        $data = $this->m_authentication->getAuth($username);
-        if (sizeof($data) < 1) {
-            $this->form_validation->set_message("_validate", "Username anda belum terdaftar di sistem kami");
-            return FALSE;
-        }   
-        if($data['status_user'] == '0') {
-            $this->form_validation->set_message("_validate", "Mohon maaf untuk sementara Akun tidak aktif. Hubungi Administrator");
-            return FALSE;
-        }
-        if(!password_verify($password, $data['password'])){
-            $this->form_validation->set_message("_validate", "Password yang anda masukkan salah");
-            return FALSE;
-        }
-        return TRUE;           
-    }
-    function _valid_nik($str) {
-        $check = $this->db->get_where('m_pmm',array('nik_pmm' => $str));
-        if($check->num_rows() > 0) {
-            $this->form_validation->set_message("_valid_nik", "Nomor Induk Kependudukan (NIK) ini sudah tersimpan sebelumnya. 
-                Apabila tidak dapat mengakses, segera hubungi pihak MBKM UNIMUDA");
-            return FALSE;
-        }else {
-            return TRUE;
-        }
-    }
-    function _valid_phone($str) {
-        $check = $this->db->get_where('m_pmm',array('telepon_pmm' => $str));
-        if($check->num_rows() > 0) {
-            $this->form_validation->set_message("_valid_phone", "Nomor Telepon ini sudah tersimpan sebelumnya");
-            return FALSE;
-        } else {
-            return TRUE;
-        }
-    }
-    function _captcha_google($str){
-        $this->load->library('recaptcha');
-        $rs = $this->recaptcha->verifyResponse($str);
-        if($rs['success']){
-            return TRUE;
-        }else{
-            $this->form_validation->set_message('_captcha_google', 'Berikan tanda centang terlebih dahulu');
-            return FALSE;
-        }
-    }
     private $rules = array(
         array(
             'field' => 'username',
@@ -206,6 +226,17 @@ class Login extends KZ_Controller {
             'field' => 'g-recaptcha-response',
             'label' => 'Pengecekan Keamanan',
             'rules' => 'required|trim|xss_clean|callback__captcha_google' 
+        )
+    );
+    private $rules_forgot = array(
+        array(
+            'field' => 'fnik',
+            'label' => 'NIK',
+            'rules' => 'required|trim|xss_clean|is_natural|min_length[16]|max_length[16]'
+        ),array(
+            'field' => 'fphone',
+            'label' => 'Telepon',
+            'rules' => 'required|trim|xss_clean|is_natural|min_length[11]|max_length[12]'
         )
     );
 }

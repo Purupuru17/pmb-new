@@ -13,8 +13,6 @@ class Beranda extends KZ_Controller {
         empty($this->sessionid) ? redirect('non_login/login') : null;
         
         $this->data['groupid'] = $this->sessiongroup;
-        $this->_statistik();
-        
         $this->data['module'] = $this->module;
         $this->data['title'] = array('Beranda','');
         $this->data['breadcrumb'] = array( 
@@ -114,16 +112,5 @@ class Beranda extends KZ_Controller {
             $data[] = array(array('maba' => 0, 'npsn' => ''));
         }
         jsonResponse(array('data' => $data, 'total' => $total, 'range' => 'Asal Sekolah'));
-    }
-    function _statistik() {
-        $where['m.angkatan'] = date('Y');
-        $where['p.fakultas'] = 'Fakultas Keguruan dan Ilmu Pendidikan';
-        $this->data['fkip'] = $this->m_mhs->getAll($where)['rows'];
-        
-        $where['p.fakultas'] = 'Fakultas Sains Teknologi';
-        $this->data['fst'] = $this->m_mhs->getAll($where)['rows'];
-        
-        $where['p.fakultas'] = 'Fakultas Ilmu Sosial dan Humaniora';
-        $this->data['fishum'] = $this->m_mhs->getAll($where)['rows'];
     }
 }
