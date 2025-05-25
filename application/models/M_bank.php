@@ -4,8 +4,8 @@ class M_bank extends CI_Model {
 
     var $id = 'id_bank';
     var $table = 'lm_bank';
-    var $column_order = array(null,'nama_bank','jenis_bank','dosen_id',null); //set column field database for datatable orderable
-    var $column_search = array('nama_bank','jenis_bank','dosen_id'); //set column field database for datatable searchable 
+    var $column_order = array(null,'nama_bank','jenis_bank','id_bank',null); //set column field database for datatable orderable
+    var $column_search = array('nama_bank','jenis_bank','id_bank'); //set column field database for datatable searchable 
     var $order = array('nama_bank' => 'asc'); // default order 
     
     function __construct() {
@@ -95,8 +95,7 @@ class M_bank extends CI_Model {
         return $this->db->count_all_results();
     }
     function get_datatables_query($where = NULL) {
-        $this->db->from($this->table.' m');
-        $this->db->join('m_dosen d','d.id_dosen = m.dosen_id','left');
+        $this->db->from($this->table);
         if(!is_null($where)){
             $this->db->where($where);
         }

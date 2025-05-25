@@ -33,15 +33,21 @@
                                     Profil
                                 </a>
                             </li>
+                            <li class="hide">
+                                <a data-toggle="tab" href="#seleksi">
+                                    <i class="red ace-icon fa fa-paste bigger-120"></i>
+                                    Seleksi Mandiri
+                                </a>
+                            </li>
                             <li class="">
                                 <a data-toggle="tab" href="#card">
-                                    <i class="red ace-icon fa fa-upload bigger-120"></i>
+                                    <i class="blue ace-icon fa fa-upload bigger-120"></i>
                                     Berkas Persyaratan
                                 </a>
                             </li>
                             <li>
                                 <a data-toggle="tab" href="#ortu">
-                                    <i class="blue ace-icon fa fa-users bigger-120"></i>
+                                    <i class="purple ace-icon fa fa-users bigger-120"></i>
                                     Orang Tua/Wali
                                 </a>
                             </li>
@@ -65,6 +71,8 @@
                                             <i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
                                             <span class="">Ubah Profil</span>
                                         </a>
+                                        <div class="space space-4"></div>
+                                        <?= $nilai_seleksi ?>
                                     </div><!-- /.col -->
                                     <div class="col-xs-12 col-sm-10">
                                         <h4 class="blue">
@@ -304,6 +312,12 @@
                             </div><!-- /#home -->
 
                             <!--UBAH-->
+                            <div id="seleksi" class="tab-pane">
+                                <div class="profile-feed row">
+                                    <?php $this->load->view('master/daftar/v_seleksi'); ?>
+                                </div><!-- /.row -->
+                            </div><!-- /#feed -->
+                            
                             <div id="ortu" class="tab-pane">
                                 <div class="profile-feed row">
                                     <?php $this->load->view('master/daftar/v_ortu'); ?>

@@ -24,34 +24,34 @@
                 <div id="user-profile-2" class="user-profile">
                     <div class="tabbable">
                         <ul class="nav nav-tabs padding-18">
-                            <li class="active">
+                            <li class="<?= !in_array($detail['status_mhs'], ['PENDING','PENDAFTARAN','TES SELEKSI']) ? 'active':''?>">
                                 <a data-toggle="tab" href="#home">
                                     <i class="green ace-icon fa fa-user bigger-120"></i>
                                     Lihat Profil
                                 </a>
                             </li>
-                            <li class="">
-                                <a href="<?= site_url('mhs/berkas') ?>">
-                                    <i class="orange ace-icon fa fa-upload bigger-120"></i>
-                                    Pengajuan Beasiswa
-                                </a>
-                            </li>
-                            <li class="">
+                            <li class="<?= in_array($detail['status_mhs'], ['PENDING','PENDAFTARAN','TES SELEKSI']) ? 'active':''?>">
                                 <a data-toggle="tab" href="#seleksi">
                                     <i class="red ace-icon fa fa-paste bigger-120"></i>
                                     Tes Seleksi Mandiri
                                 </a>
                             </li>
                             <li class="">
-                                <a target="_blank" href="<?= site_url($module.'/cetak') ?>">
-                                    <i class="blue ace-icon fa fa-credit-card bigger-120"></i>
-                                    KTM Sementara
+                                <a target="_blank" href="<?= site_url('mhs/berkas') ?>">
+                                    <i class="orange ace-icon fa fa-upload bigger-120"></i>
+                                    Pengajuan Beasiswa
+                                </a>
+                            </li>
+                            <li class="">
+                                <a target="_blank" href="<?= site_url('mhs/wali') ?>">
+                                    <i class="blue ace-icon fa fa-users bigger-120"></i>
+                                    Orang Tua/Wali
                                 </a>
                             </li>
                         </ul>
-                        <div class="tab-content no-border padding-24">
+                        <div class="tab-content no-border padding-10">
 
-                            <div id="home" class="tab-pane in active">
+                            <div id="home" class="tab-pane <?= !in_array($detail['status_mhs'], ['PENDING','PENDAFTARAN','TES SELEKSI']) ? 'in active':''?>">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-2 center">
                                         <span class="profile-picture">
@@ -61,6 +61,11 @@
                                         <a href="<?= site_url($module .'/edit') ?>" class="btn btn-block btn-bold btn-warning btn-white">
                                             <i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
                                             <span class="">Ubah Profil</span>
+                                        </a>
+                                        <div class="space space-4"></div>
+                                        <a target="_blank" href="<?= site_url($module .'/cetak') ?>" class="btn btn-block btn-bold btn-primary btn-white">
+                                            <i class="ace-icon fa fa-credit-card bigger-120"></i>
+                                            <span class="">KTM Sementara</span>
                                         </a>
                                     </div><!-- /.col -->
                                     <div class="col-xs-12 col-sm-10">
@@ -295,56 +300,58 @@
                             </div><!-- /#home -->
                             
                             <!--UBAH-->
-                            <div id="seleksi" class="tab-pane">
+                            <div id="seleksi" class="tab-pane <?= in_array($detail['status_mhs'], ['PENDING','PENDAFTARAN','TES SELEKSI']) ? 'in active':''?>">
                                 <div class="profile-feed row">
-                                    <?php
-                                    if (!$valid_test) {
-                                        echo '<div class="alert alert-info bigger-120">
-                                            <button type="button" class="close" data-dismiss="alert">
-                                                    <i class="ace-icon fa fa-times"></i>
-                                            </button>
+                                    <div class="col-xs-12 <?= ($valid_test) ? 'hide':'' ?>">
+                                        <div class="alert alert-warning bigger-120">
+                                            <button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button>
                                             <strong>Informasi !</strong><br/>
-                                            Tes Seleksi Mandiri tidak dapat dilakukan. Hubungi Panitia PMB untuk informasi lebih lengkap
-                                        </div>';
-                                    } else {
-                                    ?>
-                                    <div class="col-xs-12">
+                                            Tes Seleksi Mandiri belum dapat dilakukan. Hubungi Panitia PMB untuk informasi lebih lengkap
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 <?= ($valid_test) ? '':'hide' ?>">
+                                        <div class="well well-sm bigger-110">
+                                            &nbsp;1. Tes Seleksi Mandiri dilakukan secara Online melalui Akun Camaba masing-masing<br/>
+                                            2. Wajib menggunakan Laptop atau PC untuk mengerjakan Tes Seleksi ini agar hasil optimal<br/>
+                                            3. Camaba wajib menyelesaikan seluruh Soal yang tersedia<br/>
+                                            4. Silahkan memilih <b>Paket Soal</b> sesuai kebutuhan Program Studi yang anda ambil <br/>
+                                            5. Perhatikan Jawaban dan Sisa Waktu yang tersisa saat mengerjakan keseluruhan tes ini<br/>
+                                            <div class="space-6"></div>
+                                            Catatan : <br/>
+                                            * Setelah dinyatakan <b class="green">LULUS</b>, anda diwajibkan membayar <strong>Biaya Registrasi Ulang</strong>.<br/>
+                                            * Pembayaran dilakukan melalui rekening <b class="blue">Virtual Account</b> masing-masing.<br/>
+                                            * Apabila ada pertanyaan dapat menghubungi Panitia PMB UNIMUDA Sorong secara langsung.
+                                        </div>
+                                        <div class="space-4"></div>
+                                        <p id="one-spin" style="display: none" class="bigger-130 blue" align="center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> Loading . . .</p>
                                         <div class="widget-box transparent">
                                             <div class="widget-header">
-                                                <h5 class="widget-title">
+                                                <h4 class="widget-title">
                                                     <i class="ace-icon fa fa-check-square-o"></i> 
-                                                    Seleksi Mandiri - Computer Assesment Test
-                                                </h5>
+                                                    Soal Tersedia
+                                                </h4>
                                                 <div class="widget-toolbar">
                                                     <a href="#" data-action="collapse" class="orange2">
                                                         <i class="ace-icon fa fa-chevron-up bigger-125"></i>
                                                     </a>
                                                 </div>
-                                                
+                                                <div class="widget-toolbar no-border">
+                                                    <div class="btn-group btn-overlap">
+                                                        <button class="btn btn-primary btn-white btn-bold btn-sm" name="cari" id="btn-search" type="button">
+                                                            <i class="ace-icon fa fa-search-plus bigger-120"></i>
+                                                            Tampilkan
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="widget-body">
                                                 <div class="widget-main padding-2 table-responsive">
-                                                    <div class="well well-sm bigger-120">
-                                                        &nbsp;1. Seleksi Mandiri akan dilakukan secara Online menggunakan Sistem <b>CAT (Computer Assesment Test)</b><br/>
-                                                        2. Usahakan menggunakan Laptop atau PC untuk mengakses Sistem ini agar hasil optimal<br/>
-                                                        3. Camaba wajib menyelesaikan seluruh Soal yang terdiri dari <i class="bolder">Tes Potensi Akademik & Tes Psikologi</i><br/>
-                                                        4. Silahkan memilih <b>Paket Soal</b> sesuai kebutuhan Program Studi yang anda ambil <br/>
-                                                        5. Perhatikan pilihan Jawaban anda dan Sisa Waktu yang tersisa saat mengerjakan keseluruhan tes ini<br/>
-                                                        6. Selamat Mengerjakan. Semoga LULUS !
-
-                                                        <div class="space-10"></div>
-                                                        Catatan : <br/>
-                                                        * Setelah dinyatakan <b class="green">LULUS</b>, anda diwajibkan membayar <strong>Biaya Registrasi Ulang</strong>.<br/>
-                                                        * Nominal dan Cara Pembayaran akan di informasikan selanjutnya.<br/>
-                                                        * Apabila ada pertanyaan dapat menghubungi Panitia PMB UNIMUDA Sorong secara langsung.
-                                                    </div>
+                                                    <div class="space-2"></div>
+                                                    <div class="list-course"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <?php
-                                    }
-                                    ?>
                                 </div><!-- /.row -->
                             </div>
                         </div>
@@ -356,3 +363,90 @@
         <!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.page-content -->
+<?php
+    load_js(array(
+        'theme/aceadmin/assets/js/bootbox.min.js'
+    ));
+?>
+<script type="text/javascript">
+    const module = "<?= site_url($module) ?>";
+    $(document).ready(function() {
+        load_index();
+    });
+    $(document.body).on("click", "#submit-btn", function(e) {
+        var id = $(this).attr("itemid");
+        var name = $(this).attr("itemname");
+        var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
+        var msg = "<p class='center grey bigger-120'><i class='ace-icon fa fa-hand-o-right blue'></i>" + 
+                " Apakah anda yakin akan mulai mengerjakan <br/><strong class='blue bigger-130'>" + name + "</strong> sekarang ? </p>";
+        bootbox.confirm({
+            title: title, message: msg, 
+            buttons: {
+                cancel: {
+                    label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal", className: "btn btn-sm"
+                },
+                confirm: {
+                    label: "<i class='ace-icon fa fa-check bigger-110'></i> YA, MULAI", className: "btn btn-sm btn-success"
+                }
+            },
+            callback: function(result) {
+                if (result === true) {
+                    start_session(id);
+                }
+            }
+        });
+    });
+    $("#btn-search").click(function () {
+        load_index();
+    });
+</script>
+<script type="text/javascript">
+    function load_index() {
+        $("#one-spin").show();
+        $(".list-course").html('');
+        $.ajax({
+            url: module + "/ajax/type/list/source/index",
+            type: "POST",
+            dataType: "json",
+            success: function (rs) {
+                if (rs.status) {
+                    $(".list-course").html(rs.data.course);
+                } else {
+                    myNotif('Peringatan', rs.msg, 2);
+                }
+                $("#one-spin").hide();
+            },
+            error: function (xhr, ajax, err) {
+                console.log('Error : ' + xhr.responseText);
+            }
+        });
+    }
+    function start_session(id, url = 'start') {
+        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
+        var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
+                ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
+        var progress = bootbox.dialog({title: title,message: msg,closeButton: false});
+        $.ajax({
+            url: module + "_do/ajax/type/action/source/" + url,
+            dataType: "json",
+            type: "POST",
+            data: { id: id },
+            success: function (rs) {
+                if (rs.status) {
+                    setTimeout(function () {
+                        progress.modal("hide");
+                        window.open(rs.link, '_blank').focus();
+                    }, 3000);
+                    myNotif('Informasi', rs.msg, 1, 'swal');
+                } else {
+                    progress.modal("hide");
+                    myNotif('Peringatan', rs.msg, 2, 'swal');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                progress.modal("hide");
+                console.log('Error : ' + xhr.responseText);
+            }
+        });
+    }
+</script>

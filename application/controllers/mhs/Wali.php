@@ -10,6 +10,9 @@ class Wali extends KZ_Controller {
         
         $this->load->model(array('m_ortu'));
         $this->_getMhs();
+        if(empty($this->mid)){
+            redirect('beranda');
+        }
     }
     function index() {
         $this->data['list'] = $this->m_ortu->getAll(array('mhs_id' => $this->mid));

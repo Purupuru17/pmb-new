@@ -56,9 +56,6 @@
 define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 define('APP_NAME', 'PMB');
 define('APP_STATUS', 1); // 0 = offline, 1 = online
-define('APP_DSN', (ENVIRONMENT == 0) ? 'mysql:host=10.3.5.216:8081;dbname=pmb_db':'mysql:host=app-db;dbname=pmb_db');
-define('APP_USER', (ENVIRONMENT == 0) ? 'pusdatin_remote':'dev_user');
-define('APP_PASS', (ENVIRONMENT == 0) ? 'Firman2412!remote':'dev_pass');
 define('APP_VER', '2024v1');
 define('APP_THEME', 'eventon');
 /*

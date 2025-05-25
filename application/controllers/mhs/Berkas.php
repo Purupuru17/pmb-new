@@ -10,6 +10,9 @@ class Berkas extends KZ_Controller {
         
         $this->load->model(array('m_berkas'));
         $this->_getMhs();
+        if(empty($this->mid)){
+            redirect('beranda');
+        }
     }
     function index() {
         $this->data['list'] = $this->m_berkas->getAll(array('mhs_id' => $this->mid));

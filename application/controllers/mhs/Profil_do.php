@@ -4,12 +4,13 @@ class Profil_do extends KZ_Controller {
     
     private $module = 'mhs/profil';
     private $module_do = 'mhs/profil_do';
+    private $url_route = array('id', 'source', 'type');
     private $path = 'upload/mhs/';
             
     function __construct() {
         parent::__construct();
         
-        $this->load->model(array('m_mhs'));
+        $this->load->model(array('m_mhs','m_jawab'));
         $this->_getMhs();
     }
     function edit() {
@@ -72,8 +73,198 @@ class Profil_do extends KZ_Controller {
             redirect($this->module.'/edit');
         }
     }
-    
+    function ajax() {
+        $routing_module = $this->uri->uri_to_assoc(4, $this->url_route);
+        if(is_null($routing_module['type'])){
+            redirect('');
+        }
+        if($routing_module['type'] == 'action') {
+            //ACTION
+            if($routing_module['source'] == 'start') {
+                $this->_start_jawab();
+            }else if($routing_module['source'] == 'update') {
+                $this->_update_jawab();
+            }else if($routing_module['source'] == 'done') {
+                $this->_done_jawab();
+            }
+        }
+    }
     //function
+    function _start_jawab() {
+        if(empty($this->mid)){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Tidak memiliki akses pada menu ini'));
+        }
+        $this->load->model(array('m_module'));
+        
+        $peserta_id = $this->mid;
+        $id = decode($this->input->post('id'));
+        //check module
+        $module = $this->m_module->getId($id);
+        if(empty($module)){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Tidak ada sesi yang dipilih'));
+        }
+        $durasi = intval($module['durasi_module']);
+        //check avalaible
+        $is_range = range_date(date('Y-m-d H:i:s'), $module['buka_module'], $module['tutup_module']);
+        if(!$is_range['st']){
+            jsonResponse(array('status' => FALSE, 'msg' => $is_range['rs']));
+        }
+        //check jawab
+        $jawab = $this->m_jawab->getId(array('module_id' => $id, 'peserta_id' => $peserta_id, 'valid_jawab' => '1'));
+        if(!is_null($jawab)){
+            if($jawab['status_jawab'] == '0'){
+                jsonResponse(array('status' => FALSE, 'msg' => 'Sesi terkunci atau sedang berjalan di perangkat lain'));
+            }
+            $msg_jwb = ($jawab['status_jawab'] == '1') ? 'Terimakasih telah mengerjakan sesi ini' 
+                : 'Selamat datang kembali. Mohon segera mengerjakan sebelum waktu habis';
+            jsonResponse(array('status' => TRUE, 'link' => site_url($this->module.'/add/'.encode($jawab['id_jawab'])), 'msg' => $msg_jwb));
+        }
+        //init soal
+        $arr_soal = json_decode($module['soal_module'], true);
+        if(empty($arr_soal) || !is_array($arr_soal)){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Tidak ada soal dalam sesi ini'));
+        }
+        $enrol_soal = array_map(function($item) {  return $item['id']; }, $arr_soal);
+        $is_random = ($module['is_random'] == '1') ? 'RANDOM' : 'ASC';
+        //get soal
+        $soal = $this->db->order_by('order_soal', $is_random)->where_in('id_soal', $enrol_soal)->get_where('lm_soal');
+        if($soal->num_rows() < 1){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Tidak ada soal dalam sesi ini'));
+        }
+        //set quiz
+        $data['id_jawab'] = random_string('unique');
+        $quiz = array(); $nomor = 1;
+        foreach ($soal->result_array() as $item) {
+            $row = array();
+            $row['jawab_id'] = $data['id_jawab'];
+            $row['soal_id'] = $item['id_soal'];
+            $row['order_quiz'] = $nomor;
+            $row['status_quiz'] = '0';
+
+            $quiz[] = $row;
+            $nomor++;
+        }
+        //set jawab
+        $data['module_id'] = $id;
+        $data['peserta_id'] = $peserta_id;
+        $data['mulai_jawab'] = date('Y-m-d H:i:s');
+        $data['selesai_jawab'] = date('Y-m-d H:i:s', strtotime($data['mulai_jawab'] . ' +'.$durasi.' minutes'));
+        $data['status_jawab'] = '2';
+        $data['valid_jawab'] = '1';
+        $data['update_jawab'] = date('Y-m-d H:i:s');
+        $data['log_jawab'] = $this->sessionname.' memulai sesi ini';
+        
+        $result = $this->m_jawab->insertBatch($data, $quiz);
+        if($result){
+            jsonResponse(array('status' => TRUE, 'link' => site_url($this->module.'/add/'.encode($data['id_jawab'])), 
+                'msg' => 'Waktu pengerjaan sudah di mulai. Harap kerjakan dengan teliti'));
+        }else{
+            jsonResponse(array('status' => FALSE, 'msg' => 'Sesi ini gagal disimpan'));
+        }
+    }
+    function _update_jawab() {
+        if(empty($this->mid)){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Tidak memiliki akses pada menu ini'));
+        }
+        if(!$this->_validation($this->rules_jawab,'ajax')){
+            jsonResponse(array('status' => FALSE, 'msg' => strval(validation_errors())));
+        }
+        $this->load->model(array('m_soal'));
+            
+        $id = decode($this->input->post('id'));
+        $soal_id = decode($this->input->post('soal'));
+        $status = $this->input->post('status');
+        $opsi = $this->input->post('opsi');
+        $now_ts = date('Y-m-d H:i:s');
+        //cek data
+        $check = $this->db->join('lm_module m','m.id_module = j.module_id','inner')
+            ->get_where('lm_jawab j', array('j.id_jawab' => $id))->row_array();
+        if(is_null($check)){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Sesi tidak ditemukan'));
+        }
+        if($check['status_jawab'] != '0' || $check['valid_jawab'] == '0'){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Sesi ini sudah anda kerjakan sebelumnya'));
+        }
+        //cek module
+        $cek_module = range_date($now_ts, $check['buka_module'], $check['tutup_module']);
+        if(!$cek_module['st']){
+            jsonResponse(array('status' => FALSE, 'msg' => $cek_module['rs']));
+        }
+        //cek jawab
+        $cek_jawab = range_date($now_ts, $check['mulai_jawab'], $check['selesai_jawab']);
+        if(!$cek_jawab['st']){
+            jsonResponse(array('status' => FALSE, 'msg' => $cek_jawab['rs']));
+        }
+        //cek soal
+        $soal = $this->m_soal->getId($soal_id);
+        if(is_null($soal)){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Pertanyaan tidak ditemukan'));
+        }
+        //cek opsi-essay
+        if(in_array($check['is_quiz'], array('PILIHAN-GANDA','KUESIONER'))){
+            if(empty($opsi)){
+                jsonResponse(array('status' => FALSE, 'msg' => 'Pilih Opsi Jawaban terlebih dahulu'));
+            }
+            $opsi_arr = array();
+            if (!empty($soal['opsi_a'])) { $opsi_arr[] = json_decode($soal['opsi_a']); }
+            if (!empty($soal['opsi_b'])) { $opsi_arr[] = json_decode($soal['opsi_b']); }
+            if (!empty($soal['opsi_c'])) { $opsi_arr[] = json_decode($soal['opsi_c']); }
+            if (!empty($soal['opsi_d'])) { $opsi_arr[] = json_decode($soal['opsi_d']); }
+            if (!empty($soal['opsi_e'])) { $opsi_arr[] = json_decode($soal['opsi_e']); }
+            foreach ($opsi_arr as $item) {
+                if ($opsi == $item->key) {
+                    $data['opsi_key'] = $opsi;
+                    $data['nilai_quiz'] = intval($item->nilai);
+                    $data['valid_quiz'] = ($data['nilai_quiz'] == 0)  ? '0' : '1';
+                }
+            }
+        }else{
+            $essay = $this->input->post('essay');
+            if(empty($essay)){
+                jsonResponse(array('status' => FALSE, 'msg' => 'Jawaban Essai masih kosong'));
+            }
+            $data['essay_quiz'] = $essay;
+        }
+        $data['status_quiz'] = ($status == 'valid') ? '1' : '2';
+        $data['buat_quiz'] = date('Y-m-d H:i:s');
+        
+        $result = $this->m_jawab->updateAll(array('jawab_id' => $id, 'soal_id' => $soal_id), null, $data);
+        if($result){
+            jsonResponse(array('status' => TRUE, 'msg' => 'Jawaban berhasil disimpan', 'waktu' => selisih_wkt($data['buat_quiz'])));
+        }else{
+            jsonResponse(array('status' => FALSE, 'msg' => 'Jawaban gagal disimpan. Mohon ulangi kembali'));
+        }
+    }
+    function _done_jawab() {
+        if(empty($this->mid)){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Tidak memiliki akses pada menu ini'));
+        }
+        $id = decode($this->input->post('id'));
+        
+        $check = $this->m_jawab->getId($id);
+        if(is_null($check)){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Sesi tidak ditemukan'));
+        }
+        if($check['status_jawab'] != '0' || $check['valid_jawab'] == '0'){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Sesi ini sudah anda kerjakan sebelumnya'));
+        }
+        $rs_skor = $this->db->select('SUM(nilai_quiz) AS nilai, COUNT(soal_id) AS jumlah')->from('lmrf_quiz')
+            ->where(array('jawab_id' => $id))->get()->row_array();
+        
+        $data['skor_jawab'] = json_encode($rs_skor);
+        $data['status_jawab'] = '1';
+        $data['selesai_jawab'] = date('Y-m-d H:i:s');
+        $data['update_jawab'] = date('Y-m-d H:i:s');
+        $data['log_jawab'] = $this->sessionname.' menyelesaikan sesi ini';
+        
+        $result = $this->m_jawab->updateAll(array('jawab_id' => $id, 'status_quiz' => '0', 'valid_quiz' => null), 
+            $data, array('valid_quiz' => '0', 'nilai_quiz' => 0));
+        if($result){
+            jsonResponse(array('status' => TRUE, 'msg' => 'TERIMA KASIH'));
+        }else{
+            jsonResponse(array('status' => FALSE, 'msg' => 'Sesi ini gagal diakhiri. Silahkan ulangi kembali'));
+        }
+    }
     function _valid_date($tgl) {
         list($yyyy,$mm,$dd) = explode('-',$tgl);
         $now = intval(date('Y'));
@@ -170,6 +361,29 @@ class Profil_do extends KZ_Controller {
             'field' => 'bupati',
             'label' => 'Kabupaten',
             'rules' => 'required|trim|xss_clean|min_length[3]'
+        )
+    );
+    private $rules_jawab = array(
+        array(
+            'field' => 'id',
+            'label' => 'Sesi',
+            'rules' => 'required|trim|xss_clean'
+        ),array(
+            'field' => 'soal',
+            'label' => 'Soal',
+            'rules' => 'required|trim|xss_clean'
+        ),array(
+            'field' => 'opsi',
+            'label' => 'Jawaban Opsi',
+            'rules' => 'trim|xss_clean'
+        ),array(
+            'field' => 'essay',
+            'label' => 'Jawaban Essay',
+            'rules' => 'trim|xss_clean'
+        ),array(
+            'field' => 'status',
+            'label' => 'Status Jawaban',
+            'rules' => 'required|trim|xss_clean'
         )
     );
 }

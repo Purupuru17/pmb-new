@@ -59,7 +59,10 @@ class Daftar extends KZ_Controller {
         $this->load->model(array('m_ortu','m_berkas','m_payment'));
         
         $detail = $this->m_mhs->getId(decode($id));
-        
+        if(is_null($detail)){
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Data tidak ditemukan'));
+            redirect($this->module);
+        }
         $this->data['user'] = $this->m_mhs->getTMP(array('mhs_id' => decode($id)));
         $this->data['ortu'] = $this->m_ortu->getAll(array('mhs_id' => decode($id)));
         $this->data['berkas'] = $this->m_berkas->getAll(array('mhs_id' => decode($id)));
@@ -67,7 +70,21 @@ class Daftar extends KZ_Controller {
         
         $this->data['kecamatan'] = $this->db->get_where('m_wilayah', ['id_wilayah' => $detail['kecamatan']])->row_array();
         $this->data['kabupaten'] = $this->db->get_where('m_wilayah', ['id_wilayah' => $detail['kabupaten']])->row_array();
-        
+        //nilai
+        $this->data['nilai_seleksi'] = '';
+        $is_jawab = $this->db->get_where('lm_jawab', 
+            array('peserta_id' => decode($id), 'valid_jawab' => '1'))->row_array();
+        if(!is_null($is_jawab)){
+            $json_skor = json_decode($is_jawab['skor_jawab'], true);
+            $skor = (int) element('nilai', $json_skor);
+            $jumlah_soal = (int) element('jumlah', $json_skor);
+
+            $nilai = ($jumlah_soal > 0) ? round($skor/$jumlah_soal*100) : $skor;
+            $this->data['nilai_seleksi'] = '<span class="btn btn-app btn-primary">
+                <span class="line-height-1 bigger-300 bolder"> '.$nilai.' </span><br>
+                    <span class="smaller-70"> NILAI </span>
+                </span>';
+        }
         $this->data['detail'] = $detail;
         $this->data['module'] = $this->module;
         $this->data['action'] = $this->module_do.'/detail/'.$id.'/'; //validasi-berkas
