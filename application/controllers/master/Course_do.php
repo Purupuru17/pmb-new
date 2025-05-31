@@ -10,8 +10,6 @@ class Course_do extends KZ_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model(array('m_module','m_jawab'));
-        
-        $this->_dosen_id();
     }
     function edit($id = NULL) {
         if(empty(decode($id))){
@@ -64,9 +62,7 @@ class Course_do extends KZ_Controller {
         }
         if($routing_module['type'] == 'action') {
             //ACTION
-            if($routing_module['source'] == 'jurnal') {
-                $this->_add_jurnal();
-            }else if($routing_module['source'] == 'activity') {
+            if($routing_module['source'] == 'activity') {
                 $this->_add_activity();
             }else if($routing_module['source'] == 'enrol') {
                 $this->_add_enrol();
@@ -84,41 +80,11 @@ class Course_do extends KZ_Controller {
         }
     }
     //function
-    function _add_jurnal() {
-        if(empty($this->did)){
-            jsonResponse(array('status' => FALSE, 'msg' => 'Data Dosen tidak ditemukan'));
-        }
-        $this->load->model(array('m_jurnal'));
-        
-        $id = decode($this->input->post('id'));
-        $no = $this->input->post('nomor');
-        if(empty($id) || empty($no)){
-            jsonResponse(array('status' => FALSE, 'msg' => 'Data Kelas & Pertemuan tidak ditemukan'));
-        }
-        $check = $this->m_jurnal->getId(array('kelas_id' => $id, 'init_jurnal' => $no));
-        if(!is_null($check)){
-            jsonResponse(array('status' => FALSE, 'msg' => 'Pertemuan Ke - <strong>'.$no.'</strong> sudah tersimpan sebelumnya'));
-        }
-        $data['kelas_id'] = $id;
-        $data['init_jurnal'] = $no;
-        $data['update_jurnal'] = date('Y-m-d H:i:s');
-        
-        $result = $this->m_jurnal->insert($data);
-        if ($result) {
-            jsonResponse(array('status' => TRUE, 'msg' => 'Data berhasil disimpan'));
-        } else {
-            jsonResponse(array('status' => TRUE, 'msg' => 'Data gagal disimpan'));
-        }
-    }
     function _add_activity() {
-        if(empty($this->did)){
-            jsonResponse(array('status' => FALSE, 'msg' => 'Data Dosen tidak ditemukan'));
-        }
         if(!$this->_validation($this->rules_activ,'ajax')){
             jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
         }
         $data['id_module'] = random_string('unique');
-        $data['jurnal_id'] = decode($this->input->post('activid'));
         $data['nama_module'] = strtoupper($this->input->post('nama_activ'));
         $data['jenis_module'] = $this->input->post('jenis_activ');
         $data['is_quiz'] = ($data['jenis_module'] == 'QUIZ') ? $this->input->post('tipe_quiz') : null;
@@ -178,10 +144,7 @@ class Course_do extends KZ_Controller {
         }
     }
     function _start_jawab() {
-        if(empty($this->did)){
-            jsonResponse(array('status' => FALSE, 'msg' => 'Data Dosen tidak ditemukan'));
-        }
-        $peserta_id = $this->did;
+        $peserta_id = $this->sessionid;
         $id = decode($this->input->post('id'));
         //check module
         $module = $this->m_module->getId($id);
@@ -240,9 +203,6 @@ class Course_do extends KZ_Controller {
         }
     }
     function _update_jawab() {
-        if(empty($this->did)){
-            jsonResponse(array('status' => FALSE, 'msg' => 'Data Dosen tidak ditemukan'));
-        }
         if(!$this->_validation($this->rules_jawab,'ajax')){
             jsonResponse(array('status' => FALSE, 'msg' => strval(validation_errors())));
         }
@@ -308,9 +268,6 @@ class Course_do extends KZ_Controller {
         }
     }
     function _done_jawab() {
-        if(empty($this->did)){
-            jsonResponse(array('status' => FALSE, 'msg' => 'Data Dosen tidak ditemukan'));
-        }
         $id = decode($this->input->post('id'));
         
         $check = $this->m_jawab->getId($id);
@@ -320,6 +277,10 @@ class Course_do extends KZ_Controller {
         if($check['status_jawab'] == '1' || $check['valid_jawab'] == '0'){
             jsonResponse(array('status' => FALSE, 'msg' => 'Sesi ini sudah anda kerjakan sebelumnya'));
         }
+        $rs_skor = $this->db->select('SUM(nilai_quiz) AS nilai, COUNT(soal_id) AS jumlah')->from('lmrf_quiz')
+            ->where(array('jawab_id' => $id))->get()->row_array();
+        
+        $data['skor_jawab'] = json_encode($rs_skor);
         $data['status_jawab'] = '1';
         $data['selesai_jawab'] = date('Y-m-d H:i:s');
         $data['update_jawab'] = date('Y-m-d H:i:s');
@@ -334,9 +295,6 @@ class Course_do extends KZ_Controller {
         }
     }
     function _update_skor() {
-        if(empty($this->did)){
-            jsonResponse(array('status' => FALSE, 'msg' => 'Data Dosen tidak ditemukan'));
-        }
         $id = decode($this->input->post('id'));
         $tipe = $this->input->post('tipe');
         $skor = intval($this->input->post('skor'));
@@ -399,9 +357,6 @@ class Course_do extends KZ_Controller {
         }
     }
     function _update_respon() {
-        if(empty($this->did)){
-            jsonResponse(array('status' => FALSE, 'msg' => 'Data Dosen tidak ditemukan'));
-        }
         if(!$this->_validation($this->rules_respon,'ajax')){
             jsonResponse(array('status' => FALSE, 'msg' => strval(validation_errors())));
         }

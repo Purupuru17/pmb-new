@@ -27,18 +27,6 @@
                             <i class="ace-icon fa fa-chevron-up bigger-125"></i>
                         </a>
                     </div>
-                    <div class="widget-toolbar no-border">
-                        <div class="btn-group btn-overlap">
-                            <a href="<?= site_url($module.'/edit/'.encode($detail['id_module'])) ?>"
-                                class="btn btn-white btn-warning btn-sm btn-bold">
-                                <i class="fa fa-pencil-square-o bigger-120"></i> Ubah Data
-                            </a>
-                            <button id="btn-delete" itemid="<?= site_url($module.'/delete/'.encode($detail['id_module'])) ?>" itemname="<?= ctk($detail['nama_module']) ?>"
-                                class="btn btn-white btn-danger btn-sm btn-bold">
-                                <i class="fa fa-trash bigger-120"></i>
-                            </button>
-                        </div>
-                    </div>
                 </div>
                 <div class="widget-body">
                     <div class="widget-main padding-6 no-padding-left no-padding-right">
@@ -57,18 +45,6 @@
                                             <span class="bolder"><?= ctk($detail['jenis_module']) ?></span>
                                         </div>
                                     </div>
-                                    <div class="profile-info-row ">
-                                        <div class="profile-info-name">Buka Akses</div>
-                                        <div class="profile-info-value">
-                                            <span class=""><?= format_date($detail['buka_module'],0); ?></span>
-                                        </div>
-                                    </div>
-                                    <div class="profile-info-row ">
-                                        <div class="profile-info-name">Tutup Akses</div>
-                                        <div class="profile-info-value">
-                                            <span class="orange bolder"><?= format_date($detail['tutup_module'],0); ?></span>
-                                        </div>
-                                    </div>
                                     <div class="profile-info-row <?= empty($detail['is_quiz']) ? 'hide':'' ?>">
                                         <div class="profile-info-name">Tipe Soal</div>
                                         <div class="profile-info-value">
@@ -84,7 +60,19 @@
                                     <div class="profile-info-row <?= empty($detail['is_quiz']) ? 'hide':'' ?>">
                                         <div class="profile-info-name">Durasi :</div>
                                         <div class="profile-info-value">
-                                            <span class="bolder red"><?= ctk($detail['durasi_module']); ?> Menit</span>
+                                            <span class="bolder red"><?= ctk($detail['durasi_module']); ?> </span>Menit
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row ">
+                                        <div class="profile-info-name">Buka Akses</div>
+                                        <div class="profile-info-value">
+                                            <span class=""><?= format_date($detail['buka_module'],0); ?></span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row ">
+                                        <div class="profile-info-name">Tutup Akses</div>
+                                        <div class="profile-info-value">
+                                            <span class="orange bolder"><?= format_date($detail['tutup_module'],0); ?></span>
                                         </div>
                                     </div>
                                 </div>
@@ -141,6 +129,9 @@
                         <div class="btn-group btn-overlap">
                             <button id="btn-rekap" class="btn btn-white btn-primary btn-sm btn-bold">
                                 <i class="fa fa-search-plus bigger-120"></i> Lihat Data
+                            </button>
+                            <button id="btn-session" class="btn btn-white btn-danger btn-sm btn-bold">
+                                <i class="fa fa-pencil bigger-120"></i> Mulai Pengerjaan
                             </button>
                         </div>
                     </div>
@@ -272,6 +263,27 @@ load_js(array(
         $(".select2-chosen").addClass("center");
         mhs_table();
     });
+    $(document.body).on("click", "#btn-session", function(e) {
+        var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
+        var msg = "<p class='center grey bigger-120'><i class='ace-icon fa fa-hand-o-right blue'></i>" + 
+                " Apakah anda yakin akan mulai mengerjakan sesi ini sekarang ? </p>";
+        bootbox.confirm({
+            title: title, message: msg, 
+            buttons: {
+                cancel: {
+                    label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal", className: "btn btn-sm"
+                },
+                confirm: {
+                    label: "<i class='ace-icon fa fa-check bigger-110'></i> YA, MULAI", className: "btn btn-sm btn-success"
+                }
+            },
+            callback: function(result) {
+                if (result === true) {
+                    start_session();
+                }
+            }
+        });
+    });
     $(document.body).on("click", "#edit-btn", function(e) {
         $("#itemid").val($(this).attr("itemid"));
         $("#status").select2('val',$(this).attr("itemname"));
@@ -319,31 +331,6 @@ load_js(array(
             }
         });
     });
-    $(document.body).on("click", "#btn-delete", function(event) {
-        var id = $(this).attr("itemid");
-        var name = $(this).attr("itemname");
-        var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
-        var msg = "<p class='center grey bigger-120'><i class='ace-icon fa fa-hand-o-right blue'></i>" + 
-                " Apakah anda yakin akan menghapus data <br/><b>" + name + "</b> ? </p>";
-        bootbox.confirm({title: title, message: msg, 
-            buttons: {
-                cancel: {
-                    label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal", className: "btn btn-sm"
-                },
-                confirm: {
-                    label: "<i class='ace-icon fa fa-trash-o bigger-110'></i> Hapus", className: "btn btn-sm btn-danger"
-                }
-            },
-            callback: function(result) {
-                if (result === true) {
-                    window.location.replace(id);
-                }
-            }
-        });
-    });
-    $("#btn-rekap").click(function () {
-        load_mhs();
-    });
     $('input[name="opsi"]').change(function() {
         var opsi = $('input[name="opsi"]:checked').val();
         if(opsi === 'tambah'){
@@ -358,8 +345,47 @@ load_js(array(
         $(".reset").val('').select2('val','');
         $("#modal-edit").modal('hide');
     });
+    $("#btn-rekap").click(function () {
+        load_mhs();
+    });
+    $("#edit-form").submit(function (e) {
+        let valid = $(this).validate().checkForm();
+        if (!valid) { return; }
+        update_skor($(this).serialize());
+        
+        $("#modal-edit").modal('hide');
+        e.preventDefault();
+    });
 </script>
 <script type="text/javascript">
+    function start_session() {
+        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
+        var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
+                ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
+        var progress = bootbox.dialog({title: title,message: msg,closeButton: false});
+        $.ajax({
+            url: module + "_do/ajax/type/action/source/start",
+            dataType: "json",
+            type: "POST",
+            data: { id : $("#id").val() },
+            success: function (rs) {
+                if (rs.status) {
+                    setTimeout(function () {
+                        progress.modal("hide");
+                        window.open(rs.link, '_blank').focus();
+                    }, 3000);
+                    myNotif('Informasi', rs.msg, 1, 'swal');
+                } else {
+                    progress.modal("hide");
+                    myNotif('Peringatan', rs.msg, 2, 'swal');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                progress.modal("hide");
+                console.log('Error : ' + xhr.responseText);
+            }
+        });
+    }
     function update_skor(formData) {
         $("#one-spin").show();
         $.ajax({
@@ -429,14 +455,6 @@ load_js(array(
         });
         mhsTable.fnAdjustColumnSizing();
     }
-    $("#edit-form").submit(function (e) {
-        let valid = $(this).validate().checkForm();
-        if (!valid) { return; }
-        update_skor($(this).serialize());
-        
-        $("#modal-edit").modal('hide');
-        e.preventDefault();
-    });
     $("#edit-form").validate({
         errorElement: 'div',
         errorClass: 'help-block',

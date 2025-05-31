@@ -20,7 +20,7 @@ $this->load->view('sistem/v_breadcrumb');
                 <div class="col-sm-9 col-xs-12">
                     <div class="widget-box transparent">
                         <div class="widget-header">
-                            <h4 id="text-header" class="is-reset widget-title lighter bolder"></h4>
+                            <h4 id="text-header" class="is-reset widget-title bolder"></h4>
                             <div class="widget-toolbar">
                                 Diperbarui : 
                                 <span id="span-update" class="is-reset label label-grey label-sm"></span>
@@ -167,8 +167,8 @@ load_js(array(
             success: function (rs) {
                 if (rs.status) {
                     $("#soal_id").val(rs.data.id);
-                    $("#text-header").html('Pertanyaan No. '+ rs.data.soal.order_quiz 
-                        +' <small class="bolder bigger">[' + rs.data.soal.materi_soal + '] </small>');
+                    $("#text-header").html('No. '+ rs.data.soal.order_quiz +
+                        '  <span class="orange bigger-110">[' + rs.data.soal.materi_soal + '] </span>');
                     $("#content-soal").html(rs.data.content_soal);
                     $("#content-opsi").html(rs.data.content_opsi);
                     $("#content-nomor").html(rs.data.content_nomor);

@@ -11,12 +11,6 @@ class Course extends KZ_Controller {
         $this->load->model(array('m_module','m_jawab'));
     }
     function index() {
-        $this->load->model(array('m_prodi'));
-        
-        $is_smt = ($this->sessionlevel != '1') ? array('periode_aktif !=' => '2') : null;
-        $this->data['semester'] = $this->m_semester->getAll($is_smt);
-        $this->data['prodi'] = $this->m_prodi->getAll();
-        
         $this->data['module'] = $this->module;
         $this->data['title'] = array('Course','List Data');
         $this->data['breadcrumb'] = array( 
@@ -57,7 +51,7 @@ class Course extends KZ_Controller {
         $this->data['is_tugas'] = ($result['jenis_module'] == 'TUGAS') ? 'hide':'';
         
         $this->data['bank'] = $this->db->get_where('lm_bank', 
-            array('jenis_bank' => $result['is_quiz'], 'dosen_id' => $this->did))->result_array();
+            array('jenis_bank' => $result['is_quiz']))->result_array();
         
         $this->data['edit'] = $result;
         $this->data['module'] = $this->module;
@@ -113,12 +107,12 @@ class Course extends KZ_Controller {
         }
         if($routing_module['type'] == 'table') {
             //TABLE
-            if($routing_module['source'] == 'soal') {
+            if($routing_module['source'] == 'index') {
+                $this->_table_index();
+            }else if($routing_module['source'] == 'soal') {
                 $this->_table_soal();
             }else if($routing_module['source'] == 'rekap') {
                 $this->_table_rekap();
-            }else if($routing_module['source'] == 'mahasiswa') {
-                $this->_table_mhs();
             }
         }else if($routing_module['type'] == 'list') {
             //TABLE
@@ -126,178 +120,55 @@ class Course extends KZ_Controller {
                 $this->_list_index();
             }else if($routing_module['source'] == 'soal') {
                 $this->_list_soal();
-            }else if($routing_module['source'] == 'dosen') {
-                $this->_get_dosen();
-            }else if($routing_module['source'] == 'kelas') {
-                $this->_get_kelas();
             }
         }
     }
     //function
-    function _list_index() {
-        $id = decode($this->input->post('id'));
-        $nomor = $this->input->post('no');
+    function _table_index() {
+        $where = null;
+        $list = $this->m_module->get_datatables($where);
         
-        $where['kelas_id'] = $id;
-        if(!empty($nomor)){
-            $where['init_jurnal'] = $nomor;
-        }
-        $list = $this->db->order_by('init_jurnal', 'asc')->get_where('m_jurnal', $where);
-        if($list->num_rows() < 1){
-            jsonResponse(array('status' => false, 'msg' => 'Jurnal tidak ditemukan'));
-        }
-        $is_dosen = (empty($this->did) && $this->sessionlevel != '1') ? 'hide':'';
-        $course_html = '';
-        $no = 1;
-        //list jurnal
-        foreach ($list->result_array() as $items) {
-            $is_active = ($items['status_jurnal'] == '1') ? 'widget-color-blue2':'widget-color-red disabled'; 
-            $activ_html = '';
-            
-            $activity = $this->db->order_by('jenis_module', 'asc')->order_by('update_module', 'asc')
-                ->get_where('lm_module',array('jurnal_id' => $items['id_jurnal']))->result_array();
-            //list module
-            foreach ($activity as $val) {
-                $is_active_mod = ($val['status_module'] == '1') ? '':'alert alert-danger'; 
-                $is_file_mod = empty($val['file_module']) ? 'hide':'';
-                     
-                switch ($val['jenis_module']) {
-                    case 'QUIZ':
-                        $json_soal = json_decode($val['soal_module'], true);
-                        $enrol_soal = !empty($val['soal_module']) && is_array($json_soal) ? 
-                            array_map(function($item) {  return $item['id']; }, $json_soal) : array();
-                            
-                        $icon = ($val['is_quiz'] == 'ESSAI') ? 'fa-pencil-square-o btn-purple' : 'fa-list-ol btn-danger';
-                        $is_action = '<div class="space-4"></div>
-                            <ul class="list-unstyled">
-                                <li class="">
-                                    <i class="ace-icon fa fa-list-ol blue"></i>
-                                    Tipe Soal : <strong class="blue bigger-110">'.count($enrol_soal).'</strong> <strong>'.$val['is_quiz'].'</strong> 
-                                </li>
-                                <li class="">
-                                    <i class="ace-icon fa fa-clock-o bigger-120 red"></i>
-                                    Durasi Pengerjaan : <strong class="red bigger-110">'.$val['durasi_module'].'</strong> Menit
-                                </li>
-                                <li class="">
-                                    <i class="ace-icon fa fa-calendar green"></i>
-                                    Jadwal Pelaksanaan : <strong class="blue">'.format_date($val['buka_module'],2).
-                                    '</strong> s/d <strong class="orange">'.format_date($val['tutup_module'],2).'</strong>
-                                </li>
-                            </ul>
-                            <button id="submit-btn" itemid="'.encode($val['id_module']).'" itemname="'.$val['nama_module'].'"
-                                class="btn btn-danger btn-white btn-bold btn-sm '.$is_dosen.'"><i class="fa fa-pencil"></i> Mulai Pengerjaan </button>';
-                        break;
-                    case 'TUGAS': 
-                        $icon = 'fa-cloud-upload btn-warning';
-                        $is_action = '<div class="space-4"></div>
-                            <ul class="list-unstyled">
-                                <li class="">
-                                    <i class="ace-icon fa fa-calendar green"></i>
-                                    Jadwal Submit : <strong class="blue">'.format_date($val['buka_module'],2).
-                                    '</strong> s/d <strong class="orange">'.format_date($val['tutup_module'],2).'</strong>
-                                </li>
-                            </ul>';
-                        break;
-                    case 'MATERI': 
-                        $icon = 'fa-book btn-success';
-                        $is_action = '';
-                        break;
-                    case 'FILE': 
-                        $icon = 'fa-file-pdf-o btn-primary';
-                        $is_action = '';
-                        break;
-                    case 'LINK': 
-                        $icon = 'fa-link btn-info';
-                        $is_action = '';
-                        break;
-                    default: 
-                        $icon = 'fa-star btn-default';
-                        $is_action = '';
-                        break;
-                }
-                $activ_html .= '<div class="row"><div class="timeline-item col-sm-offset-2 col-sm-8">
-                    <div class="timeline-info bigger-150">
-                        <i class="timeline-indicator ace-icon fa btn no-hover '.$icon.'"></i>
-                    </div>
-                    <div class="widget-box '.$is_active.'">
-                        <div class="widget-body">
-                            <div class="widget-main '.$is_active_mod.'">
-                                <div class="pull-right">
-                                    <a target="_blank" href="'.load_file($val['file_module']).'"
-                                        class="btn btn-white btn-grey btn-round btn-mini '.$is_file_mod.'">Berkas File&nbsp;
-                                        <i class="fa fa-download"></i>
-                                    </a>
-                                    <a href="'.site_url($this->module.'/detail/'.encode($val['id_module'])).'" target="_blank" 
-                                        class="btn btn-white btn-primary btn-round btn-mini">
-                                        <i class="fa fa-search-plus"></i>
-                                    </a>
-                                    <a href="'.site_url($this->module.'/edit/'.encode($val['id_module'])).'" target="_blank" 
-                                        class="btn btn-white btn-warning btn-round btn-mini '.$is_dosen.'">
-                                        <i class="fa fa-pencil-square-o"></i>
-                                    </a>
-                                    <button id="delete-activ-btn" itemid="'.site_url($this->module.'/delete/'.encode($val['id_module'])).'"'
-                        . '             itemname="'.ctk($val['nama_module']).'" class="btn btn-white btn-danger btn-round btn-mini '.$is_dosen.'">
-                                        <i class="fa fa-trash-o"></i>
-                                    </button>
-                                </div>
-                                <strong>'.$val['nama_module'].'</strong><br/>'.$val['note_module'].$is_action.'
-                            </div>
-                        </div>
-                    </div>
-                </div></div>';
-            }
-            $course_html .= '<div class="timeline-container">
-                <div class="timeline-label">
-                    <span class="label label-danger arrowed-in-right label-xlg">
-                        <b class="bigger-110">Ke - ' .$items['init_jurnal']. '</b>
-                    </span>'.st_mhs($items['mode_jurnal']).'
-                </div>
-                <div class="timeline-items">
-                    <div class="timeline-item clearfix">
-                        <div class="timeline-info">
-                            <img class="" src="'.load_file('theme/img/logo.png').'" />
-                        </div>
-                        <div class="widget-box '.$is_active.'">
-                            <div class="widget-header widget-header-small">
-                                <h5 class="widget-title bolder black">'.format_date($items['tgl_jurnal']).'</h5>
-                                <span class="widget-toolbar no-border">
-                                    <div class="btn-group btn-overlap '.$is_dosen.'">
-                                        <a target="_blank" href="'.site_url('master/jurnal/edit/'.encode($items['id_jurnal'])).'" 
-                                            class="btn btn-white btn-warning btn-bold btn-mini">
-                                            <i class="fa fa-pencil-square-o bigger-110"></i> Ubah
-                                        </a>
-                                        <a href="'.site_url('master/jurnal/detail/'.encode($items['id_jurnal'])).'" target="_blank" 
-                                            class="btn btn-white btn-info btn-bold btn-mini" '.$is_active.'>
-                                            <i class="fa fa-user-plus bigger-110"></i> Presensi
-                                        </a>
-                                        <button id="add-btn" itemid="'.encode($items['id_jurnal']).'" 
-                                            class="btn btn-white btn-success btn-bold btn-mini">
-                                            <i class="fa fa-plus-square bigger-110"></i> Aktivitas
-                                        </button>
-                                        <button id="delete-btn" itemid="'.site_url('master/jurnal/delete/'.encode($items['id_jurnal'])).'" itemname="Pertemuan Ke - '.ctk($items['init_jurnal']).'"
-                                            class="btn btn-white btn-danger btn-bold btn-mini">
-                                            <i class="fa fa-trash bigger-110"></i>
-                                        </button>
-                                    </div>
-                                </span>
-                            </div>
-                            <div class="widget-body">
-                                <div class="widget-main">
-                                    Waktu : <strong>'.ctk($items['waktu_jurnal']).'</strong><br/>
-                                    Ruangan : <strong>'.ctk($items['ruang_jurnal']).'</strong><br/>
-                                    <span class="red">***</span> '.ctk($items['note_jurnal']).'
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    '.$activ_html.'
-                </div>
-            </div>';
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $items) {
             $no++;
+            $row = array();
+            
+            $json_soal = json_decode($items['soal_module'], true);
+            $enrol_soal = !empty($items['soal_module']) && is_array($json_soal) ? 
+                array_map(function($item) {  return $item['id']; }, $json_soal) : array();
+                    
+            $btn_aksi = '<a href="'. site_url($this->module .'/detail/'. encode($items['id_module'])) .'" 
+                    class="tooltip-info btn btn-white btn-info btn-round btn-sm" data-rel="tooltip" title="Lihat Data">
+                    <span class="blue"><i class="ace-icon fa fa-search-plus bigger-120"></i></span>
+                </a>
+                <a href="'. site_url($this->module .'/edit/'. encode($items['id_module'])) .'"
+                    class="tooltip-warning btn btn-white btn-warning btn-sm btn-round" data-rel="tooltip" title="Ubah Data">
+                    <span class="orange"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></span>
+                </a>
+                <a href="#" itemid="'.encode($items['id_module']).'" itemname="'.ctk($items['nama_module']).'" id="delete-btn" 
+                    class="tooltip-error btn btn-white btn-danger btn-mini btn-round" data-rel="tooltip" title="Hapus Data">
+                    <span class="red"><i class="ace-icon fa fa-trash-o"></i></span>
+                </a>';
+            
+            $row[] = $no;
+            $row[] = '<strong>'.ctk($items['nama_module']).'</strong>';
+            $row[] = '[<strong class="blue bigger-120">'.count($enrol_soal).'</strong>] '.ctk($items['is_quiz']).'<br>'
+                .st_aktif($items['is_random'], 'ya');
+            $row[] = format_date($items['buka_module'],2).' s/d <br><span class="orange">'
+                .format_date($items['tutup_module'],2).'</span>';
+            $row[] = '<strong class="red">'.ctk($items['durasi_module']).'</strong> Menit';
+            $row[] = st_aktif($items['status_module']);
+            $row[] = '<div class="action-buttons">'.$btn_aksi.'</div>';
+            $data[] = $row;
         }
-        $data['course'] = $course_html;
-                
-        jsonResponse(array('data' => $data, 'status' => true, 'msg' => 'Data ditemukan'));
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->m_module->count_all(),
+            "recordsFiltered" => $this->m_module->count_filtered($where),
+            "data" => $data,
+        );
+        jsonResponse($output);
     }
     function _table_soal() {
         $this->load->model(array('m_soal'));
@@ -343,6 +214,76 @@ class Course extends KZ_Controller {
             $row[] = limit_text($items['isi_soal'], 100);
             $row[] = ctk($items['materi_soal']);
             $row[] = '<strong>'.ctk($items['nama_bank']).'</strong> <br> '.$items['jenis_bank'];
+            
+            $data['table'][] = $row;
+            $no++;
+        }
+        jsonResponse(array('data' => $data, 'status' => true, 'msg' => 'Data ditemukan'));
+    }
+    function _table_rekap() {
+        $id = decode($this->input->post('id'));
+        
+        $result = $this->m_module->getId($id);
+        if(empty($result)){
+            jsonResponse(array('status' => false, 'msg' => 'Data tidak ditemukan'));
+        }
+        $list = $this->db->join('m_mhs m','m.id_mhs = j.peserta_id','left')->get_where('lm_jawab j', array('module_id' => $id));
+        if($list->num_rows() < 1){
+            jsonResponse(array('status' => false, 'msg' => 'Data tidak ditemukan'));
+        }
+        $data = array('table' => array());
+        $no = 1;
+        foreach ($list->result_array() as $items) {
+            $row = array();
+            switch ($items['status_jawab']) {
+                case '0': $st_jawab = '<span class="label label-warning arrowed-in-right arrowed">PROGRESS</span>';
+                    break; 
+                case '1': $st_jawab = '<span class="label label-success arrowed-in-right arrowed">SELESAI</span>';
+                    break;
+                default: $st_jawab = '<span class="label label-default arrowed-in-right arrowed">PENDING</span>';
+                    break;
+            }
+            $is_done = ($items['status_jawab'] == '1') ? true : false;
+            $sisa_quiz = range_date(date('Y-m-d H:i:s'), $items['mulai_jawab'], $items['selesai_jawab']);
+            $st_sesi = ($is_done || !$sisa_quiz['st']) ? format_date($items['mulai_jawab'],2).'<br><strong class="green">'.format_date($items['selesai_jawab'],2).'</strong>' :
+                '<strong>'.format_date($items['mulai_jawab'],3).' - '.format_date($items['selesai_jawab'],3).'</strong><br>
+                <span class="label label-danger bolder">'.$sisa_quiz['rs'].'</span>';
+            
+            $json_skor = json_decode($items['skor_jawab'], true);
+            $skor = (int) element('nilai', $json_skor);
+            $jumlah_soal = (int) element('jumlah', $json_skor);
+            $nilai = ($result['is_quiz'] == 'PILIHAN-GANDA' && $jumlah_soal > 0) ? round($skor/$jumlah_soal*100) : $skor;
+            $is_file = empty($items['file_jawab']) ? '':'&nbsp;&nbsp;&nbsp;<b>File</b> : '.st_file($items['file_jawab'], 1);
+                    
+            $btn_skor = ($result['jenis_module'] == 'QUIZ') ? '<button itemid="'. encode($items['id_jawab']) .'" id="skor-btn" 
+                    class="tooltip-info btn btn-white btn-info btn-sm btn-round" data-rel="tooltip" title="Hitung Skor">
+                    <span class=""><i class="ace-icon fa fa-calculator bigger-120"></i></span>
+                </button>
+                <a href="'.site_url($this->module.'/add/'.encode($items['id_jawab'])).'"  data-rel="tooltip" title="Lihat Hasil" target="_blank" 
+                    class="tooltip-success btn btn-white btn-success btn-sm btn-round">
+                    <span class="green"><i class="fa fa-list-ol bigger-120"></i></span>
+                </a>' : '<input type="number" class="bolder center input-small" name="skor[]" id="skor'. encode($items['id_jawab']) .'" placeholder="Nilai">
+                <button itemid="'. encode($items['id_jawab']) .'" id="simpan-btn" 
+                    class="tooltip-success btn btn-white btn-success btn-sm btn-round" data-rel="tooltip" title="Simpan Skor">
+                    <span class=""><i class="ace-icon fa fa-save bigger-120"></i></span>
+                </button>';
+            $btn_aksi = '<button itemid="'.encode($items['id_jawab']).'" itemname="'.$items['status_jawab'].'" itemprop="'.$items['valid_jawab'].'" id="edit-btn"
+                    class="tooltip-warning btn btn-white btn-warning btn-sm btn-round" data-rel="tooltip" title="Ubah Data">
+                    <span class="orange"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></span>
+                </button>
+                <button itemid="'.encode($items['id_jawab']).'" itemname="'.ctk($items['nama_mhs'] ?? $this->sessionname).'" id="delete-btn" 
+                    class="tooltip-error btn btn-white btn-danger btn-mini btn-round" data-rel="tooltip" title="Hapus Data">
+                    <span class="red"><i class="ace-icon fa fa-trash-o"></i></span>
+                </button>';
+            $row[] = $no;
+            $row[] = empty($items['nama_mhs']) ? $this->sessionname
+                : '<a target="_blank" href="'.site_url('master/daftar/detail/'.encode($items['id_mhs']))
+                .'"><b>'.ctk($items['nama_mhs']).'</b></a><br> '. st_mhs($items['status_mhs']);
+            $row[] = $st_sesi;
+            $row[] = '<b>'.$skor.'</b> / '.$jumlah_soal.'<br><b>Nilai</b> : <span class="bigger-120">[<strong class="blue">'.$nilai.'</strong>]</span>'.$is_file;
+            $row[] = '<small>'. ctk($items['note_jawab']).'</small>';
+            $row[] = $st_jawab.st_aktif($items['valid_jawab']);
+            $row[] = '<div class="action-buttons">'.$btn_skor.' '.$btn_aksi.'</div>';
             
             $data['table'][] = $row;
             $no++;
@@ -475,171 +416,6 @@ class Course extends KZ_Controller {
         <div align="center">'.$this->_is_file($soal['file_soal']).'</div>';
         
         jsonResponse(array('data' => $data, 'status' => true, 'msg' => 'Data ditemukan'));
-    }
-    function _table_rekap() {
-        $id = decode($this->input->post('id'));
-        
-        $result = $this->m_module->getId($id);
-        if(empty($result)){
-            jsonResponse(array('status' => false, 'msg' => 'Data tidak ditemukan'));
-        }
-        $list = $this->db->join('m_mhs m','m.id_mhs = j.peserta_id','left')->get_where('lm_jawab j', array('module_id' => $id));
-        if($list->num_rows() < 1){
-            jsonResponse(array('status' => false, 'msg' => 'Data tidak ditemukan'));
-        }
-        $data = array('table' => array());
-        $no = 1;
-        foreach ($list->result_array() as $items) {
-            $row = array();
-            switch ($items['status_jawab']) {
-                case '0': $st_jawab = '<span class="label label-warning arrowed-in-right arrowed">PROGRESS</span>';
-                    break; 
-                case '1': $st_jawab = '<span class="label label-success arrowed-in-right arrowed">SELESAI</span>';
-                    break;
-                default: $st_jawab = '<span class="label label-default arrowed-in-right arrowed">PENDING</span>';
-                    break;
-            }
-            $is_done = ($items['status_jawab'] == '1') ? true : false;
-            $sisa_quiz = range_date(date('Y-m-d H:i:s'), $items['mulai_jawab'], $items['selesai_jawab']);
-            $st_sesi = ($is_done || !$sisa_quiz['st']) ? format_date($items['mulai_jawab'],2).'<br><strong class="green">'.format_date($items['selesai_jawab'],2).'</strong>' :
-                '<strong>'.format_date($items['mulai_jawab'],3).' - '.format_date($items['selesai_jawab'],3).'</strong><br>
-                <span class="label label-danger bolder">'.$sisa_quiz['rs'].'</span>';
-            
-            $json_skor = json_decode($items['skor_jawab'], true);
-            $skor = (int) element('nilai', $json_skor);
-            $jumlah_soal = (int) element('jumlah', $json_skor);
-            $nilai = ($result['is_quiz'] == 'PILIHAN-GANDA' && $jumlah_soal > 0) ? round($skor/$jumlah_soal*100) : $skor;
-            $is_file = empty($items['file_jawab']) ? '':'&nbsp;&nbsp;&nbsp;<b>File</b> : '.st_file($items['file_jawab'], 1);
-                    
-            $btn_skor = ($result['jenis_module'] == 'QUIZ') ? '<button itemid="'. encode($items['id_jawab']) .'" id="skor-btn" 
-                    class="tooltip-info btn btn-white btn-info btn-sm btn-round" data-rel="tooltip" title="Hitung Skor">
-                    <span class=""><i class="ace-icon fa fa-calculator bigger-120"></i></span>
-                </button>
-                <a href="'.site_url($this->module.'/add/'.encode($items['id_jawab'])).'"  data-rel="tooltip" title="Lihat Hasil" target="_blank" 
-                    class="tooltip-success btn btn-white btn-success btn-sm btn-round">
-                    <span class="green"><i class="fa fa-list-ol bigger-120"></i></span>
-                </a>' : '<input type="number" class="bolder center input-small" name="skor[]" id="skor'. encode($items['id_jawab']) .'" placeholder="Nilai">
-                <button itemid="'. encode($items['id_jawab']) .'" id="simpan-btn" 
-                    class="tooltip-success btn btn-white btn-success btn-sm btn-round" data-rel="tooltip" title="Simpan Skor">
-                    <span class=""><i class="ace-icon fa fa-save bigger-120"></i></span>
-                </button>';
-            $btn_aksi = '<button itemid="'.encode($items['id_jawab']).'" itemname="'.$items['status_jawab'].'" itemprop="'.$items['valid_jawab'].'" id="edit-btn"
-                    class="tooltip-warning btn btn-white btn-warning btn-sm btn-round" data-rel="tooltip" title="Ubah Data">
-                    <span class="orange"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></span>
-                </button>
-                <button itemid="'.encode($items['id_jawab']).'" itemname="'.ctk($items['nama_mhs'] ?? $this->sessionname).'" id="delete-btn" 
-                    class="tooltip-error btn btn-white btn-danger btn-mini btn-round" data-rel="tooltip" title="Hapus Data">
-                    <span class="red"><i class="ace-icon fa fa-trash-o"></i></span>
-                </button>';
-            $row[] = $no;
-            $row[] = empty($items['nama_mhs']) ? $this->sessionname
-                : '<strong>'.ctk($items['nama_mhs']).'</strong><br><span class="blue">'.ctk($items['nim']).'</span>';
-            $row[] = $st_sesi;
-            $row[] = '<b>Nilai</b> : <span class="bigger-120">[ <strong class="blue">'.$nilai.'</strong> ]</span>'.$is_file;
-            $row[] = '<small>'. ctk($items['note_jawab']).'</small>';
-            $row[] = $st_jawab.st_aktif($items['valid_jawab']);
-            $row[] = (empty($this->did) && $this->sessionlevel != '1') ? '':'<div class="action-buttons">'.$btn_skor.' '.$btn_aksi.'</div>';
-            
-            $data['table'][] = $row;
-            $no++;
-        }
-        jsonResponse(array('data' => $data, 'status' => true, 'msg' => 'Data ditemukan'));
-    }
-    function _table_mhs() {
-        $id = decode($this->input->post('id'));
-        
-        $all_quiz = $this->db->join('m_jurnal j', 'j.id_jurnal = m.jurnal_id', 'inner')
-            ->order_by('j.init_jurnal', 'ASC')->order_by('m.update_module', 'ASC')->where_in('jenis_module', array('QUIZ','TUGAS'))
-            ->get_where('lm_module m', array('kelas_id' => $id))->result_array();
-        
-        $list = $this->db->join('m_mhs m', 'n.mhs_id = m.id_mhs', 'left')
-            ->order_by('m.nim', 'ASC')->get_where('rf_nilai n', array('kelas_id' => $id));
-        if($list->num_rows() < 1){
-            jsonResponse(array('status' => false, 'msg' => 'Data tidak ditemukan'));
-        }
-        $data = array('table' => array(), 'column' => array());
-        $no = 1;
-        foreach ($list->result_array() as $items) {
-            $row = array();
-            $total = 0;
-            
-            $row[] = $no;
-            $row[] = '<strong>'.$items['nama_mhs'].'</strong> <br> '.$items['nim'];
-            foreach ($all_quiz as $val) {
-                $nilai = 0;
-                $query = $this->db->get_where('lm_jawab', 
-                    array('module_id' => $val['id_module'], 'peserta_id' => $items['id_mhs'], 'valid_jawab' => '1'))->row_array();
-                
-                if(!is_null($query)){
-                    $json_skor = json_decode($query['skor_jawab'], true);
-                    $skor = (int) element('nilai', $json_skor);
-                    $jumlah_soal = (int) element('jumlah', $json_skor);
-                    $total += $nilai = ($val['is_quiz'] == 'PILIHAN-GANDA' && $jumlah_soal > 0) ? round($skor/$jumlah_soal*100) : $skor;
-                }
-                $row[] = $nilai > 0 ? '<strong class="orange bigger-110">'.$nilai.'</strong>':null;
-            }
-            $row[] = $total > 0 ? '<strong class="bigger-120">'.$total.'</strong>':null;
-            
-            $data['table'][] = $row;
-            $no++;
-        }
-        $data['column'] = $all_quiz;
-        
-        jsonResponse(array('data' => $data, 'status' => true, 'msg' => 'Data ditemukan'));
-    }
-    function _get_dosen(){
-        $this->load->model(array('m_dosen'));
-        
-        $key = $this->input->post('key');
-        $id = $this->input->get('id');
-        
-        $where = null;
-        if(!is_null($this->did)){
-            $where['id_dosen'] = $this->did;
-        }
-        if(!empty($id)){
-            $result = $this->m_dosen->getAll(array('id_dosen' => decode($id)));
-        }else{
-            $result = $this->m_dosen->getAll($where, $key);
-        }
-        $data = array();
-        foreach ($result['data'] as $val) {
-            $text = $val['nidn'].' - '.$val['nama_dosen'];
-            $data[] = array("id" => encode($val['id_dosen']), "text" => $text, "status" => $val['status_dosen']);
-        }
-        jsonResponse($data);
-    }
-    function _get_kelas(){
-        $this->load->model(array('m_kelas'));
-        
-        $key = $this->input->post('key');
-        $periode = decode($this->input->post('periode'));
-        $dosen = decode($this->input->post('dosen'));
-        $prodi = decode($this->input->post('prodi'));
-        
-        $id = $this->input->get('id');
-        
-        $where['id_semester'] = empty($periode) ? $this->smtid : $periode;
-        if($dosen != '') {
-            $where['id_dosen'] = $dosen;
-        }
-        if(!is_null($this->did)){
-            $where['id_dosen'] = $this->did;
-        }
-        if($prodi != '') {
-            $where['prodi_id'] = $prodi;
-        }
-        if(!empty($id)){
-            $result = $this->m_kelas->getAll(array('id_kelas' => decode($id)));
-        }else {
-            $result = $this->m_kelas->getAll($where, '' ,$key);
-        }
-        $data = array();
-        foreach ($result['data'] as $val) {
-            $text = ctk($val['kode_matkul']).' - '.ctk($val['nama_matkul']).' ['.ctk($val['nama_kelas']).'] - '.ctk($val['nama_prodi']);
-            $data[] = array("id" => encode($val['id_kelas']), "text" => $text);
-        }
-        jsonResponse($data);
     }
     function _is_file($file) {
         if(empty($file)){ return ''; }

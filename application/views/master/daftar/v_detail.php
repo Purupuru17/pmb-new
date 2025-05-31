@@ -33,7 +33,7 @@
                                     Profil
                                 </a>
                             </li>
-                            <li class="hide">
+                            <li class="">
                                 <a data-toggle="tab" href="#seleksi">
                                     <i class="red ace-icon fa fa-paste bigger-120"></i>
                                     Seleksi Mandiri
@@ -71,8 +71,6 @@
                                             <i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
                                             <span class="">Ubah Profil</span>
                                         </a>
-                                        <div class="space space-4"></div>
-                                        <?= $nilai_seleksi ?>
                                     </div><!-- /.col -->
                                     <div class="col-xs-12 col-sm-10">
                                         <h4 class="blue">

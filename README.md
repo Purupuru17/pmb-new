@@ -33,5 +33,7 @@ Done
 - Item pembayaran khusus admin
 
 Rev
-- Seleksi CAT
 - Pilih periode NIM
+- Edit Sesi
+- Tambah Course
+- Cek kembali/optimasi saat mulai pngerjaan, bug ragu2
