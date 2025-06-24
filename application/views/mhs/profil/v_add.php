@@ -275,13 +275,16 @@ load_js(array(
                 clearInterval(timer);
                 $(".is-done").attr("disabled","disabled");
                 $("#timer").html("----------------");
+                $("#content-soal, #content-opsi").addClass('hide');
             } else if (distance < 0) {
                 clearInterval(timer);
                 $(".is-done").attr("disabled","disabled");
                 $("#timer").html("Waktu Pengerjaan Telah Selesai");
+                $("#content-soal, #content-opsi").addClass('hide');
                 done_jawab();
             } else{
                 $(".is-done").removeAttr("disabled");
+                $("#content-soal, #content-opsi").removeClass('hide');
             }
         }, 1000);
     }

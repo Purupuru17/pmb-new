@@ -28,8 +28,9 @@ class Course extends KZ_Controller {
             $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Sesi tidak ditemukan'));
             redirect($this->module);
         }
-        if ($result['status_jawab'] == '2') {
-            $this->m_jawab->update(decode($id), array('status_jawab' => '0'));
+        if($result['status_jawab'] == '0' && ($result['session_jawab'] !== $this->session->userdata('session_jawab'))){
+            //$this->session->set_flashdata('notif', notif('warning', 'Informasi', 'Sesi terkunci atau sedang berjalan di perangkat lain'));
+            //redirect($this->module);
         }
         $this->data['detail'] = $result;
         $this->data['module'] = $this->module;

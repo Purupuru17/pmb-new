@@ -55,6 +55,8 @@ class Beranda extends KZ_Controller {
         $range = format_date($awal,1).' s/d '.format_date($akhir,1);
     
         $where['m.angkatan'] = $this->input->post('tahun');
+        $where['p.fakultas <>'] = 'Profesi';
+        
         $rs = $this->m_mhs->get_chart_range($where, 'prodi', $awal, $akhir);
         
         $data = array();
@@ -75,6 +77,8 @@ class Beranda extends KZ_Controller {
     }
     function _chart_prodi() {
         $where['m.angkatan'] = $this->input->post('tahun');
+        $where['p.fakultas <>'] = 'Profesi';
+        
         $rs = $this->m_mhs->get_chart_range($where, 'prodi');
         
         $data = array();
@@ -95,6 +99,8 @@ class Beranda extends KZ_Controller {
     }
     function _chart_sekolah() {
         $where['m.angkatan'] = $this->input->post('tahun');
+        $where['p.fakultas <>'] = 'Profesi';
+        
         $rs = $this->m_mhs->get_chart_range($where, 'sekolah');
         
         $data = array();

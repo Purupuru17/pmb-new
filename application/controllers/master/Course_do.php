@@ -157,7 +157,8 @@ class Course_do extends KZ_Controller {
         if(!is_null($jawab)){
             $msg_jwb = ($jawab['status_jawab'] == '1') ? 'Terimakasih telah mengerjakan sesi ini' 
                 : 'Selamat datang kembali. Mohon segera mengerjakan sebelum waktu habis';
-            jsonResponse(array('status' => TRUE, 'link' => site_url($this->module.'/add/'.encode($jawab['id_jawab'])), 'msg' => $msg_jwb));
+            jsonResponse(array('status' => TRUE, 'msg' => $msg_jwb, 
+                'link' => site_url($this->module.'/add/'.encode($jawab['id_jawab']))));
         }
         //init soal
         $arr_soal = json_decode($module['soal_module'], true);
@@ -189,13 +190,16 @@ class Course_do extends KZ_Controller {
         $data['peserta_id'] = $peserta_id;
         $data['mulai_jawab'] = date('Y-m-d H:i:s');
         $data['selesai_jawab'] = date('Y-m-d H:i:s', strtotime($data['mulai_jawab'] . ' +'.$durasi.' minutes'));
-        $data['status_jawab'] = '2';
+        $data['status_jawab'] = '0';
         $data['valid_jawab'] = '1';
+        $data['session_jawab'] = encode(random_string('unique'));
         $data['update_jawab'] = date('Y-m-d H:i:s');
         $data['log_jawab'] = $this->sessionname.' memulai sesi ini';
         
         $result = $this->m_jawab->insertBatch($data, $quiz);
         if($result){
+            $this->session->set_userdata(array('session_jawab' => $data['session_jawab']));
+            
             jsonResponse(array('status' => TRUE, 'link' => site_url($this->module.'/add/'.encode($data['id_jawab'])), 
                 'msg' => 'Waktu pengerjaan sudah di mulai. Harap kerjakan dengan teliti'));
         }else{
@@ -219,7 +223,7 @@ class Course_do extends KZ_Controller {
         if(is_null($check)){
             jsonResponse(array('status' => FALSE, 'msg' => 'Sesi tidak ditemukan'));
         }
-        if($check['status_jawab'] == '1' || $check['valid_jawab'] == '0'){
+        if($check['status_jawab'] != '0' || $check['valid_jawab'] == '0'){
             jsonResponse(array('status' => FALSE, 'msg' => 'Sesi ini sudah anda kerjakan sebelumnya'));
         }
         //cek jawab
@@ -274,11 +278,11 @@ class Course_do extends KZ_Controller {
         if(is_null($check)){
             jsonResponse(array('status' => FALSE, 'msg' => 'Sesi tidak ditemukan'));
         }
-        if($check['status_jawab'] == '1' || $check['valid_jawab'] == '0'){
+        if($check['status_jawab'] != '0' || $check['valid_jawab'] == '0'){
             jsonResponse(array('status' => FALSE, 'msg' => 'Sesi ini sudah anda kerjakan sebelumnya'));
         }
-        $rs_skor = $this->db->select('SUM(nilai_quiz) AS nilai, COUNT(soal_id) AS jumlah')->from('lmrf_quiz')
-            ->where(array('jawab_id' => $id))->get()->row_array();
+        $rs_skor = $this->db->select('SUM(nilai_quiz) AS nilai, COUNT(soal_id) AS jumlah')
+            ->get_where('lmrf_quiz', array('jawab_id' => $id))->row_array();
         
         $data['skor_jawab'] = json_encode($rs_skor);
         $data['status_jawab'] = '1';
@@ -305,8 +309,8 @@ class Course_do extends KZ_Controller {
         }
         switch ($tipe) {
             case 'hitung':
-                $rs_skor = $this->db->select('SUM(nilai_quiz) AS nilai, COUNT(soal_id) AS jumlah')->from('lmrf_quiz')
-                    ->where(array('jawab_id' => $id))->get()->row_array();
+                $rs_skor = $this->db->select('SUM(nilai_quiz) AS nilai, COUNT(soal_id) AS jumlah')
+                    ->get_where('lmrf_quiz', array('jawab_id' => $id))->row_array();
                 $data['skor_jawab'] = json_encode($rs_skor);
                 break;
             case 'simpan':
@@ -328,6 +332,8 @@ class Course_do extends KZ_Controller {
                         $data['selesai_jawab']  = date('Y-m-d H:i:s', strtotime('+'.$durasi.' minutes', $now));
                     }
                     $data['status_jawab'] = '0';
+                    $data['valid_jawab'] = '1';
+                    $data['session_jawab'] = NULL;
                 }else{
                     $data['status_jawab'] = $this->input->post('status');
                     $data['valid_jawab'] = $this->input->post('valid');

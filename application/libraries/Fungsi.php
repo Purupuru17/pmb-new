@@ -12,7 +12,9 @@ class Fungsi{
     }
     function PdfGenerate($html, $filename='', $attach = 0 ,$paper = 'A4', $orientation = 'portrait', $stream = TRUE) {
         $tmp = sys_get_temp_dir();
-        ob_end_clean();
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
         $options = new Options();
         $options->set('logOutputFile', '');
         $options->set('isRemoteEnabled', TRUE);

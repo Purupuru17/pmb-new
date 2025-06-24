@@ -37,3 +37,6 @@ Rev
 - Edit Sesi
 - Tambah Course
 - Cek kembali/optimasi saat mulai pngerjaan, bug ragu2
+- Grafik payment
+- Table adjust
+- pdff image docker

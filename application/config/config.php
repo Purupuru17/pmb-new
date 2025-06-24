@@ -161,7 +161,7 @@ $config['subclass_prefix'] = 'KZ_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = '../vendor/autoload.php';
+$config['composer_autoload'] = APPPATH . '../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------

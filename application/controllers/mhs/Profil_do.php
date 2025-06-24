@@ -112,12 +112,29 @@ class Profil_do extends KZ_Controller {
         //check jawab
         $jawab = $this->m_jawab->getId(array('module_id' => $id, 'peserta_id' => $peserta_id, 'valid_jawab' => '1'));
         if(!is_null($jawab)){
-            if($jawab['status_jawab'] == '0'){
-                jsonResponse(array('status' => FALSE, 'msg' => 'Sesi terkunci atau sedang berjalan di perangkat lain'));
+            switch ($jawab['status_jawab']) {
+                case '0':
+                    //lock 1 sesi    
+                    if (!empty($jawab['session_jawab']) && ($jawab['session_jawab'] !== $this->session->userdata('session_jawab'))){
+                        jsonResponse(array('status' => FALSE, 'msg' => 'Sesi terkunci atau sedang berjalan di perangkat lain'));
+                    }
+                    //reset sesi
+                    if(empty($jawab['session_jawab'])){
+                        $session = encode(random_string('unique'));
+                        $this->m_jawab->update($jawab['id_jawab'], ['session_jawab' => $session]);
+                        $this->session->set_userdata(array('session_jawab' => $session));
+                    }
+                    //start sesi
+                    jsonResponse(array('status' => TRUE, 'msg' => 'Selamat datang kembali. Mohon segera mengerjakan sebelum waktu habis', 
+                        'link' => site_url($this->module.'/add/'.encode($jawab['id_jawab']))));
+                    break;
+                case '1':
+                    jsonResponse(array('status' => FALSE, 'msg' => 'Terimakasih telah mengerjakan sesi ini'));
+                    break;
+                default:
+                    jsonResponse(array('status' => FALSE, 'msg' => 'Sesi tidak ditemukan'));
+                    break;
             }
-            $msg_jwb = ($jawab['status_jawab'] == '1') ? 'Terimakasih telah mengerjakan sesi ini' 
-                : 'Selamat datang kembali. Mohon segera mengerjakan sebelum waktu habis';
-            jsonResponse(array('status' => TRUE, 'link' => site_url($this->module.'/add/'.encode($jawab['id_jawab'])), 'msg' => $msg_jwb));
         }
         //init soal
         $arr_soal = json_decode($module['soal_module'], true);
@@ -149,13 +166,16 @@ class Profil_do extends KZ_Controller {
         $data['peserta_id'] = $peserta_id;
         $data['mulai_jawab'] = date('Y-m-d H:i:s');
         $data['selesai_jawab'] = date('Y-m-d H:i:s', strtotime($data['mulai_jawab'] . ' +'.$durasi.' minutes'));
-        $data['status_jawab'] = '2';
+        $data['status_jawab'] = '0';
         $data['valid_jawab'] = '1';
+        $data['session_jawab'] = encode(random_string('unique'));
         $data['update_jawab'] = date('Y-m-d H:i:s');
         $data['log_jawab'] = $this->sessionname.' memulai sesi ini';
         
         $result = $this->m_jawab->insertBatch($data, $quiz);
         if($result){
+            $this->session->set_userdata(array('session_jawab' => $data['session_jawab']));
+            
             jsonResponse(array('status' => TRUE, 'link' => site_url($this->module.'/add/'.encode($data['id_jawab'])), 
                 'msg' => 'Waktu pengerjaan sudah di mulai. Harap kerjakan dengan teliti'));
         }else{
@@ -248,8 +268,8 @@ class Profil_do extends KZ_Controller {
         if($check['status_jawab'] != '0' || $check['valid_jawab'] == '0'){
             jsonResponse(array('status' => FALSE, 'msg' => 'Sesi ini sudah anda kerjakan sebelumnya'));
         }
-        $rs_skor = $this->db->select('SUM(nilai_quiz) AS nilai, COUNT(soal_id) AS jumlah')->from('lmrf_quiz')
-            ->where(array('jawab_id' => $id))->get()->row_array();
+        $rs_skor = $this->db->select('SUM(nilai_quiz) AS nilai, COUNT(soal_id) AS jumlah')
+            ->get_where('lmrf_quiz', array('jawab_id' => $id))->row_array();
         
         $data['skor_jawab'] = json_encode($rs_skor);
         $data['status_jawab'] = '1';

@@ -220,7 +220,8 @@ if (!function_exists('load_array')) {
                 break;
             case 'kip':
                 $val = array(
-                    'PENDING','VALID', 'TIDAK VALID', 'Tanggungan Negara', 'NIK Tidak Sesuai', 'NISN Tidak Sesuai',
+                    'PENDING','VALID', 'TIDAK VALID', 'Tanggungan Negara', 'NIK Tidak Sesuai',
+                    'NIK DKTS Bansos','NISN Tidak Sesuai',
                     'Data Dapodik Tidak Sesuai', 'Tahun Lulus Tidak Valid'
                 );
                 break;

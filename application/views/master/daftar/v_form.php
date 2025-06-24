@@ -492,7 +492,9 @@ $opsi3 = element(1, $exp, '');
     });
     $("#opsi1").change(function () {
         let data = $("#opsi1").select2('data');
-        if(data !== null && data.text === 'S2 Ilmu Manajemen'){
+        let prodi = ['S2 Ilmu Manajemen','S2 Pedagogi','S1 Pendidikan Profesi Guru'];
+        
+        if(data !== null && (prodi.includes(data.text))){
             $(".opsi").addClass('hide');
             $("#opsi2,#opsi3").val(data.text).trigger('change');
         }else{

@@ -257,7 +257,7 @@ $this->load->view('sistem/v_breadcrumb');
     });
     $("#opsi1").change(function () {
         let data = $("#opsi1").select2('data');
-        let prodi = ['S2 Ilmu Manajemen', 'S1 Pendidikan Profesi Guru'];
+        let prodi = ['S2 Ilmu Manajemen','S2 Pedagogi','S1 Pendidikan Profesi Guru'];
         
         if(data !== null && (prodi.includes(data.text))){
             $(".opsi").addClass('hide');

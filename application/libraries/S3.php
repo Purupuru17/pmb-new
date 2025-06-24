@@ -44,9 +44,7 @@ class S3 {
 
         //load aws configuration
         $this->CI->config->load('aws');
-        //load storage library
-        $this->CI->load->library('storage');
-
+        
         //initialize s3 connection
         $this->s3 = new S3Client(array(
             'version'     => $this->CI->config->item('S3_VERSION'),
