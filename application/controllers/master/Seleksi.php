@@ -181,4 +181,117 @@ class Seleksi extends KZ_Controller {
             'rules' => 'required|trim|xss_clean|is_natural'
         )
     );
+    
+    function edit() {
+        $reader = new PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $spreadsheet = $reader->load('theme/img/ppg.xlsx');
+        $sheet = $spreadsheet->getActiveSheet()->toArray();
+        unset($sheet[0]);
+        
+        $output = array();
+        $no = 1;
+        foreach ($sheet as $val) {
+            if(!empty($val[1])){
+            
+                $rs = $this->db->get_where('m_mhs', array('nik' => $val[3]))->row_array();
+                
+                if(!empty($rs)){
+                    $this->db->where('nik', $val[3])->update('m_mhs', ['nim' => $val[1], 'status_mhs' => 'LULUS']);
+                    
+                    if($this->db->affected_rows() > 0){
+                        $output[] = array(
+                            'nim' => $rs['nim'],
+                            'nama' => $rs['nama_mhs'],
+                            'nik' => $rs['nik'],
+                            'nim_excel' => $val[1],
+                            'nama_excel' => $val[2],
+                            'status' => 'INSERT'
+                        );
+                    }else{
+                        $output[] = array(
+                            'nim' => $rs['nim'],
+                            'nama' => $rs['nama_mhs'],
+                            'nik' => $rs['nik'],
+                            'nim_excel' => $val[1],
+                            'nama_excel' => $val[2],
+                            'status' => $rs['status_mhs']
+                        );
+                    }
+                }else{
+                    $output[] = array(
+                        'nim' => 'x',
+                        'nama' => 'x',
+                        'nik' => 'x',
+                        'nim_excel' => $val[1],
+                        'nama_excel' => $val[2],
+                    );
+                }
+                
+                $no++;
+            }
+        }
+        $this->_into_tables($output,1);
+    }
+    function _into_tables($rs, $type = NULL){
+        if(is_null($type)){
+            if(!$rs['status']){
+                echo json_encode($rs);
+                exit();
+            }
+            $data = $rs['data'];
+        }else{
+            $data = $rs;
+        }
+        if(count($data) < 1){
+            echo 'Data Kosong';
+            exit();
+        }
+        $i = 0;
+        $str = '<style>
+        td, th {
+          border: 1px solid #ddd;
+          text-align: center;
+          padding: 8px;
+          white-space: nowrap;
+        }
+        table {
+          font-family: arial, sans-serif;
+          font-size:12px;
+          width: auto;
+          border-collapse: collapse;
+        }
+        </style><table>';
+        foreach ($data as $row) {
+            if (!$i) {
+                $str .= '<tr>';
+                $str .= '<th>no.</th>';
+                foreach (array_keys($row) as $k => $v) {
+                    $str .= '<th>';
+                    $str .= $v;
+                    $str .= '</th>';
+                }
+                $str .= '</tr>';
+            }
+            $str .= '<tr>';
+            $i++;
+            $style = '';
+            foreach ($row as $k => $v) {
+                if (strtolower($k) == 'soft_delete' && $v == '1') {
+                    $style = 'style="text-decoration:line-through"';
+                }
+            }
+            $str .= "<td $style >$i.</td>";
+            foreach ($row as $k => $v) {
+                $str .= "<td $style>";
+                if (!is_array($v))
+                    $str .= $v;
+                $str .= '&nbsp;</td>';
+            }
+            $str .= '</tr>';
+        }
+        $str .= '</table>';
+        
+        echo $str;
+        exit();
+    }
 }

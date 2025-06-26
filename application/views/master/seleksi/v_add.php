@@ -207,7 +207,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label col-xs-12 col-sm-4 no-padding-right">Angkatan :</label>
-                            <div class="col-xs-12 col-sm-5">
+                            <div class="col-xs-12 col-sm-4">
                                 <div class="clearfix">
                                     <select class="select2 width-100" name="tahun" id="tahun" data-placeholder="---> Pilih Tahun <---">
                                         <option value=""> </option>
@@ -223,17 +223,84 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label col-xs-12 col-sm-4 no-padding-right">NIM Tersimpan :</label>
-                            <div class="col-xs-12 col-sm-4">
+                            <div class="col-xs-12 col-sm-7">
                                 <div class="clearfix">
-                                    <input value="<?= ctk($detail['nim']) ?>" readonly="" type="text" class="bolder green" placeholder="Nomor Induk Mahasiswa" />
+                                    <input value="<?= ctk($detail['nim']) ?>" readonly="" type="text" class="bolder col-sm-6 col-xs-12" placeholder="Nomor Induk Mahasiswa" />
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-xs-12 col-sm-4 no-padding-right">NIM Generate :</label>
-                            <div class="col-xs-12 col-sm-4">
+                            <div class="col-xs-12 col-sm-7">
                                 <div class="clearfix">
-                                    <input value="<?= ctk($detail['nim']) ?>" type="text" name="nim" id="nim" class="bolder blue bigger-130" placeholder="Nomor Induk Mahasiswa" />
+                                    <input value="<?= ctk($detail['nim']) ?>" type="text" name="nim" id="nim" class="bolder blue col-sm-6 col-xs-12" placeholder="Nomor Induk Mahasiswa" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-12 col-sm-4 no-padding-right">Periode :</label>
+                            <div class="col-xs-12 col-sm-5">
+                                <div class="clearfix">
+                                    <select class="select2 width-100" name="periode" id="periode" data-placeholder="---> Pilih Periode <---">
+                                        <option value=""> </option>
+                                        <?php
+                                        $awal = intval(date('Y')) - 1;
+                                        $periode = [];
+                                        for($i = $awal; $i <= intval(date('Y')); $i++ ){
+                                            $periode[] = $i . '1';
+                                            $periode[] = $i . '2';
+                                        }
+                                        foreach ($periode as $val) {
+                                            $tahun = substr($val,0,4);
+                                            $tipe = substr($val,4,1);
+                                            $semester = $tahun.'/'.($tahun + 1);
+                                            switch ($tipe) {
+                                                case '1':
+                                                    $semester .= ' Ganjil';
+                                                    break;
+                                                case '2':
+                                                    $semester .= ' Genap';
+                                                    break;
+                                                default:
+                                                    $semester .= ' Pendek';
+                                                    break;
+                                            }
+                                            $selected = ($this->config->item('app.periode') == $val) ? 'selected' : '';
+                                            echo '<option value="'.$val.'" '.$selected.'>'.$semester.'</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-12 col-sm-4 no-padding-right">Jenis Daftar :</label>
+                            <div class="col-xs-12 col-sm-5">
+                                <div class="clearfix">
+                                    <select class="select2 width-100" name="jenis" id="jenis" data-placeholder="---> Pilih Jenis <---">
+                                        <option value=""> </option>
+                                        <?php
+                                        $jenis = [
+                                            ['id' => '1', 'text' => 'Peserta Didik Baru'],
+                                            ['id' => '2', 'text' => 'Pindahan'],
+                                            ['id' => '17', 'text' => 'PPG PGP / PLPG'],
+                                            ['id' => '18', 'text' => 'PPG Non PGP / PLPG'],
+                                            ['id' => '13', 'text' => 'RPL Perolehan SKS'],
+                                            ['id' => '16', 'text' => 'RPL Transfer SKS']
+                                        ];
+                                        foreach ($jenis as $val) {
+                                            echo '<option value="'.$val['id'].'">'.$val['text'].'</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-12 col-sm-4 no-padding-right">Tanggal Masuk :</label>
+                            <div class="col-xs-12 col-sm-7">
+                                <div class="clearfix">
+                                    <input value="<?= $this->config->item('app.tanggal') ?>" type="text" name="tanggal" id="tanggal" class="col-sm-6 col-xs-12 date-picker" placeholder="Tanggal Masuk" />
                                 </div>
                             </div>
                         </div>
@@ -322,6 +389,7 @@ load_js(array(
     "theme/aceadmin/assets/js/jquery.validate.js",
     "theme/aceadmin/assets/js/select2.js",
     "theme/aceadmin/assets/js/bootbox.min.js",
+    "theme/aceadmin/assets/js/date-time/bootstrap-datepicker.js",
 ));
 ?>
 <script type="text/javascript">
@@ -330,6 +398,10 @@ load_js(array(
     $(document).ready(function () {
         $(".select2").select2({allowClear: true});
         $(".select2-chosen").addClass("center");
+        $(".date-picker").datepicker({
+            format: 'yyyy-mm-dd', autoclose: true,
+            todayHighlight: true,clearBtn: true
+        });
     });
     $("#btn-bio").click(function () {
         insert_bio();

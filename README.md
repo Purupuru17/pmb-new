@@ -31,9 +31,10 @@ Done
 - Export kelurahan kecamatan
 - Hapus payment
 - Item pembayaran khusus admin
+- Pilih periode NIM
+
 
 Rev
-- Pilih periode NIM
 - Edit Sesi
 - Tambah Course
 - Cek kembali/optimasi saat mulai pngerjaan, bug ragu2

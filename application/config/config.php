@@ -23,6 +23,8 @@ $config['recaptcha_site_key'] = '6Le6BHoUAAAAAAQ_9M_GqTGDADcoiLdk3EBr8PTB';
 $config['recaptcha_secret_key'] = '6Le6BHoUAAAAAJfGMW46EoDoWt_Bc2jh_-2leh60';
 $config['recaptcha_lang'] = 'id';
 
+$config['app.periode'] = '20242';
+$config['app.tanggal'] = '2025-06-06';
 /*
 |--------------------------------------------------------------------------
 | Base Site URL

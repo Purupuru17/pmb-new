@@ -105,6 +105,9 @@ class Seleksi_do extends KZ_Controller {
         $prodi = decode($this->input->post('prodi'));
         $nim = $this->input->post('nim');
         $tahun = $this->input->post('tahun');
+        $periode = $this->input->post('periode');
+        $tanggal = $this->input->post('tanggal');
+        $jenis = $this->input->post('jenis');
         
         $mhs = $this->m_mhs->getId($id);
         if(empty($mhs)) {
@@ -128,15 +131,22 @@ class Seleksi_do extends KZ_Controller {
         //Insert Riwayat
         $akm['id_mahasiswa'] = $mhs['id_bio'];
         $akm['nim'] = $nim;
-        $akm['id_jenis_daftar'] = 1;
+        $akm['id_jenis_daftar'] = $jenis;
         $akm['id_jalur_daftar'] = 12;
-        $akm['id_periode_masuk'] = $tahun . '1';
-        $akm['tanggal_daftar'] = $tahun . '-09-01';
+        $akm['id_periode_masuk'] = $periode;
+        $akm['tanggal_daftar'] = $tanggal;
         $akm['id_perguruan_tinggi'] = 'aa90e1dd-4905-440c-93c3-68753ef9061e';
         $akm['id_prodi'] = $prodi;
         $akm['id_pembiayaan'] = 1;
         $akm['biaya_masuk'] = 800000;
-
+        
+        if(in_array($jenis, ['13','16','17','18'])){
+            $akm['id_perguruan_tinggi_asal'] = 'aa90e1dd-4905-440c-93c3-68753ef9061e';
+            $akm['id_prodi_asal'] = $prodi;
+        }
+        if(in_array($jenis, ['17','18'])){
+            $akm['id_pembiayaan'] = 3;
+        }
         $rs = $this->feeder->post('InsertRiwayatPendidikanMahasiswa', $akm);
         if(!$rs['status']) {
            jsonResponse(array('data' => null, 'status' => false, 'msg' => $rs['msg']));
@@ -205,7 +215,19 @@ class Seleksi_do extends KZ_Controller {
         ),array(
             'field' => 'tahun',
             'label' => 'Angkatan',
-            'rules' => 'required|trim|xss_clean|is_natural'
+            'rules' => 'required|trim|xss_clean'
+        ),array(
+            'field' => 'periode',
+            'label' => 'Periode',
+            'rules' => 'required|trim|xss_clean'
+        ),array(
+            'field' => 'jenis',
+            'label' => 'Jenis Pendaftaran',
+            'rules' => 'required|trim|xss_clean'
+        ),array(
+            'field' => 'tanggal',
+            'label' => 'Tanggal Masuk',
+            'rules' => 'required|trim|xss_clean'
         )
     );
 }
