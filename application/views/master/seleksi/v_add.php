@@ -244,13 +244,7 @@
                                     <select class="select2 width-100" name="periode" id="periode" data-placeholder="---> Pilih Periode <---">
                                         <option value=""> </option>
                                         <?php
-                                        $awal = intval(date('Y')) - 1;
-                                        $periode = [];
-                                        for($i = $awal; $i <= intval(date('Y')); $i++ ){
-                                            $periode[] = $i . '1';
-                                            $periode[] = $i . '2';
-                                        }
-                                        foreach ($periode as $val) {
+                                        foreach (load_array('periode') as $val) {
                                             $tahun = substr($val,0,4);
                                             $tipe = substr($val,4,1);
                                             $semester = $tahun.'/'.($tahun + 1);
@@ -280,16 +274,9 @@
                                     <select class="select2 width-100" name="jenis" id="jenis" data-placeholder="---> Pilih Jenis <---">
                                         <option value=""> </option>
                                         <?php
-                                        $jenis = [
-                                            ['id' => '1', 'text' => 'Peserta Didik Baru'],
-                                            ['id' => '2', 'text' => 'Pindahan'],
-                                            ['id' => '17', 'text' => 'PPG PGP / PLPG'],
-                                            ['id' => '18', 'text' => 'PPG Non PGP / PLPG'],
-                                            ['id' => '13', 'text' => 'RPL Perolehan SKS'],
-                                            ['id' => '16', 'text' => 'RPL Transfer SKS']
-                                        ];
-                                        foreach ($jenis as $val) {
-                                            echo '<option value="'.$val['id'].'">'.$val['text'].'</option>';
+                                        foreach (load_array('jenis_daftar') as $val) {
+                                            $selected = ($this->config->item('app.jenis_daftar') == $val['id']) ? 'selected' : '';
+                                            echo '<option value="'.$val['id'].'" '.$selected.'>'.$val['text'].'</option>';
                                         }
                                         ?>
                                     </select>

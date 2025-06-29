@@ -35,10 +35,10 @@ if (!function_exists('load_js')) {
 }
 if (!function_exists('load_file')) {
 
-    function load_file($src, $img = NULL) {
-        $default_img = base_url(empty($img) ? 'theme/img/no-img.jpg' : 'theme/img/no-avatar.png');
+    function load_file($src, $type = NULL) {
+        $default_img = empty($type) ? 'theme/img/no-img.jpg' : 'theme/img/no-avatar.png';
         if (empty($src)) {
-            return $default_img;
+            return base_url($default_img);
         }
         if(!is_keyword($src, ['img','upload'])){
             $CI = &get_instance();
@@ -46,10 +46,16 @@ if (!function_exists('load_file')) {
             return $CI->s3->url($src);
         }
         $full_path = FCPATH . $src;
-        if (file_exists($full_path)) {
-            return base_url($src);
+        if (!file_exists($full_path)) {
+            return base_url($default_img);
         }
-        return $default_img;
+        if ($type == 'base64') {
+            $ext = pathinfo($full_path, PATHINFO_EXTENSION);
+            $data = file_get_contents($full_path);
+            $base64 = 'data:image/' . $ext . ';base64,' . base64_encode($data);
+            return $base64;
+        }
+        return base_url($src);
     }
 
 }
@@ -206,9 +212,17 @@ if (!function_exists('load_array')) {
         $val = array();
         switch ($type) {
             case 'tahun':
-                $awal = intval(date('Y')) + 1;
-                for($i = $awal; $i >= ($awal - 5); $i-- ){
+                $awal = intval(date('Y'));
+                for($i = $awal + 1; $i >= ($awal - 5); $i-- ){
                     $val[] = $i;
+                }
+                break;
+            case 'periode':
+                $awal = intval(date('Y'));
+                $val = [];
+                for($i = $awal - 1; $i <= $awal; $i++ ){
+                    $val[] = $i . '1';
+                    $val[] = $i . '2';
                 }
                 break;
             case 'jalur':
@@ -229,6 +243,13 @@ if (!function_exists('load_array')) {
                 $val = array(
                     'PENDING','PENDAFTARAN','TES SELEKSI','LULUS','VALID','AKTIF','TIDAK AKTIF'
                 );
+                break;
+            case 'jenis_daftar':
+                $val = [
+                        ['id' => '1', 'text' => 'Peserta Didik Baru'], ['id' => '2', 'text' => 'Pindahan'],
+                        ['id' => '17', 'text' => 'PPG PGP / PLPG'], ['id' => '18', 'text' => 'PPG Non PGP / PLPG'],
+                        ['id' => '13', 'text' => 'RPL Perolehan SKS'], ['id' => '16', 'text' => 'RPL Transfer SKS']
+                    ];
                 break;
             case 'agama':
                 $val = array(

@@ -10,18 +10,30 @@ class App_hooks {
 
     public function redirect_ssl() {
         $class = $this->ci->router->fetch_class();
-        $exclude = array('');  // add more controller name to exclude ssl.
-        if (ENVIRONMENT === 'production') {
+        $exclude = array(''); // Tambahkan controller yang tidak perlu HTTPS
+
+        if (ENVIRONMENT === 'production' && php_sapi_name() !== 'cli') {
+            // Deteksi apakah sudah HTTPS
+            $is_https = (
+                (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+                (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ||
+                (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)
+            );
+
             if (!in_array($class, $exclude)) {
-                // redirecting to ssl.
-                $this->ci->config->config['base_url'] = str_replace('http://', 'https://', $this->ci->config->config['base_url']);
-                if ($_SERVER['SERVER_PORT'] != 443)
-                    redirect($this->ci->uri->uri_string());
+                // Paksa redirect ke HTTPS
+                $this->ci->config->set_item('base_url', str_replace('http://', 'https://', $this->ci->config->item('base_url')));
+                if (!$is_https) {
+                    redirect('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], 'location', 301);
+                    exit;
+                }
             } else {
-                // redirecting with no ssl.
-                $this->ci->config->config['base_url'] = str_replace('https://', 'http://', $this->ci->config->config['base_url']);
-                if ($_SERVER['SERVER_PORT'] == 443)
-                    redirect($this->ci->uri->uri_string());
+                // Paksa redirect ke HTTP jika di-exclude
+                $this->ci->config->set_item('base_url', str_replace('https://', 'http://', $this->ci->config->item('base_url')));
+                if ($is_https) {
+                    redirect('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], 'location', 301);
+                    exit;
+                }
             }
         }
     }

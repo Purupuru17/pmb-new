@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="shortcut icon" type="image/x-icon" href="<?= base_url('theme/img/logo.png') ?>"/>
+        <link rel="shortcut icon" type="image/x-icon" href="<?= load_file('theme/img/logo.png','base64') ?>"/>
         <style>
             html, .signature{
                 font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;
@@ -25,7 +25,7 @@
                 text-align: center;
             }
             .watermark {
-                background:url(<?= base_url('theme/img/logo.png') ?>);
+                background:url(<?= load_file('theme/img/logo.png','base64') ?>);
                 background-repeat: no-repeat;
                 background-position: center center;
                 opacity: 0.06;
@@ -65,7 +65,7 @@
                         <font size="2">
                             KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI
                         </font>
-                        <img src="<?= load_file('theme/img/logo.png') ?>" class="logo">
+                        <img src="<?= load_file('theme/img/logo.png','base64') ?>" class="logo">
                     </th>
                 </tr>
                 <tr>
@@ -199,7 +199,7 @@
                         NIM. <?= $detail['nim'] ?>
                     </td>
                     <td>
-                        <img width="90" class="img-thumbnail" src="<?= load_file($detail['foto_mhs'],1) ?>"/>
+                        <img width="90" class="img-thumbnail" src="<?= load_file($detail['foto_mhs']) ?>"/>
                     </td>
                     <td></td>
                     <td align="center" width="40%" style="font-size: 13px">
@@ -215,7 +215,7 @@
         <div class="footer">
             <table>
                 <tr>
-                    <td><img src="<?= load_file('theme/img/logo.png') ?>" style="max-width: 35px;padding-right: 5px"></td>
+                    <td><img src="<?= load_file('theme/img/logo.png','base64') ?>" style="max-width: 35px;padding-right: 5px"></td>
                     <td><?= $this->session->userdata('name') . '<br>' . 
                         format_date(date('Y-m-d H:i:s'), 0) . ' <br> ' . ip_agent() ?>
                     </td>

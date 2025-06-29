@@ -141,6 +141,9 @@ $this->load->view('sistem/v_breadcrumb');
                     val.jenis = $("#jenis").val();
                 }
             },
+            initComplete: function () {
+                this.api().columns.adjust();
+            },
             aaSorting: [],
             aoColumnDefs: [
                     {bSortable: false, aTargets: [0,5]},
@@ -158,6 +161,5 @@ $this->load->view('sistem/v_breadcrumb');
                 sProcessing: "<i class='fa fa-spinner fa-spin fa-fw fa-2x'></i> Loading . . ."
             }
         });
-        table.fnAdjustColumnSizing();
     }
 </script>                  

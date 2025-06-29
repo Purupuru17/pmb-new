@@ -16,6 +16,6 @@
         "aws/aws-sdk-php": "^3.183",
         "guzzlehttp/guzzle": "^7.0",
         "ifsnop/mysqldump-php": "^2.9",
-        "firebase/php-jwt": "^6.4"
+        "firebase/php-jwt": "^5.5"
     }
 }

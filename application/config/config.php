@@ -25,6 +25,7 @@ $config['recaptcha_lang'] = 'id';
 
 $config['app.periode'] = '20242';
 $config['app.tanggal'] = '2025-06-06';
+$config['app.jenis_daftar'] = '18';
 /*
 |--------------------------------------------------------------------------
 | Base Site URL

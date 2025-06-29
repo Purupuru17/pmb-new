@@ -178,39 +178,41 @@ load_js(array(
     }
     function load_table() {
         table = $("#dynamic-table")
-            .dataTable({
-                orderCellsTop: true,
-                fixedHeader: true,
-                bScrollCollapse: true,
-                bAutoWidth: false,
-                bProcessing: true,
-                bServerSide: true,
-                ajax: {
-                    url: module + "/ajax/type/list/source/user",
-                    type: "POST",
-                    dataType: "json",
-                    data: function (val) {
-                        val.group = $("#group").val();
-                    }
-                },
-                aaSorting: [],
-                aoColumnDefs: [
-                    {bSortable: false, aTargets: [0,7]},
-                    {bSearchable: false, aTargets: [0,7]},
-                    {sClass: "center", aTargets: [0, 1, 2, 3, 4, 5, 6]},
-                    {sClass: "center nowrap", aTargets: [7]}
-                ],
-                oLanguage: {
-                    sSearch: "Cari : ",
-                    sInfoEmpty: "Menampilkan dari 0 sampai 0 dari total 0 data",
-                    sInfo: "Menampilkan dari _START_ sampai _END_ dari total _TOTAL_ data",
-                    sLengthMenu: "_MENU_ data per halaman",
-                    sZeroRecords: "Maaf tidak ada data yang ditemukan",
-                    sInfoFiltered: "(Menyaring dari _MAX_ total data)",
-                    sProcessing: "<i class='fa fa-spinner fa-spin fa-fw fa-2x'></i> Loading . . ."
+        .dataTable({
+            orderCellsTop: true,
+            fixedHeader: true,
+            bScrollCollapse: true,
+            bAutoWidth: false,
+            bProcessing: true,
+            bServerSide: true,
+            ajax: {
+                url: module + "/ajax/type/list/source/user",
+                type: "POST",
+                dataType: "json",
+                data: function (val) {
+                    val.group = $("#group").val();
                 }
-            });
-        table.fnAdjustColumnSizing();
+            },
+            initComplete: function () {
+                this.api().columns.adjust();
+            },
+            aaSorting: [],
+            aoColumnDefs: [
+                {bSortable: false, aTargets: [0,7]},
+                {bSearchable: false, aTargets: [0,7]},
+                {sClass: "center", aTargets: [0, 1, 2, 3, 4, 5, 6]},
+                {sClass: "center nowrap", aTargets: [7]}
+            ],
+            oLanguage: {
+                sSearch: "Cari : ",
+                sInfoEmpty: "Menampilkan dari 0 sampai 0 dari total 0 data",
+                sInfo: "Menampilkan dari _START_ sampai _END_ dari total _TOTAL_ data",
+                sLengthMenu: "_MENU_ data per halaman",
+                sZeroRecords: "Maaf tidak ada data yang ditemukan",
+                sInfoFiltered: "(Menyaring dari _MAX_ total data)",
+                sProcessing: "<i class='fa fa-spinner fa-spin fa-fw fa-2x'></i> Loading . . ."
+            }
+        });
     }
     $('#btn-search').click(function () { //button filter event click
         table.fnDraw();  //just reload table

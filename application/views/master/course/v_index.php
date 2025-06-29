@@ -112,6 +112,9 @@ $this->load->view('sistem/v_breadcrumb');
                     
                 }
             },
+            initComplete: function () {
+                this.api().columns.adjust();
+            },
             aaSorting: [],
             aoColumnDefs: [
                 {bSortable: false, aTargets: [0,6]},
@@ -129,6 +132,5 @@ $this->load->view('sistem/v_breadcrumb');
                 sProcessing: "<i class='fa fa-spinner fa-spin fa-fw fa-2x'></i> Loading . . ."
             }
         });
-        table.fnAdjustColumnSizing();
     }
 </script>                  

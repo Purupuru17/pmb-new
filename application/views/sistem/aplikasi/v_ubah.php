@@ -322,37 +322,39 @@ load_js(array(
 <script type="text/javascript">
     function load_table() {
         table = $("#dynamic-table")
-            .dataTable({
-                orderCellsTop: true,
-                fixedHeader: true,
-                bScrollCollapse: true,
-                bAutoWidth: false,
-                bProcessing: true,
-                bServerSide: true,
-                ajax: {
-                    url: module + "/ajax/type/list/source/visitor",
-                    type: "POST",
-                    data: function (val) {
-                        val.awal = $("#awal").val();
-                        val.akhir = $("#akhir").val();
-                    }
-                },
-                aaSorting: [],
-                aoColumnDefs: [
-                    {bSortable: false, aTargets: [0]},
-                    {bSearchable: false, aTargets: [0]},
-                    {sClass: "center", aTargets: [0, 1, 2, 3, 4, 5, 6]}
-                ],
-                oLanguage: {
-                    sSearch: "Cari : ",
-                    sInfoEmpty: "Menampilkan dari 0 sampai 0 dari total 0 data",
-                    sInfo: "Menampilkan dari _START_ sampai _END_ dari total _TOTAL_ data",
-                    sLengthMenu: "_MENU_ data per halaman",
-                    sZeroRecords: "Maaf tidak ada data yang ditemukan",
-                    sInfoFiltered: "(Menyaring dari _MAX_ total data)"
+        .dataTable({
+            orderCellsTop: true,
+            fixedHeader: true,
+            bScrollCollapse: true,
+            bAutoWidth: false,
+            bProcessing: true,
+            bServerSide: true,
+            ajax: {
+                url: module + "/ajax/type/list/source/visitor",
+                type: "POST",
+                data: function (val) {
+                    val.awal = $("#awal").val();
+                    val.akhir = $("#akhir").val();
                 }
-            });
-        table.fnAdjustColumnSizing();
+            },
+            initComplete: function () {
+                this.api().columns.adjust();
+            },
+            aaSorting: [],
+            aoColumnDefs: [
+                {bSortable: false, aTargets: [0]},
+                {bSearchable: false, aTargets: [0]},
+                {sClass: "center", aTargets: [0, 1, 2, 3, 4, 5, 6]}
+            ],
+            oLanguage: {
+                sSearch: "Cari : ",
+                sInfoEmpty: "Menampilkan dari 0 sampai 0 dari total 0 data",
+                sInfo: "Menampilkan dari _START_ sampai _END_ dari total _TOTAL_ data",
+                sLengthMenu: "_MENU_ data per halaman",
+                sZeroRecords: "Maaf tidak ada data yang ditemukan",
+                sInfoFiltered: "(Menyaring dari _MAX_ total data)"
+            }
+        });
     }
     function load_grafik() {
         $.ajax({

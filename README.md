@@ -32,6 +32,8 @@ Done
 - Hapus payment
 - Item pembayaran khusus admin
 - Pilih periode NIM
+- Table adjust
+- pdff image docker
 
 
 Rev
@@ -39,5 +41,4 @@ Rev
 - Tambah Course
 - Cek kembali/optimasi saat mulai pngerjaan, bug ragu2
 - Grafik payment
-- Table adjust
-- pdff image docker
+- SEO website sitemap pmb
