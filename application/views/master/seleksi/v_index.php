@@ -140,7 +140,8 @@ $this->load->view('sistem/v_breadcrumb');
     load_js(array(
         'theme/aceadmin/assets/js/dataTables/jquery.dataTables.js',
         'theme/aceadmin/assets/js/dataTables/jquery.dataTables.bootstrap.js',
-        'theme/aceadmin/assets/js/select2.js'
+        'theme/aceadmin/assets/js/select2.js',
+        'theme/aceadmin/assets/js/bootbox.min.js'
     ));
 ?>
 <script type="text/javascript">
@@ -153,6 +154,37 @@ $this->load->view('sistem/v_breadcrumb');
         $(".select2-chosen").addClass("center");
         
         load_table();
+    });
+    $(document.body).on("click", "#insert-btn", function(event) {
+        var id = $(this).attr("itemid");
+        var name = $(this).attr("itemname");
+        var ths =  $(this);
+        
+        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
+        var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
+                ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
+        var progress = bootbox.dialog({title: title,message: msg,closeButton: false});
+        $.ajax({
+            url: module + "/ajax/type/table/source/insert_all",
+            dataType: "json",
+            type: "POST",
+            data: {
+                id: id
+            },
+            success: function (rs) {
+                progress.modal("hide");
+                if (rs.status) {
+                    ths.hide();
+                    myNotif('Informasi', rs.msg, 1);
+                } else {
+                    myNotif('Peringatan', rs.msg, 2);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                progress.modal("hide");
+                myNotif('Error', 'Kesalahan Jaringan', 3);
+            }
+        });
     });
     function load_table() {
         table = $("#dynamic-table")

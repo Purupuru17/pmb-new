@@ -50,6 +50,8 @@ class Seleksi extends KZ_Controller {
                 $this->_get_mhs();
             } else if ($routing_module['source'] == 'nim') {
                 $this->_generate_nim();
+            }  else if ($routing_module['source'] == 'insert_all') {
+                $this->_insert_all();
             }
         }
     }
@@ -97,6 +99,10 @@ class Seleksi extends KZ_Controller {
             $btn_aksi .= '<a target="_blank" href="'. site_url('master/daftar/detail/'. encode($row['id_mhs'])) .'" class="tooltip-info btn btn-white btn-info btn-round btn-sm" data-rel="tooltip" title="Lihat Data">
                     <span class="blue"><i class="ace-icon fa fa-search-plus bigger-120"></i></span>
                 </a>';
+            $btn_aksi .= empty($row['nim']) || !empty($row['id_reg']) ? '' : '<button itemid="'.encode($row['id_mhs']).'" itemname="'.ctk($row['nama_mhs']).'" id="insert-btn" 
+                    class="tooltip-error btn btn-white btn-danger btn-mini btn-round" data-rel="tooltip" title="Insert NIM">
+                    <span class="red"><i class="ace-icon fa fa-paper-plane-o"></i></span>
+                </button>';
             
             $rows[] = ctk($no);
             $rows[] = '<strong>#'. $row['kode_reg'] .'</strong>'.$set.'<br><small>'.$row['kip_mhs'].'</small>';
@@ -118,13 +124,18 @@ class Seleksi extends KZ_Controller {
     }
     function _get_mhs() {
         $id = decode($this->input->post('id'));
+        $nim = $this->input->post('nim');
         
         $mhs = $this->m_mhs->getId($id);
         if(empty($mhs)){
-            jsonResponse(array('status' => FALSE, 'msg' => 'NIM atau ID masih kosong'));
+            jsonResponse(array('status' => FALSE, 'msg' => 'Data tidak ditemukan'));
+        }
+        $filter = "nik='{$mhs['nik']}'";
+        if(!empty($nim)){
+            $filter = "nik='{$mhs['nik']}' AND nim='{$nim}'";
         }
         $this->load->library(array('feeder'));
-        $rs = $this->feeder->get('GetDataLengkapMahasiswaProdi', array('limit' => 1, 'filter' => "nik='{$mhs['nik']}'"));
+        $rs = $this->feeder->get('GetDataLengkapMahasiswaProdi', array('limit' => 1, 'filter' => $filter));
         
         if(!$rs['status']) {
             jsonResponse(array('data' => NULL, 'status' => false, 'msg' => $rs['msg']));
@@ -132,17 +143,14 @@ class Seleksi extends KZ_Controller {
         if(count($rs['data']) < 1) {
             jsonResponse(array('data' => NULL, 'status' => false, 'msg' => 'Data tidak ditemukan'));
         }
-        if($mhs['nik'] != $rs['data'][0]['nik']){
-            jsonResponse(array('data' => $rs['data'][0], 'status' => false, 'msg' => 'Data NIK tidak sesuai dengan data PDDikti'));
+        if($mhs['nama_mhs'] != $rs['data'][0]['nama_mahasiswa']){
+            jsonResponse(array('data' => $rs['data'][0], 'status' => false, 'msg' => 'Nama tidak sesuai dengan data PDDikti'));
         }
         //update id bio
         $this->m_mhs->update($id, array('id_bio' => $rs['data'][0]['id_mahasiswa'],
             'status_mhs' => 'VALID', 'update_mhs' => date('Y-m-d H:i:s'),
             'log_mhs' => $this->sessionname . ' mengubah Biodata'
         ));
-        if(empty($mhs['nim'])){
-            jsonResponse(array('data' => NULL, 'status' => false, 'msg' => 'NIM masih kosong'));
-        }
         if($mhs['nim'] != $rs['data'][0]['nim']){
             jsonResponse(array('data' => $rs['data'][0], 'status' => false, 'msg' => 'Data NIM tidak sesuai dengan data PDDikti'));
         }
@@ -183,52 +191,38 @@ class Seleksi extends KZ_Controller {
     );
     
     function edit() {
-        $reader = new PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-        $spreadsheet = $reader->load('theme/img/ppg.xlsx');
-        $sheet = $spreadsheet->getActiveSheet()->toArray();
-        unset($sheet[0]);
+//        $reader = new PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+//        $spreadsheet = $reader->load('theme/img/ppg.xlsx');
+//        $sheet = $spreadsheet->getActiveSheet()->toArray();
+//        unset($sheet[0]);
         
+        $result = $this->db->get_where('m_mhs', array('prodi_id' => '2edd800d-c39c-4bb2-8c85-c1a1e3f3cf40',
+            'status_mhs' => 'LULUS', 'nim <>' => ''));
+        if($result->num_rows() < 1){
+            exit(0);
+        }
         $output = array();
         $no = 1;
-        foreach ($sheet as $val) {
-            if(!empty($val[1])){
+        foreach ($result->result_array() as $val) {
+            //if(!empty($val[])){
             
-                $rs = $this->db->get_where('m_mhs', array('nik' => $val[3]))->row_array();
-                
-                if(!empty($rs)){
-                    $this->db->where('nik', $val[3])->update('m_mhs', ['nim' => $val[1], 'status_mhs' => 'LULUS']);
-                    
-                    if($this->db->affected_rows() > 0){
-                        $output[] = array(
-                            'nim' => $rs['nim'],
-                            'nama' => $rs['nama_mhs'],
-                            'nik' => $rs['nik'],
-                            'nim_excel' => $val[1],
-                            'nama_excel' => $val[2],
-                            'status' => 'INSERT'
-                        );
-                    }else{
-                        $output[] = array(
-                            'nim' => $rs['nim'],
-                            'nama' => $rs['nama_mhs'],
-                            'nik' => $rs['nik'],
-                            'nim_excel' => $val[1],
-                            'nama_excel' => $val[2],
-                            'status' => $rs['status_mhs']
-                        );
-                    }
-                }else{
+                //$up = $this->db->where('id_mhs', $val['id_mhs'])->update('m_mhs', ['nim' => $nim, 'status_mhs' => 'LULUS']);
+                //if($up){
                     $output[] = array(
-                        'nim' => 'x',
-                        'nama' => 'x',
-                        'nik' => 'x',
-                        'nim_excel' => $val[1],
-                        'nama_excel' => $val[2],
+                        'nim' => $nim,
+                        'nama' => $val['nama_mhs'],
+                        'status' => 'LULUS'
                     );
-                }
-                
+//                }else{
+//                    $output[] = array(
+//                        'nim' => $val['nim'],
+//                        'nama' => $val['nama_mhs'],
+//                        'status' => 'GAGAL'
+//                    );
+//                }
                 $no++;
-            }
+                $nim++;
+            //}
         }
         $this->_into_tables($output,1);
     }
@@ -293,5 +287,132 @@ class Seleksi extends KZ_Controller {
         
         echo $str;
         exit();
+    }
+    function _insert_all() {
+        $id = decode($this->input->post('id'));
+        
+        $mhs = $this->m_mhs->getId($id);
+        if(empty($mhs)) {
+            jsonResponse(array('status' => FALSE, 'msg' => 'Data mahasiswa tidak ditemukan'));
+        }
+        switch ($mhs['agama']) {
+            case 'Islam':
+                $agama = 1;
+                break;
+            case 'Kristen':
+                $agama = 2;
+                break;
+            case 'Katolik':
+                $agama = 3;
+                break;
+            case 'Hindu':
+                $agama = 4;
+                break;
+            case 'Budha':
+                $agama = 5;
+                break;
+            case 'Konghucu':
+                $agama = 6;
+                break;
+            default:
+                $agama = 99;
+                break;
+        }
+        $data['nama_mahasiswa'] = $mhs['nama_mhs'];
+        $data['jenis_kelamin'] = ($mhs['kelamin_mhs'] == 'Perempuan') ? 'P' : 'L';
+        $data['tempat_lahir'] = ($mhs['tempat_lahir']);
+        $data['tanggal_lahir'] = $mhs['tgl_lahir'];
+        $data['id_agama'] = $agama;
+        $data['nik'] = $mhs['nik'];
+        $data['nisn'] = $mhs['nisn'];
+        $data['kewarganegaraan'] = 'ID';
+        $data['jalan'] = $mhs['jalan'];
+        $data['rt'] = $mhs['rt'];
+        $data['rw'] = $mhs['rw'];
+        $data['dusun'] = $mhs['kelurahan'];
+        $data['kelurahan'] = $mhs['kelurahan'];
+        $data['id_wilayah'] = $mhs['kecamatan'];
+        $data['handphone'] = $mhs['telepon_mhs'];
+        $data['email'] = $mhs['email_mhs'];
+        $data['penerima_kps'] = '0';
+        $data['nama_ibu_kandung'] = $mhs['ibu_kandung'];
+        $data['id_kebutuhan_khusus_mahasiswa'] = '0';
+        $data['id_kebutuhan_khusus_ayah'] = '0';
+        $data['id_kebutuhan_khusus_ibu'] = '0';
+
+        $this->load->library(array('feeder'));
+        //Insert Biodata
+        $rs = $this->feeder->post('InsertBiodataMahasiswa', $data);
+        if(!$rs['status']) {
+           jsonResponse(array('data' => null, 'status' => false, 'msg' => $rs['msg']));
+        }
+        if(count($rs['data']) < 1) {
+            jsonResponse(array('data' => null, 'status' => false, 'msg' => 'Data gagal tersimpan'));
+        }
+        if(empty($rs['data']['id_mahasiswa'])) {
+            jsonResponse(array('data' => null, 'status' => false, 'msg' => 'Data gagal tersimpan. ID Biodata Mahasiswa tidak ditemukan'));
+        }
+        //Update MHS
+        $id_bio = $rs['data']['id_mahasiswa'];
+        $this->m_mhs->update($id, array('id_bio' => $id_bio,
+            'status_mhs' => 'VALID', 'update_mhs' => date('Y-m-d H:i:s'), 'log_mhs' => $this->sessionname . ' insert Biodata'));
+        
+        $prodi = $mhs['prodi_id']; //decode($this->input->post('prodi'));
+        $nim = $mhs['nim']; //$this->input->post('nim');
+        $tahun = $mhs['angkatan']; //$this->input->post('tahun');
+        $periode = $this->config->item('app.periode'); //$this->input->post('periode');
+        $tanggal = $this->config->item('app.tanggal'); //$this->input->post('tanggal');
+        $jenis = $this->config->item('app.jenis_daftar'); //$this->input->post('jenis');
+        
+        $cek_nim = $this->m_mhs->getId(array('nim' => $nim));
+        if(!is_null($cek_nim)){
+            if($cek_nim['id_mhs'] != $id){
+                jsonResponse(array('data' => $cek_nim,'status' => FALSE, 'msg' => 'NIM sudah terpakai di data PMB'));    
+            }
+        }       
+        //Cek NIM
+        $check = $this->feeder->get('GetListMahasiswa', array('limit' => 2, 'filter' => "nim='{$nim}'"));
+        if(!$check['status']) {
+            jsonResponse(array('data' => null,'status' => false, 'msg' => $check['msg']));
+        }
+        if(count($check['data']) > 0) {
+            jsonResponse(array('data' => $check['data'][0], 'status' => false, 'msg' => 'NIM sudah terpakai di Feeder PDDikti'));
+        }
+        //Insert Riwayat
+        $akm['id_mahasiswa'] = $id_bio;
+        $akm['nim'] = $nim;
+        $akm['id_jenis_daftar'] = $jenis;
+        $akm['id_jalur_daftar'] = 12;
+        $akm['id_periode_masuk'] = $periode;
+        $akm['tanggal_daftar'] = $tanggal;
+        $akm['id_perguruan_tinggi'] = 'aa90e1dd-4905-440c-93c3-68753ef9061e';
+        $akm['id_prodi'] = $prodi;
+        $akm['id_pembiayaan'] = 1;
+        $akm['biaya_masuk'] = 800000;
+        
+        if(in_array($jenis, ['13','16','17','18'])){
+            $akm['id_perguruan_tinggi_asal'] = 'aa90e1dd-4905-440c-93c3-68753ef9061e';
+            $akm['id_prodi_asal'] = $prodi;
+        }
+        if(in_array($jenis, ['17','18'])){
+            $akm['id_pembiayaan'] = 3;
+        }
+        $rs_akm = $this->feeder->post('InsertRiwayatPendidikanMahasiswa', $akm);
+        if(!$rs_akm['status']) {
+           jsonResponse(array('data' => null, 'status' => false, 'msg' => $rs_akm['msg']));
+        }
+        if(count($rs_akm['data']) < 1) {
+            jsonResponse(array('data' => null, 'status' => false, 'msg' => 'Data gagal tersimpan'));
+        }
+        if(empty($rs_akm['data']['id_registrasi_mahasiswa'])) {
+            jsonResponse(array('data' => null, 'status' => false, 'msg' => 'Data gagal tersimpan. ID Riwayat Pendidikan tidak ditemukan : '.json_encode($rs['data'])));
+        }
+        //Update MHS
+        $this->m_mhs->update($id, array('id_reg' => $rs_akm['data']['id_registrasi_mahasiswa'],
+            'prodi_id' => $prodi, 'nim' => $nim, 'angkatan' => $tahun, 'status_mhs' => 'AKTIF',
+            'update_mhs' => date('Y-m-d H:i:s'), 'log_mhs' => $this->sessionname . ' insert Riwayat Pendidikan'));
+        
+        jsonResponse(array('status' => true, 'msg' => 'Data '.$mhs['nama_mhs'].
+            ' berhasil tersimpan : '.$rs_akm['data']['id_registrasi_mahasiswa']));
     }
 }

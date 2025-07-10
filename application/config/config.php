@@ -407,13 +407,16 @@ $config['encrypt_method'] = 'aes-256-cbc';
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver'] = 'database';
+$config['sess_driver'] = 'redis';
+$config['sess_save_path'] = 'tcp://app-redis:6379?prefix='.APP_NAME.':';
+//$config['sess_driver'] = 'database';
+//$config['sess_save_path'] = 'yk_sessions';
+
 $config['sess_cookie_name'] = APP_NAME;
 $config['sess_expiration'] = 7200;
-$config['sess_save_path'] = 'yk_sessions';
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
-$config['sess_regenerate_destroy'] = TRUE;
+$config['sess_regenerate_destroy'] = FALSE;
 $config['sess_encrypt_cookie'] = TRUE;
 
 /*

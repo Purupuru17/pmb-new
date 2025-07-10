@@ -418,7 +418,8 @@ load_js(array(
             type: "POST",
             dataType: "json",
             data: {
-                id : $("#mid").val()
+                id : $("#mid").val(),
+                nim: $("#nim").val()
             },
             success: function(rs) {
                 progress.modal("hide");
