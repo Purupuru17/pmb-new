@@ -21,6 +21,8 @@ class Seleksi_do extends KZ_Controller {
                 $this->_insert_bio();
             }else if ($routing_module['source'] == 'update') {
                 $this->_insert_nim();
+            }else if ($routing_module['source'] == 'change') {
+                $this->_update_nim();
             }else if ($routing_module['source'] == 'delete') {
                 $this->_delete_nim();
             }
@@ -148,6 +150,71 @@ class Seleksi_do extends KZ_Controller {
             $akm['id_pembiayaan'] = 3;
         }
         $rs = $this->feeder->post('InsertRiwayatPendidikanMahasiswa', $akm);
+        if(!$rs['status']) {
+           jsonResponse(array('data' => null, 'status' => false, 'msg' => $rs['msg']));
+        }
+        if(count($rs['data']) < 1) {
+            jsonResponse(array('data' => null, 'status' => false, 'msg' => 'Data gagal tersimpan'));
+        }
+        if(empty($rs['data']['id_registrasi_mahasiswa'])) {
+            jsonResponse(array('data' => null, 'status' => false, 'msg' => 'Data gagal tersimpan. ID Riwayat Pendidikan tidak ditemukan : '.json_encode($rs['data'])));
+        }
+        //Update MHS
+        $this->m_mhs->update($id, array('id_reg' => $rs['data']['id_registrasi_mahasiswa'],
+            'prodi_id' => $prodi, 'nim' => $nim, 
+            'angkatan' => $tahun, 'status_mhs' => 'AKTIF',
+            'update_mhs' => date('Y-m-d H:i:s'), 'log_mhs' => $this->sessionname . ' insert Riwayat Pendidikan'));
+        jsonResponse(array('data' => $rs['data'], 'status' => true, 'msg' => 'Data berhasil tersimpan'));
+    }
+    function _update_nim() {
+        if(!$this->_validation($this->rules_update,'ajax')) {
+            jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
+        }
+        $id = decode($this->input->post('mid'));
+        $prodi = decode($this->input->post('prodi'));
+        $nim = $this->input->post('nim');
+        $tahun = $this->input->post('tahun');
+        $periode = $this->input->post('periode');
+        $tanggal = $this->input->post('tanggal');
+        $jenis = $this->input->post('jenis');
+        
+        $mhs = $this->m_mhs->getId($id);
+        if(empty($mhs)) {
+            jsonResponse(array('data' => array(), 'status' => FALSE, 'msg' => 'Tidak ada data mahasiswa'));
+        }
+        $cek_nim = $this->m_mhs->getId(array('nim' => $nim));
+        if(!is_null($cek_nim) && $cek_nim['id_mhs'] != $id){
+            jsonResponse(array('data' => $cek_nim, 'status' => FALSE, 'msg' => 'NIM sudah terpakai di data PMB')); 
+        }       
+        $this->load->library(array('feeder'));
+        //Cek NIM
+        $check = $this->feeder->get('GetListMahasiswa', array('limit' => 2, 'filter' => "nim='{$nim}'"));
+        if(!$check['status']) {
+            jsonResponse(array('data' => null,'status' => false, 'msg' => $check['msg']));
+        }
+        if(count($check['data']) > 0 && $mhs['id_reg'] != $check['data'][0]['id_registrasi_mahasiswa']) {
+            jsonResponse(array('data' => $check['data'][0], 'status' => false, 'msg' => 'NIM sudah terpakai di Feeder PDDikti'));
+        }
+        //Update Riwayat
+        $akm['id_mahasiswa'] = $mhs['id_bio'];
+        $akm['nim'] = $nim;
+        $akm['id_jenis_daftar'] = $jenis;
+        $akm['id_jalur_daftar'] = 12;
+        $akm['id_periode_masuk'] = $periode;
+        $akm['tanggal_daftar'] = $tanggal;
+        $akm['id_perguruan_tinggi'] = 'aa90e1dd-4905-440c-93c3-68753ef9061e';
+        $akm['id_prodi'] = $prodi;
+        $akm['id_pembiayaan'] = 1;
+        $akm['biaya_masuk'] = 800000;
+        
+        if(in_array($jenis, ['13','16','17','18'])){
+            $akm['id_perguruan_tinggi_asal'] = 'aa90e1dd-4905-440c-93c3-68753ef9061e';
+            $akm['id_prodi_asal'] = $prodi;
+        }
+        if(in_array($jenis, ['17','18'])){
+            $akm['id_pembiayaan'] = 3;
+        }
+        $rs = $this->feeder->update('UpdateRiwayatPendidikanMahasiswa', ['id_registrasi_mahasiswa' => $mhs['id_reg']], $akm);
         if(!$rs['status']) {
            jsonResponse(array('data' => null, 'status' => false, 'msg' => $rs['msg']));
         }

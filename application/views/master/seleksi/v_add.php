@@ -38,17 +38,6 @@
                             </div>
                         </div>
                         <div class="profile-info-row">
-                            <div class="profile-info-name"> Program Studi </div>
-                            <?php
-                                $opsi_prodi = explode('|', $detail['opsi_prodi']);
-                            ?>
-                            <div class="profile-info-value">
-                                <span class="bolder green bigger-110"><?= element('nama_prodi', $detail, '') ?></span><br/>
-                                Pilihan 2 : <span class="bolder"><?= element(0, $opsi_prodi, '') ?></span><br/>
-                                Pilihan 3 : <span class="bolder grey"><?= element(1, $opsi_prodi, '') ?></span>
-                            </div>
-                        </div>
-                        <div class="profile-info-row">
                             <div class="profile-info-name"> NIM </div>
                             <div class="profile-info-value">
                                 <span class="bolder green"><?= $detail['nim'] ?></span>
@@ -73,27 +62,44 @@
                             </div>
                         </div>
                         <div class="profile-info-row">
-                            <div class="profile-info-name"> Tanggal Daftar </div>
+                            <div class="profile-info-name"> Program Studi </div>
+                            <?php
+                                $opsi_prodi = explode('|', $detail['opsi_prodi']);
+                            ?>
                             <div class="profile-info-value">
-                                <span><?= format_date($detail['tgl_daftar'], 0) ?></span>
+                                <span class="bolder blue bigger-110"><?= element('nama_prodi', $detail, '') ?></span><br/>
+                                Pilihan 2 : <small class="bolder"><?= element(0, $opsi_prodi, '') ?></small><br/>
+                                Pilihan 3 : <small class="bolder grey"><?= element(1, $opsi_prodi, '') ?></small>
+                            </div>
+                        </div>
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> Nama Lengkap </div>
+                            <div class="profile-info-value">
+                                <span class="bolder blue bigger-110"><?= $detail['nama_mhs'] ?></span>
                             </div>
                         </div>
                         <div class="profile-info-row">
                             <div class="profile-info-name"> NIK </div>
                             <div class="profile-info-value">
-                                <span class="bolder"><?= $detail['nik'] ?></span>
+                                <span class="bolder blue"><?= $detail['nik'] ?></span>
                             </div>
                         </div>
                         <div class="profile-info-row">
                             <div class="profile-info-name"> Ibu Kandung </div>
                             <div class="profile-info-value">
-                                <span class="bolder"><?= $detail['ibu_kandung'] ?></span>
+                                <span class="bolder blue"><?= $detail['ibu_kandung'] ?></span>
+                            </div>
+                        </div>
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> Tempat Lahir </div>
+                            <div class="profile-info-value">
+                                <span class="bolder blue"><?= $detail['tempat_lahir'] ?></span>
                             </div>
                         </div>
                         <div class="profile-info-row">
                             <div class="profile-info-name"> Tanggal Lahir </div>
                             <div class="profile-info-value">
-                                <span class="bolder"><?= $detail['tempat_lahir'] ?>, 
+                                <span class="bolder blue">
                                 <?= format_date($detail['tgl_lahir'],1) ?>
                                 </span>
                             </div>
@@ -101,13 +107,13 @@
                         <div class="profile-info-row">
                             <div class="profile-info-name"> Jenis Kelamin </div>
                             <div class="profile-info-value">
-                                <span class="bolder"><?= $detail['kelamin_mhs'] ?></span>
+                                <span class="bolder green"><?= $detail['kelamin_mhs'] ?></span>
                             </div>
                         </div>
                         <div class="profile-info-row">
                             <div class="profile-info-name"> Agama </div>
                             <div class="profile-info-value">
-                                <span><?= $detail['agama'] ?></span>
+                                <span class="bolder green"><?= $detail['agama'] ?></span>
                             </div>
                         </div>
                         <div class="profile-info-row">
@@ -170,6 +176,12 @@
                             <div class="profile-info-name"> NPSN </div>
                             <div class="profile-info-value">
                                 <span><?= $detail['npsn'] ?></span>
+                            </div>
+                        </div>
+                        <div class="profile-info-row">
+                            <div class="profile-info-name"> Tanggal Daftar </div>
+                            <div class="profile-info-value">
+                                <span><?= format_date($detail['tgl_daftar'], 0) ?></span>
                             </div>
                         </div>
                         <div class="profile-info-row ">

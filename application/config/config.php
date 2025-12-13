@@ -23,9 +23,11 @@ $config['recaptcha_site_key'] = '6Le6BHoUAAAAAAQ_9M_GqTGDADcoiLdk3EBr8PTB';
 $config['recaptcha_secret_key'] = '6Le6BHoUAAAAAJfGMW46EoDoWt_Bc2jh_-2leh60';
 $config['recaptcha_lang'] = 'id';
 
-$config['app.periode'] = '20242';
-$config['app.tanggal'] = '2025-06-06';
-$config['app.jenis_daftar'] = '18';
+$config['app.periode'] = '20251';
+$config['app.tanggal'] = '2025-08-18';
+$config['app.jenis_daftar'] = '1';
+$config['app.jenis_daftar_all'] = '18';
+$config['app.tanggal_all'] = '2025-08-18';
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -407,10 +409,11 @@ $config['encrypt_method'] = 'aes-256-cbc';
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver'] = 'redis';
-$config['sess_save_path'] = 'tcp://app-redis:6379?prefix='.APP_NAME.':';
-//$config['sess_driver'] = 'database';
-//$config['sess_save_path'] = 'yk_sessions';
+//$config['sess_driver'] = 'redis';
+//$config['sess_save_path'] = 'tcp://app-redis:6379?prefix='.APP_NAME.':';
+//$config['sess_lock_timeout'] = 15;
+$config['sess_driver'] = 'database';
+$config['sess_save_path'] = 'yk_sessions';
 
 $config['sess_cookie_name'] = APP_NAME;
 $config['sess_expiration'] = 7200;

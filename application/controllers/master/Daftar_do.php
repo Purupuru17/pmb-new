@@ -44,7 +44,7 @@ class Daftar_do extends KZ_Controller {
 
         $data['opsi_prodi'] = implode("|", $prodi);
         $data['id_mhs'] = random_string('unique');
-        $data['kode_reg'] = $this->m_mhs->getNomor('UNMD');
+        $data['kode_reg'] = $this->m_mhs->getNomor('UVMD');
         $data['status_mhs'] = 'PENDAFTARAN';
         $data['kip_mhs'] = 'PENDING';
         $data['tgl_daftar'] = date('Y-m-d H:i:s');
@@ -306,8 +306,8 @@ class Daftar_do extends KZ_Controller {
         if(!checkdate($mm,$dd,$yyyy)) {
             $this->form_validation->set_message("_valid_date", "Kolom {field} tidak sesuai format.");
             return FALSE;
-        }else if($min < 15 || $min > 60) {
-            $this->form_validation->set_message("_valid_date", "Kolom {field} tidak sesuai usia anda. Min : 15 Tahun, Maks : 60 Tahun");
+        }else if($min < 15 || $min > 80) {
+            $this->form_validation->set_message("_valid_date", "Kolom {field} tidak sesuai usia anda. Min : 15 Tahun, Maks : 80 Tahun");
             return FALSE;
         }else {
             return TRUE;
@@ -322,7 +322,7 @@ class Daftar_do extends KZ_Controller {
         }
     }
     function _valid_zero($str) {
-        if(strpos($str, '00000') !== false) {
+        if(strpos($str, '000000') !== false) {
             $this->form_validation->set_message("_valid_zero", "Format {field} tidak sesuai. Mohon input data sebenarnya");
             return FALSE;
         }else{

@@ -100,6 +100,10 @@ $this->load->view('sistem/v_breadcrumb');
                             <i class="ace-icon fa fa-search-plus"></i>
                             Pencarian
                         </button>
+                        <button class="btn btn-danger btn-white btn-bold" name="insert" id="btn-insert-all" type="button">
+                            <i class="ace-icon fa fa-pencil-square-o"></i>
+                            Insert NIM All
+                        </button>
                     </div>
                 </div>
             </form>
@@ -155,11 +159,23 @@ $this->load->view('sistem/v_breadcrumb');
         
         load_table();
     });
-    $(document.body).on("click", "#insert-btn", function(event) {
-        var id = $(this).attr("itemid");
-        var name = $(this).attr("itemname");
-        var ths =  $(this);
-        
+    $(document.body).on("click", "#btn-insert-all", function(event) {
+        var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
+        var msg = "<p class='center grey bigger-120'><i class='ace-icon fa fa-hand-o-right blue'></i>" + 
+                " Apakah anda yakin akan menambahkan data ini ? </p>";
+        bootbox.confirm({ title: title, message: msg, 
+            buttons: {
+                cancel: { label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal", className: "btn btn-sm" },
+                confirm: { label: "<i class='ace-icon fa fa-paper-plane bigger-110'></i> Simpan", className: "btn btn-sm btn-success" }
+            },
+            callback: function(result) {
+                if (result === true) {
+                    insert_all();
+                }
+            }
+        });
+    });
+    function insert_all(){
         var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
         var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
                 ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
@@ -168,13 +184,10 @@ $this->load->view('sistem/v_breadcrumb');
             url: module + "/ajax/type/table/source/insert_all",
             dataType: "json",
             type: "POST",
-            data: {
-                id: id
-            },
+            data: $("#search-form").serializeArray(),
             success: function (rs) {
                 progress.modal("hide");
                 if (rs.status) {
-                    ths.hide();
                     myNotif('Informasi', rs.msg, 1);
                 } else {
                     myNotif('Peringatan', rs.msg, 2);
@@ -182,10 +195,10 @@ $this->load->view('sistem/v_breadcrumb');
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 progress.modal("hide");
-                myNotif('Error', 'Kesalahan Jaringan', 3);
+                console.log('Error : ' + xhr.responseText);
             }
         });
-    });
+    }
     function load_table() {
         table = $("#dynamic-table")
         .dataTable({
