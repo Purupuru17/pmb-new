@@ -60,8 +60,8 @@ $route['pages/(:any)'] = "home/pages/$1";
 $route['artikel/(:any)'] = "home/artikel/$1";
 $route['tag/(:any)'] = "home/tag/$1";
 
-$route['error_404'] = "non_login/beranda/err_404";
-$route['error_module'] = "non_login/beranda/err_module";
+$route['error_404'] = "home/err_404";
+$route['error_module'] = "home/err_module";
 
 $route['404_override'] = "home/err_404";
 $route['translate_uri_dashes'] = FALSE;

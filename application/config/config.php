@@ -1,27 +1,32 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+global $ENV;
+
+date_default_timezone_set($ENV['APP_TIMEZONE']);
+
+define('APP_NAME', $ENV['APP_NAME']);       //Aplikasi,Fungsi
+define('APP_VER', $ENV['APP_VER']);         //v_login,v_body,v_footer
+define('APP_THEME', $ENV['APP_THEME']);     //h_body
+define('APP_ALLOWED', $ENV['APP_ALLOWED']); //app-helper
+define('APP_STATUS', $ENV['APP_STATUS']);   //app-hooks
+
 // Limit banyak berita yang ditampilkan per page
-$config['app.post_limit']   = 20;
+$config['app.post_limit']     = 20;
 // Default Upload
-$config['app.max_size']   = 10100;
-$config['app.allowed_types']   = '*';
-$config['app.upload_path']   = './upload';
+$config['app.max_size']       = 10100;
+$config['app.allowed_types']  = '*';
+$config['app.upload_path']    = './upload';
 // Default Image Upload
-$config['app.max_file']   = 10100;
-$config['app.max_img']   = 3100;
-$config['app.max_width']   = 1200;
-$config['app.max_height']   = 1200;
-$config['app.resize']   = 600;
-$config['app.allowed_img']   = 'jpg|png|jpeg|JPG|PNG';
-// Storage s3 or local
-$config['app.storage'] = 's3';
-// Allowed Domain Origin
-$config['app.allowed_domain'] = ['localhost'];
-// To use reCAPTCHA, you need to sign up for an API key pair for your site.
-$config['recaptcha_site_key'] = '6Le6BHoUAAAAAAQ_9M_GqTGDADcoiLdk3EBr8PTB';
-$config['recaptcha_secret_key'] = '6Le6BHoUAAAAAJfGMW46EoDoWt_Bc2jh_-2leh60';
-$config['recaptcha_lang'] = 'id';
+$config['app.max_file']       = 10100;
+$config['app.max_img']        = 3100;
+$config['app.max_width']      = 1200;
+$config['app.max_height']     = 1200;
+$config['app.resize']         = 600;
+$config['app.allowed_img']    = 'jpg|png|jpeg|JPG|PNG';
+
+$config['app.storage']        = $ENV['APP_STORAGE'];
+$config['app.max_delete']     = $ENV['APP_DELETE'];
 
 $config['app.periode'] = '20251';
 $config['app.tanggal'] = '2025-08-18';
@@ -166,7 +171,7 @@ $config['subclass_prefix'] = 'KZ_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = APPPATH . '../vendor/autoload.php';
+$config['composer_autoload'] = ROOTPATH . 'vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -354,9 +359,9 @@ $config['cache_query_string'] = FALSE;
 | https://codeigniter.com/user_guide/libraries/encryption.html
 |
 */
-$config['encryption_key'] = 'tAGcCf'.date('md').'R4Sc5ZP5Zo';// Vz0quoZDYX5aCtEm /eu1KhSLj2c9eFry
-$config['encrypt_iv'] = '/eu1KhSLj2c9eFry';
-$config['encrypt_method'] = 'aes-256-cbc';
+$config['encryption_key'] = $ENV['ENCRYPTION_KEY'];
+$config['encrypt_iv'] = $ENV['ENCRYPT_IV'];
+$config['encrypt_method'] = $ENV['ENCRYPT_METHOD'];
 
 /*
 |--------------------------------------------------------------------------
@@ -409,13 +414,10 @@ $config['encrypt_method'] = 'aes-256-cbc';
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-//$config['sess_driver'] = 'redis';
-//$config['sess_save_path'] = 'tcp://app-redis:6379?prefix='.APP_NAME.':';
-//$config['sess_lock_timeout'] = 15;
-$config['sess_driver'] = 'database';
-$config['sess_save_path'] = 'yk_sessions';
-
-$config['sess_cookie_name'] = APP_NAME;
+$config['sess_driver'] = $ENV['SESSION_DRIVER'];
+$config['sess_save_path'] = $ENV['SESSION_PATH'];
+$config['sess_lock_timeout'] = 15;
+$config['sess_cookie_name'] = $ENV['APP_NAME'];
 $config['sess_expiration'] = 7200;
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
@@ -486,8 +488,8 @@ $config['global_xss_filtering'] = FALSE;
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
 $config['csrf_protection'] = FALSE;
-$config['csrf_token_name'] = 'csrf_test_name';
-$config['csrf_cookie_name'] = 'csrf_cookie_name';
+$config['csrf_token_name'] = 'csrf_test_'.strtolower($ENV['APP_NAME']);
+$config['csrf_cookie_name'] = 'csrf_cookie_'.strtolower($ENV['APP_NAME']);
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = TRUE;
 $config['csrf_exclude_uris'] = array();

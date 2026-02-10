@@ -53,11 +53,31 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
-define('APP_NAME', 'PMB');
-define('APP_STATUS', 1); // 0 = offline, 1 = online
-define('APP_VER', '2024v1');
-define('APP_THEME', 'eventon');
+
+/*
+|---------------------------------------------------------------
+| Define ROOTPATH (project root – one level above public/)
+|---------------------------------------------------------------
+*/
+
+define('ROOTPATH', realpath(__DIR__ . '/..') . '/');
+
+/*
+|---------------------------------------------------------------
+| Load .env.php (environment config)
+|---------------------------------------------------------------
+*/
+
+$ENV = include (ROOTPATH . '.env.php');
+
+/*
+|---------------------------------------------------------------
+| Set ENVIRONMENT from .env.php
+|---------------------------------------------------------------
+*/
+
+define('ENVIRONMENT', $ENV['APP_ENV']);
+
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -90,7 +110,7 @@ switch (ENVIRONMENT)
 		echo 'The application environment is not set correctly.';
 		exit(1); // EXIT_ERROR
 }
-
+        
 /*
  *---------------------------------------------------------------
  * SYSTEM DIRECTORY NAME
@@ -99,7 +119,7 @@ switch (ENVIRONMENT)
  * This variable must contain the name of your "system" directory.
  * Set the path if it is not in the same directory as this file.
  */
-	$system_path = '../system';
+	$system_path = ROOTPATH . 'system';
 
 /*
  *---------------------------------------------------------------
@@ -116,7 +136,7 @@ switch (ENVIRONMENT)
  *
  * NO TRAILING SLASH!
  */
-	$application_folder = '../application';
+	$application_folder = ROOTPATH . 'application';
 
 /*
  *---------------------------------------------------------------
@@ -306,7 +326,7 @@ switch (ENVIRONMENT)
 	}
 
 	define('VIEWPATH', $view_folder.DIRECTORY_SEPARATOR);
-
+        
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE

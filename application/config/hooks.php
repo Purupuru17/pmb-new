@@ -15,15 +15,21 @@ $hook['post_controller_constructor'][] = array(
     'filepath' => 'hooks',
     'params'	=> ''
 );
-$hook['post_controller_constructor'][] = array(
-    'class' => 'Track_visitor',
-    'function' => 'visitor_track',
-    'filename' => 'Track_visitor.php',
-    'filepath' => 'hooks'
-);
 $hook['display_override'][] = array(
     'class' => 'App_hooks',
     'function' => 'is_compress',
+    'filename' => 'App_hooks.php',
+    'filepath' => 'hooks'
+);
+$hook['post_controller'][] = array(
+    'class'    => 'App_hooks',
+    'function' => 'log_queries',
+    'filename' => 'App_hooks.php',
+    'filepath' => 'hooks'
+);
+$hook['post_controller_constructor'][] = array(
+    'class' => 'App_hooks',
+    'function' => 'log_server',
     'filename' => 'App_hooks.php',
     'filepath' => 'hooks'
 );

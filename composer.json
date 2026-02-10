@@ -1,13 +1,13 @@
 {
-    "name": "unimuda/pmb",
-    "description": "Penerimaan Mahasiswa Baru UNIMUDA Sorong",
+    "name": "project/puru",
+    "description": "Puru's Project",
     "type": "project",
     "license": "GPL",
-    "homepage": "http://pmb.unimudasorong.ac.id",
+    "homepage": "/",
     "authors": [
         {
-            "name": "PMB",
-            "email": "pmb@unimudasorong.ac.id"
+            "name": "puru17",
+            "email": "puru17@gmail.com"
         }
     ],
     "require": {
