@@ -2,9 +2,9 @@
 
 class M_artikel extends CI_Model {
     var $id = 'id_artikel';
-    var $table = 'rf_artikel';
-    var $column_order = array(null,'judul_artikel','judul_jenis','status_artikel','is_populer','is_breaking','update_artikel',null); //set column field database for datatable orderable
-    var $column_search = array('judul_artikel','judul_jenis','status_artikel','is_populer','is_breaking','update_artikel'); //set column field database for datatable searchable 
+    var $table = 'wb_artikel';
+    var $column_order = array(null,'judul_artikel','judul_jenis','status_artikel','is_popular','is_breaking','update_artikel',null); //set column field database for datatable orderable
+    var $column_search = array('judul_artikel','judul_jenis','status_artikel','is_popular','is_breaking','update_artikel'); //set column field database for datatable searchable 
     var $order = array('update_artikel' => 'desc'); // default order 
 
     function __construct() {
@@ -29,8 +29,8 @@ class M_artikel extends CI_Model {
     }
     //GET
     function getAll($where = NULL, $order = 'asc', $limit = 0, $offset = 0, $search = NULL) {
-        $this->db->from('rf_artikel a');
-        $this->db->join('rf_jenis_artikel j', 'a.jenis_id = j.id_jenis', 'inner');
+        $this->db->from('wb_artikel a');
+        $this->db->join('wb_jenis_artikel j', 'a.jenis_id = j.id_jenis', 'inner');
         if(!is_null($where)){
             $this->db->where($where);
         }
@@ -51,8 +51,8 @@ class M_artikel extends CI_Model {
     }
     function countAll($where = NULL, $search = NULL) {
         $this->db->select('COUNT(a.id_artikel) AS total');
-        $this->db->from('rf_artikel a');
-        $this->db->join('rf_jenis_artikel j', 'a.jenis_id = j.id_jenis', 'inner');
+        $this->db->from('wb_artikel a');
+        $this->db->join('wb_jenis_artikel j', 'a.jenis_id = j.id_jenis', 'inner');
         if(!is_null($where)){
             $this->db->where($where);
         }
@@ -67,8 +67,8 @@ class M_artikel extends CI_Model {
         return $this->db->get()->row_array();
     }
     function getSlug($slug) {
-        $this->db->from('rf_artikel a');
-        $this->db->join('rf_jenis_artikel j', 'a.jenis_id = j.id_jenis', 'inner');
+        $this->db->from('wb_artikel a');
+        $this->db->join('wb_jenis_artikel j', 'a.jenis_id = j.id_jenis', 'inner');
         $this->db->where('a.slug_artikel', $slug)->where('a.status_artikel', '1');
         
         return $this->db->get()->row_array();
@@ -105,8 +105,8 @@ class M_artikel extends CI_Model {
         return $this->db->count_all_results();
     }
     function get_datatables_query($where = NULL) {
-        $this->db->from('rf_artikel a');
-        $this->db->join('rf_jenis_artikel j', 'a.jenis_id = j.id_jenis', 'inner');
+        $this->db->from('wb_artikel a');
+        $this->db->join('wb_jenis_artikel j', 'a.jenis_id = j.id_jenis', 'inner');
         
         if(!is_null($where)){
             $this->db->where($where);

@@ -1,7 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-use Ifsnop\Mysqldump as IMysqldump;
-
 class Login extends KZ_Controller {
     
     private $module = 'non_login/login';
@@ -9,17 +7,17 @@ class Login extends KZ_Controller {
     
     function __construct() {
         parent::__construct();
-        $this->load->model(array('m_authentication', 'm_user'));
+        $this->load->model(array('m_user'));
     }
     function index() {
         !empty($this->sessionid) ? redirect('beranda') : null;
-        
         $this->load->library(array('recaptcha'));
         
         $data['captcha'] = $this->recaptcha->getWidget();
         $data['script_captcha'] = $this->recaptcha->getScriptTag();
-        $data['app'] = $this->session->userdata('app');
-        $data['theme'] = explode(",",$data['app']['tema']);
+        
+        $data['app_session'] = $this->session->userdata('app_session');
+        $data['app_theme'] = json_decode($data['app_session']['tema'], true);
         $data['module'] = $this->module;
 
         $this->data['content'] = $this->load->view('non_login/v_login', $data, TRUE);
@@ -31,25 +29,23 @@ class Login extends KZ_Controller {
         }
         $this->load->model(array('m_group'));
         
-        $role = $this->m_group->getRole(array('r.user_id' => $this->sessionid,'r.group_id' => decode($id)));
-        if($role['rows'] > 0){
-            
-            $this->session->set_userdata(array(
-                'logged' => true, 'id' => $this->sessionid,
-                'name' => $this->sessionname, 'usr' => $this->sessionusr,
-                'groupid' => decode($id), 'level' => decode($level), 'foto' => $this->sessionfoto
-            ));
-            $usr['last_login'] = date('Y-m-d H:i:s');
-            $usr['ip_user'] = ip_agent();
-            $usr['log_user'] = $this->sessionname . ' Login Sistem with Switch Account';
-            
-            $this->m_user->update($this->sessionid, $usr, 1);
-
-            $this->session->set_flashdata('notif', notif('info', 'Selamat datang kembali', $this->sessionname));
-            redirect('beranda');
-        }else{
+        $role = $this->m_group->getRole(['r.user_id' => $this->sessionid, 'r.group_id' => decode($id)]);
+        if($role['rows'] < 1){
             redirect('home/err_module');
-        }        
+        }
+        $this->session->set_userdata(array(
+            'logged' => true, 'id' => $this->sessionid,
+            'name' => $this->sessionname, 'usr' => $this->sessionusr,
+            'groupid' => decode($id), 'level' => decode($level), 'foto' => $this->sessionfoto
+        ));
+        $update['last_login'] = date('Y-m-d H:i:s');
+        $update['ip_user'] = ip_agent();
+        $update['log_user'] = $this->sessionname . ' Login Sistem with Switch Account';
+
+        $this->m_user->update($this->sessionid, $update);
+
+        $this->session->set_flashdata('notif', notif('info', 'Selamat datang kembali', $this->sessionname));
+        redirect('beranda');
     }
     function logout() {
         session_destroy();
@@ -60,49 +56,54 @@ class Login extends KZ_Controller {
         if(is_null($routing_module['type'])){
             redirect('');
         }
-        if ($routing_module['type'] == 'list') {
-            //LIST
-            if ($routing_module['source'] == 'autoload') {
-                $this->_autoload_module();
-            }
-        } else if ($routing_module['type'] == 'action') {
+        if ($routing_module['type'] == 'action') {
             //ACTION
             if ($routing_module['source'] == 'auth') {
                 $this->_auth_login();
             }else if ($routing_module['source'] == 'forgot') {
                 $this->_forgot_password();
-            }else if ($routing_module['source'] == 'cron') {
-                $this->_backup_db();
+            }else if ($routing_module['source'] == 'autoload') {
+                $this->_auto_module();
             }
         }
     }
     //function
     function _auth_login() {
-        $this->load->library(array('form_validation'));
-        
-        $this->form_validation->set_rules($this->rules)->set_error_delimiters('', '');
-        if ($this->form_validation->run() == FALSE) {
+        if(!$this->fungsi->Validation($this->rules,'ajax')){
             jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
         }
-        $data = $this->m_authentication->getAuth($this->input->post('username'));
+        $username = preg_replace('/[^a-zA-Z0-9\s]/u', '', $this->input->post('username'));
+        $password = $this->input->post('password');
+        
+        if(!is_string($username) || !is_string($password)){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Username tidak sesuai'));
+        }
+        $data = $this->m_authentication->getAuth($username);
+        if (sizeof($data) < 1) {
+            jsonResponse(array('status' => FALSE, 'msg' => 'Username belum terdaftar di sistem kami'));
+        }   
+        if($data['status_user'] == '0') {
+            jsonResponse(array('status' => FALSE, 'msg' => 'Akun telah Non-Aktif. Hubungi Administrator'));
+        }
+        if(!password_verify($password, $data['password'])){
+            jsonResponse(array('status' => FALSE, 'msg' => 'Password tidak sesuai'));
+        }
         $this->session->set_userdata(array(
             'logged' => true, 'id' => $data['id_user'], 'name' => $data['fullname'],
             'usr' => $data['username'], 'groupid' => $data['id_group'],'level' => $data['level'], 'foto' => $data['foto_user']
         ));
-        $usr['last_login'] = date('Y-m-d H:i:s');
-        $usr['ip_user'] = ip_agent();
-        $usr['log_user'] = $data['fullname'] . ' Login Sistem';
+        $update['last_login'] = date('Y-m-d H:i:s');
+        $update['ip_user'] = ip_agent();
+        $update['log_user'] = $data['fullname'] . ' Login Sistem';
 
-        $this->m_user->update($data['id_user'], $usr, 1);
+        $this->m_user->update($data['id_user'], $update);
 
         $this->session->set_flashdata('notif', notif('info', 'Selamat datang kembali', $data['fullname']));
-        jsonResponse(array('data' => site_url('beranda'), 'status' => TRUE, 'msg' => 'Selamat datang kembali, '.$data['fullname']));
+        jsonResponse(array('data' => site_url('beranda'), 'status' => TRUE, 
+            'msg' => 'Selamat datang kembali, '.$data['fullname']));
     }
     function _forgot_password() {
-        $this->load->library(array('form_validation'));
-        
-        $this->form_validation->set_rules($this->rules_forgot)->set_error_delimiters('', '');
-        if ($this->form_validation->run() == FALSE) {
+        if(!$this->fungsi->Validation($this->rules_forgot,'ajax')){
             jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
         }
         $nik = $this->input->post('fnik');
@@ -131,25 +132,32 @@ class Login extends KZ_Controller {
             jsonResponse(array('status' => FALSE, 'msg' => 'Password gagal direset (dipulihkan)'));
         }
     }
-    function _autoload_module() {
+    function _auto_module() {
+        $this->load->library(array('visitor'));
+        
+        $data = array();
+        $data['visitor'] = $this->visitor->is_tracking();
+        
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
         if(!$this->loggedin){
-            jsonResponse(array('item' => 0 ,'status' => false));
+            jsonResponse(array('data' => $data, 'item' => 0 ,'status' => false));
         }
         $this->load->model(array('m_notif'));
         //klik notifikasi
         $id = $this->input->post('id');
         if(!empty(decode($id))){
-            $this->m_notif->update(decode($id), array('status_notif' => '1'));
-            jsonResponse(array('data' => null, 'item' => 0 ,'status' => false, 'msg' => 'Klik Notification'));
+            $this->m_notif->update(decode($id), ['status_notif' => '1']);
+            jsonResponse(array('data' => $data, 'item' => 0 ,'status' => false, 'msg' => 'Klik Notification'));
         }
         //update login
         $this->m_user->update($this->sessionid, array('last_login' => date('Y-m-d H:i:s')));
         //update notifikasi
-        $result = $this->m_notif->getAll(array('status_notif' => '0'), 10);
+        $result = $this->m_notif->getAll(['status_notif' => '0'], 10);
         if($result['rows'] < 1){
-            jsonResponse(array('data' => null, 'item' => 0 ,'status' => false, 'msg' => 'Empty Notification'));
+            jsonResponse(array('data' => $data, 'item' => 0 ,'status' => false, 'msg' => 'Empty Notification'));
         }
-        $data = array();
         $html = '';
         foreach ($result['data'] as $item) {
             $status = ($item['status_notif'] == '0') ? 'unread' : '';
@@ -160,68 +168,30 @@ class Login extends KZ_Controller {
                         <i class="smaller-90 ace-icon fa fa-clock-o"></i>
                     <span class="">'.selisih_wkt($item['buat_notif']).'</span></span></span>
                 </a></li>';
-            $data[] = $item;
+            $data['table'][] = $item;
         }
         jsonResponse(array('data' => $data, 'html' => $html, 'item' => $result['rows'] ,'status' => true));
     }
-    function _validate() {
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
-        
-        if(!is_string($username) || !is_string($password)){
-            $this->form_validation->set_message("_validate", "Username tidak sesuai");
-            return FALSE;
-        }
-        $data = $this->m_authentication->getAuth($username);
-        if (sizeof($data) < 1) {
-            $this->form_validation->set_message("_validate", "Username anda belum terdaftar di sistem kami");
-            return FALSE;
-        }   
-        if($data['status_user'] == '0') {
-            $this->form_validation->set_message("_validate", "Mohon maaf untuk sementara Akun tidak aktif. Hubungi Administrator");
-            return FALSE;
-        }
-        if(!password_verify($password, $data['password'])){
-            $this->form_validation->set_message("_validate", "Password yang anda masukkan salah");
-            return FALSE;
-        }
-        return TRUE;           
-    }
     function _captcha_google($str){
-        $this->load->library('recaptcha');
-        $rs = $this->recaptcha->verifyResponse($str);
-        if($rs['success']){
+        $this->load->library(array('recaptcha'));
+        
+        $result = $this->recaptcha->verifyResponse($str);
+        if($result['success']){
             return TRUE;
         }else{
             $this->form_validation->set_message('_captcha_google', 'Berikan tanda centang terlebih dahulu');
             return FALSE;
         }
     }
-    function _backup_db() {
-        $this->load->helper(array('download'));
-        $is_cli = $this->input->is_cli_request();
-        if(!$is_cli){
-            //exit('404 not found');
-        }
-        $title = url_title(APP_NAME.'db '. format_date(date('Y-m-d H:i:s'),2),'-',true);
-        $file = "log/{$title}.sql";
-        $table = array('m_mhs','yk_user_log','yk_site_log');
-        
-        $dumpSettings = array('exclude-tables' => $table);
-        try {
-            $dump = new IMysqldump\Mysqldump($this->db->dsn, $this->db->username, $this->db->password, $dumpSettings);
-            $dump->start($file);
-            force_download($file, NULL);
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-            exit();
-        }
-    }
     private $rules = array(
         array(
             'field' => 'username',
             'label' => 'Username',
-            'rules' => 'required|trim|xss_clean|min_length[5]|callback__validate'
+            'rules' => 'required|trim|xss_clean|min_length[5]'
+        ),array(
+            'field' => 'password',
+            'label' => 'Password',
+            'rules' => 'required|min_length[5]'
         ),array(
             'field' => 'g-recaptcha-response',
             'label' => 'Pengecekan Keamanan',

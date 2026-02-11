@@ -41,22 +41,19 @@ class S3 {
     public function __construct()
     {
         $this->CI =& get_instance();
-
-        //load aws configuration
-        $this->CI->config->load('aws');
+        global $ENV;
         
         //initialize s3 connection
         $this->s3 = new S3Client(array(
-            'version'     => $this->CI->config->item('S3_VERSION'),
-            'region'      => $this->CI->config->item('S3_REGION'),
-            'endpoint'    => $this->CI->config->item('S3_ENDPOINT'),
+            'version'     => $ENV['S3_VERSION'],
+            'region'      => $ENV['S3_REGION'],
+            'endpoint'    => $ENV['S3_ENDPOINT'],
             'credentials' => array(
-                'key'    => $this->CI->config->item('AWS_ACCESS_KEY'),
-                'secret' => $this->CI->config->item('AWS_SECRET_ACCESS_KEY'),
+                'key'    => $ENV['AWS_ACCESS_KEY'],
+                'secret' => $ENV['AWS_SECRET_ACCESS_KEY'],
             ),
         ));
-
-        $this->bucket = $this->CI->config->item('S3_BUCKET');
+        $this->bucket = $ENV['S3_BUCKET'];
     }
 
     /**

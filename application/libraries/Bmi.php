@@ -5,24 +5,35 @@ use Firebase\JWT\Key;
 
 class Bmi {
     
-    const CLIENT_ID = '7949';
-    const PAYMENT_CODE = '0200';
-    const USERNAME = 'unimuda@sorong';
-    const PASSWORD = '@bmiunimuda14!#';
-    
-    const JWT_KEY = '1ffe87384e37bf47efd18ee506c14i10g1f0';
-    const JWT_ALGO = 'HS256';
-    const EXPIRED_HOUR = 3600;
-
     protected $CI;
+    
+    private $clientId;
+    private $paymentCode;
+    private $username;
+    private $password;
+    
+    private $jwtKey;
+    private $jwtAlgo;
+    private $expiredHour;
 
-    function __construct() {
+    function __construct()
+    {
         $this->CI = & get_instance();
+        global $ENV;
+        
+        $this->clientId       = $ENV['BMI_CLIENT_ID']     ?? '';
+        $this->paymentCode    = $ENV['BMI_PAYMENT_CODE']  ?? '';
+        $this->username       = $ENV['BMI_USERNAME']      ?? '';
+        $this->password       = $ENV['BMI_PASSWORD']      ?? '';
+        
+        $this->jwtKey         = $ENV['BMI_JWT_KEY']       ?? '';
+        $this->jwtAlgo        = $ENV['BMI_JWT_ALGO']      ?? '';
+        $this->expiredHour    = $ENV['BMI_EXPIRED_HOUR']  ?? 0;
     }
     public function virtual() {
         //BIN4  PRODUK2  RAND10
-        //7949 + 02 + 00 + 2024 + 5678
-        return self::CLIENT_ID.self::PAYMENT_CODE;
+        //7949 + 01 + 00 + 2024 + 5678
+        return $this->clientId.$this->paymentCode;
     }
     public function auth() {
         $clientIP = $this->CI->input->server('REMOTE_ADDR');
@@ -53,7 +64,7 @@ class Bmi {
         if (!$this->Validation($decodeJson, $this->rules)) {
             $this->response(['ERR' => '55', 'MSG' => 'Username/Password/Method Not Found']);
         }
-        if (($decodeJson['USERNAME'] != self::USERNAME) || ($decodeJson['PASSWORD'] != self::PASSWORD)){
+        if (($decodeJson['USERNAME'] != $this->username) || ($decodeJson['PASSWORD'] != $this->password)){
             $this->response(['ERR' => '55', 'METHOD' => $decodeJson['METHOD'], 'MSG' => 'Username/Password/Encrypt Key Not Valid']);
         }
         return $decodeJson;
@@ -92,19 +103,19 @@ class Bmi {
             ->_display();
         exit();
     }
-    private static function Encode($data) {
+    private function Encode($data) {
         try {
             $payload = $data;
             
-            return JWT::encode($payload, self::JWT_KEY, self::JWT_ALGO);
+            return JWT::encode($payload, $this->jwtKey, $this->jwtAlgo);
         } catch (Exception $e) {
             log_message('error', $e->getMessage());
             return null;
         }
     }
-    private static function Decode($token) {
+    private function Decode($token) {
         try {
-            $decode = JWT::decode($token, new Key(self::JWT_KEY, self::JWT_ALGO));
+            $decode = JWT::decode($token, new Key($this->jwtKey, $this->jwtAlgo));
             
             return json_decode(json_encode($decode), true);
         } catch (Exception $e) {

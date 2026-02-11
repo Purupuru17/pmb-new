@@ -11,7 +11,7 @@ class Akun extends KZ_Controller {
         $this->load->model(array('m_user'));
     }
     public function index(){
-        $this->data['user'] = $this->m_user->getId($this->sessionid);
+        $this->data['user'] = $this->m_user->get($this->sessionid);
         
         $this->data['action'] = $this->module.'/edit';
         $this->data['title'] = array('Profil',  $this->sessionname);
@@ -22,7 +22,7 @@ class Akun extends KZ_Controller {
         $this->load_view('sistem/user/v_akun', $this->data);
     }
     public function edit() {
-        if($this->_validation($this->rules) == FALSE){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module);
         }            
         $data['fullname'] = $this->input->post('nama');
@@ -34,7 +34,7 @@ class Akun extends KZ_Controller {
         
         if(!empty($_FILES['foto']['name'])){
             $img = url_title($data['fullname'].' '.random_string('alnum', 2), 'dash', TRUE);
-            $upload = $this->_upload_img('foto', $img, $this->path, 200);
+            $upload = $this->fungsi->ImgUpload('foto', $img, $this->path, 200);
             if(is_null($upload)){
                 redirect($this->module);
             }
@@ -43,7 +43,7 @@ class Akun extends KZ_Controller {
             (is_file($old_img)) ? unlink($old_img) : '';
         }
 
-        $result = $this->m_user->update($this->sessionid, $data, 1);
+        $result = $this->m_user->update($this->sessionid, $data);
         if ($result) {
             $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Data berhasil diubah. Silahkan login ulang untuk melihat perubahan.'));
             redirect($this->module);

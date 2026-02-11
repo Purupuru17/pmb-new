@@ -18,14 +18,13 @@
             </div>
         </form>
     </div>
-
+    <p id="one-spin" class="bigger-130 blue" style="display: none" align="center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> Loading . . .</p>
     <div class="widget-box transparent">
         <div class="widget-header">
             <h5 class="widget-title bigger lighter orange">
                 <i class="ace-icon fa fa-bar-chart"></i>
                 Grafik Pengunjung
             </h5>
-
             <div class="widget-toolbar">
                 <a href="#" data-action="collapse" class="orange2">
                     <i class="ace-icon fa fa-chevron-up bigger-110"></i>
@@ -46,7 +45,6 @@
                 <i class="ace-icon fa fa-users"></i>
                 Pengunjung Website [ <strong id="txt-total"></strong> ]
             </h5>
-
             <div class="widget-toolbar">
                 <a href="#" data-action="collapse" class="orange2">
                     <i class="ace-icon fa fa-chevron-up bigger-110"></i>
@@ -55,16 +53,16 @@
         </div>
         <div class="widget-body">
             <div class="widget-main padding-2 table-responsive">
-                <table id="dynamic-table" class="table table-striped table-bordered table-hover">
+                <table id="index-table" class="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Date</th>
                             <th>IP</th>
                             <th>x Day</th>
-                            <th width="25%">Request URL</th>
-                            <th>Page Name</th>
-                            <th width="25%">Agent</th>
+                            <th width="30%">Request URL</th>
+                            <th width="20%">Referrer Page</th>
+                            <th>Agent</th>
                         </tr>
                     </thead>
                     <tbody>

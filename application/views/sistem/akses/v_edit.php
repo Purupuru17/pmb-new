@@ -4,7 +4,7 @@ $this->load->view('sistem/v_breadcrumb');
 <div class="page-content">
     <div class="page-header">
         <h1>
-            <?= $group['nama_group'] ?>
+            <?= $title[0] ?>
             <small>
                 <i class="ace-icon fa fa-angle-double-right"></i>
                 <?= $title[1] ?>

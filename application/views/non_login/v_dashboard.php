@@ -2,6 +2,11 @@
 $this->load->view('sistem/v_breadcrumb');
 ?>
 <div class="page-content">
+    <div class="page-header">
+        <h1>
+            <?= $title[0] ?>
+        </h1>
+    </div><!-- /.page-header -->
     <div class="row">
         <div class="col-xs-12">
             <?= $this->session->flashdata('notif'); ?>
@@ -182,7 +187,7 @@ load_js(array(
                 chart.redraw();
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                myNotif('Peringatan', 'Gagal memuat data', 3);
+                jsfNotif('Peringatan', 'Gagal memuat data', 3);
             }
         });
     }
@@ -207,7 +212,7 @@ load_js(array(
                 chart_prodi.redraw();
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                myNotif('Peringatan', 'Gagal memuat data', 3);
+                jsfNotif('Peringatan', 'Gagal memuat data', 3);
             }
         });
     }
@@ -232,7 +237,7 @@ load_js(array(
                 chart_sekolah.redraw();
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                myNotif('Peringatan', 'Gagal memuat data', 3);
+                jsfNotif('Peringatan', 'Gagal memuat data', 3);
             }
         });
     }
@@ -245,7 +250,7 @@ load_js(array(
             }
         },
         subtitle: {
-            text: 'Website <?= $app['judul'] ?>'
+            text: 'Website <?= $app_session['judul'] ?>'
         },
         xAxis: {
             type: 'category',
@@ -294,7 +299,7 @@ load_js(array(
             }
         },
         subtitle: {
-            text: 'Website <?= $app['judul'] ?>'
+            text: 'Website <?= $app_session['judul'] ?>'
         },
         xAxis: {
             type: 'category',
@@ -343,7 +348,7 @@ load_js(array(
             }
         },
         subtitle: {
-            text: 'Website <?= $app['judul'] ?>'
+            text: 'Website <?= $app_session['judul'] ?>'
         },
         xAxis: {
             type: 'category',

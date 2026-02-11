@@ -4,7 +4,9 @@
             <div class="space-10"></div>
             <div class="center">
                 <a class="no-hover" href="<?= site_url() ?>">
-                    <img class="blur-up lazyload width-30" src="<?= load_file($app['logo']) ?>" />
+                    <img class="blur-up lazyload" width="80" src="<?= load_file($app_session['logo']) ?>" />
+                    <img class="blur-up lazyload" width="83" src="<?= load_file('private/tut-wuri.png') ?>" />
+                    <img class="blur-up lazyload" width="200" src="<?= load_file('private/pddikti.png') ?>" />
                 </a>
             </div>
             <div class="space-6"></div>
@@ -18,7 +20,7 @@
                             </h4>
                             <?= $this->session->flashdata('notif'); ?>
                             <div class="space-6"></div>
-                            <form id="validation-form" name="form" method="POST" action="#" enctype="multipart/form-data">
+                            <form id="login-form" name="form" method="POST" action="#" enctype="multipart/form-data">
                                 <fieldset>
                                     <div class="form-group">
                                         <div class="block clearfix">
@@ -60,12 +62,12 @@
                                 </fieldset>
                             </form>
                             <div class="social-or-login center">
-                                <span class="blue" id="id-company-text">Copyright © <?= APP_VER ?> <?= $app['judul'] ?></span>
+                                <span class="blue" id="id-company-text">Copyright © <?= APP_VER ?> <?= $app_session['judul'] ?></span>
                             </div>
                             <div class="space-6"></div>
                         </div><!-- /.widget-main -->
 
-                        <div class="toolbar clearfix">
+                        <div class="toolbar clearfix web-color">
                             <div class="center">
                                 <a href="#" data-target="#forgot-box" class="forgot-password-link">
                                     <i class="ace-icon fa fa-arrow-left"></i>
@@ -159,7 +161,8 @@
     });
 </script>
 <script type="text/javascript">
-    $("#validation-form").submit(function (event) {
+    $("#login-form").submit(function (e) {
+        e.preventDefault();
         const valid = $(this).validate().checkForm();
         if (!valid) {
             return;
@@ -172,7 +175,7 @@
             url: module + "/ajax/type/action/source/auth",
             dataType: "json",
             type: "POST",
-            data: $("#validation-form").serialize(),
+            data: $(this).serialize(),
             success: function (rs) {
                 if (rs.status) {
                     setTimeout(function () {
@@ -192,9 +195,9 @@
                 console.log('Error : ' + xhr.responseText);
             }
         });
-        event.preventDefault();
     });
     $("#validation-forgot").submit(function (e) {
+        e.preventDefault();
         const valid = $(this).validate().checkForm();
         if (!valid) {
             return;
@@ -207,7 +210,7 @@
             url: module + "/ajax/type/action/source/forgot",
             dataType: "json",
             type: "POST",
-            data: $("#validation-forgot").serialize(),
+            data: $(this).serialize(),
             success: function (rs) {
                 if (rs.status) {
                     $("#fnik,#fphone").val('');
@@ -222,9 +225,8 @@
                 console.log('Error : ' + xhr.responseText);
             }
         });
-        e.preventDefault();
     });
-    $("#validation-form").validate({
+    $("#login-form").validate({
         errorElement: 'div',
         errorClass: 'help-block',
         focusInvalid: false,

@@ -22,6 +22,7 @@ class Notif extends KZ_Controller {
     function add() {
         $this->data['notif'] = $this->m_notif->getEmpty();
         
+        $this->data['module'] = $this->module;
         $this->data['action'] = $this->module_do.'/add';
         $this->data['title'] = array('Notifikasi','Tambah Data');
         $this->data['breadcrumb'] = array( 
@@ -31,11 +32,17 @@ class Notif extends KZ_Controller {
         );
         $this->load_view('sistem/notif/v_form', $this->data);
     }
-    function delete($id = NULL) {
-        if(empty(decode($id))){
+    function delete() {
+        $id = decode($this->input->post('id'));
+        if(empty($id)){
             redirect($this->module);
         }
-        $result = $this->m_notif->delete(decode($id));
+        $get = $this->m_notif->get($id);
+        if(empty($get)){
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Data tidak ditemukan'));
+            redirect($this->module);
+        }
+        $result = $this->m_notif->delete($id);
         if ($result) {
             $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Data berhasil dihapus'));
             redirect($this->module);
@@ -61,57 +68,31 @@ class Notif extends KZ_Controller {
             }
         }
     }
-    function _table_index() {
-        $where = null;
+    function _table_index()
+    {
+        $where = [];
         if($this->sessionlevel != '1'){
             $where['n.send_id'] = $this->sessionid;
         }
-        $list = $this->m_notif->getAll($where);
-        if($list['rows'] < 1){
-            jsonResponse(array('status' => false, 'msg' => 'Data tidak ditemukan'));
-        }
-        $data = array('table' => array());
-        $no = 1;
-        foreach ($list['data'] as $items) {
-            $row = array();
-            
-            $aksi = ($this->sessionlevel != '1') ? '' : '<a href="'. site_url($items['link_notif']) .'" name="'. encode($items['id_notif']).'"
-                    class="tooltip-warning btn btn-white btn-warning btn-sm btn-round" id="link-btn" data-rel="tooltip" title="Link">
-                    <span class="orange"><i class="ace-icon fa fa-external-link bigger-120"></i></span>
-                </a>'; 
-            $aksi .= '<a href="#" name="'.encode($items['id_notif']).'" itemprop="'.$items['fullname'].' - '.$items['subject_notif'].'" id="delete-btn" 
-                class="tooltip-error btn btn-white btn-danger btn-mini btn-round" data-rel="tooltip" title="Hapus Data">
-                    <span class="red"><i class="ace-icon fa fa-trash-o"></i></span>
-                </a>';
-            $box = '<label class="pos-rel">
-                <input value="'.encode($items['id_notif']).'" type="checkbox" class="ace" id="checkboxData" name="dataCheckbox[]" />
-                <span class="lbl"></span></label>';
-            $status = ($items['status_notif'] == '1') ? '<i class="bigger-120 fa fa-check green"></i>' : '';
-            $message = !in_array($items['subject_notif'], array('BNI','BMI','BRI','BTN')) ? $items['msg_notif']
-                : '<span id="log-msg" itemid="'.$items['subject_notif'].'" itemname="'. base64_encode($items['msg_notif']).'">'.limit_text($items['msg_notif'],100).'</span>';
-            $row[] = $status.' '.$no.' '.$box;
-            $row[] = '<strong>'.$items['fullname'].'</strong>';
-            $row[] = '<strong>'.$items['subject_notif'].'</strong>';
-            $row[] = $message;
-            $row[] = '<small>'.format_date($items['buat_notif'],0).'</small>';
-            $row[] = '<div class="action-buttons">'.$aksi.'</div>';
-            
-            $data['table'][] = $row;
-            $no++;
-        }
-        jsonResponse(array('data' => $data, 'status' => true, 'msg' => 'Data ditemukan'));
+        $datatables = $this->m_notif->getDatatables($where);
+        jsonResponse($datatables);
     }
-    function _delete_all() {
+    function _delete_all()
+    {
         $id = $this->input->post('id');
-
         if(empty($id)){
-            jsonResponse(array('msg' => 'Tidak ada data yang dipilih' ,'status' => FALSE));
+            jsonResponse(array('status' => FALSE, 'msg' => 'Tidak ada data yang dipilih' ));
         }
-        $result = $this->m_notif->deleteAll($id);
-        if($result) {
-            jsonResponse(array('msg' => 'Notifikasi berhasil dihapus' ,'status' => TRUE));
+        $notif_arr = array_map(function($val) {
+            return decode(trim($val));
+        }, explode(",", $id));
+        $notif_id = array_filter($notif_arr);
+        
+        $result = $this->m_notif->deleteBatch($notif_id);
+        if($result > 0) {
+            jsonResponse(array('status' => TRUE, 'msg' => $result.' Notifikasi berhasil dihapus'));
         }else{
-            jsonResponse(array('msg' => 'Notifikasi gagal dihapus' ,'status' => FALSE));
+            jsonResponse(array('status' => FALSE, 'msg' => 'Notifikasi gagal dihapus'));
         }
     }
 }

@@ -19,7 +19,7 @@ $this->load->view('sistem/v_breadcrumb');
             <h3 class="lighter center block blue"><?= $title[1] ?></h3>
             <form id="validation-form" action="<?= site_url($action); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-5 no-padding-right">Nama Menu :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Nama Menu :</label>
                     <div class="col-xs-12 col-sm-7">
                         <div class="clearfix">
                             <input value="<?= $menu['nama_menu'] ?>" type="text" name="nama" id="nama" class="col-xs-12  col-sm-6" placeholder="Nama Menu" />
@@ -27,7 +27,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-5 no-padding-right">Module Menu :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Module Menu :</label>
                     <div class="col-xs-12 col-sm-7">
                         <div class="clearfix">
                             <input value="<?= $menu['module_menu'] ?>" type="text" name="module" id="module" class="col-xs-12  col-sm-6" placeholder="Module Menu" />
@@ -35,7 +35,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-5 no-padding-right">Jenis Menu :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Jenis Menu :</label>
                     <div class="col-xs-12 col-sm-3">
                         <div class="clearfix">
                             <select class="select2 width-100" name="jenis" id="jenis" data-placeholder="-------> Pilih Jenis Menu <-------">
@@ -47,7 +47,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group hide parent_related">
-                    <label class="control-label col-xs-12 col-sm-5 no-padding-right"></label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right"></label>
                     <div class="col-xs-12 col-sm-3">
                         <div class="clearfix">
                             <select class="select2 width-100" name="menu" id="menu" data-placeholder="-------> Pilih Menu <-------">
@@ -63,7 +63,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group hide parent_related">
-                    <label class="control-label col-xs-12 col-sm-5 no-padding-right"></label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right"></label>
                     <div class="col-xs-12 col-sm-7">
                         <div class="clearfix">
                             <div class="checkbox">
@@ -100,7 +100,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-5 no-padding-right">Icon Menu :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Icon Menu :</label>
                     <div class="col-xs-12 col-sm-7">
                         <div class="clearfix">
                             <input value="<?= $menu['icon_menu'] ?>" type="text" name="icon" id="icon" class="col-xs-12  col-sm-4" placeholder="Icon Menu" />
@@ -108,7 +108,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-5 no-padding-right">Order Menu :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Order Menu :</label>
                     <div class="col-xs-12 col-sm-7">
                         <div class="clearfix">
                             <input value="<?= $menu['order_menu'] ?>" type="number" name="order" id="icon" class="col-xs-12  col-sm-2" placeholder="Order Menu" />
@@ -116,7 +116,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-5 no-padding-right">Tampilkan :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Tampilkan :</label>
                     <div class="col-xs-12 col-sm-7">
                         <div class="clearfix">
                             <label class="control-label">
@@ -131,7 +131,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="clearfix form-actions">
-                    <div class="col-md-offset-5 col-md-4">
+                    <div class="col-md-offset-4 col-md-4">
                         <button class="btn" type="reset">
                             <i class="ace-icon fa fa-undo bigger-110"></i>
                             Batal
@@ -152,30 +152,23 @@ $this->load->view('sistem/v_breadcrumb');
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $(".select2").select2({allowClear: true})
-            .on('change', function () {
-            $(this).closest('form').validate().element($(this));
-        });
+        $(".select2").select2({allowClear: true});
         $(".select2-chosen").addClass("center");
-        
-        this_select($('select#jenis').val());
+        is_selected($("select#jenis").val());
+        validate_form();
     });
     $("select#jenis").change(function(e){
-        this_select(this.value);
+        is_selected(this.value);
     });
-    function this_select(val) {
+    function is_selected(val) {
         if(val === '0' || val === '') {
             $('.parent_related').addClass('hide');
         } else {
             $('.parent_related').removeClass('hide');
         }
     }
-    $("#validation-form").validate({
-        errorElement: 'div',
-        errorClass: 'help-block',
-        focusInvalid: false,
-        ignore: "",
-        rules: {
+    function validate_form() {
+        jsfValidate("#validation-form", {
             nama: {
                 required: true
             },
@@ -191,32 +184,6 @@ $this->load->view('sistem/v_breadcrumb');
             status: {
                 required: true
             }
-        },
-        highlight: function(e) {
-            $(e).closest('.form-group').removeClass('has-success').addClass('has-error');
-        },
-        success: function(e) {
-            $(e).closest('.form-group').removeClass('has-error').addClass('has-success');
-            $(e).remove();
-        },
-        errorPlacement: function(error, element) {
-            if (element.is('input[type=checkbox]') || element.is('input[type=radio]')) {
-                var controls = element.closest('div[class*="col-"]');
-                if (controls.find(':checkbox,:radio').length > 1)
-                    controls.append(error);
-                else
-                    error.insertAfter(element.nextAll('.lbl:eq(0)').eq(0));
-            }
-            else if (element.is('.select2')) {
-                error.insertAfter(element.siblings('[class*="select2-container"]:eq(0)'));
-            }
-            else if (element.is('.chosen-select')) {
-                error.insertAfter(element.siblings('[class*="chosen-container"]:eq(0)'));
-            }
-            else
-                error.insertAfter(element.parent());
-        },
-        invalidHandler: function(form) {
-        }
-    });
+        });
+    }
 </script>                    

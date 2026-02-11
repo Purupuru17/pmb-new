@@ -6,7 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <!-- #section:basics/footer -->
         <div class="footer-content">
             <span class="">
-                <span class="blue"><?= $app['cipta'] ?> &copy; <?= APP_VER ?></span>
+                <span class="blue"><?= $app_session['cipta'] ?> &copy; <?= APP_VER ?></span>
                 <small class="grey">{elapsed_time} detik ~ {memory_usage}</small>
             </span>
             

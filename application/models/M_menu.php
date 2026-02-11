@@ -1,19 +1,24 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class M_menu extends CI_Model {
+class M_menu extends KZ_Model {
 
-    var $id = 'id_menu';
-    var $table = 'yk_menu';
-
-    function __construct() {
+    protected $id = 'id_menu';
+    protected $table = 'yk_menu';
+    protected $uuid = false;
+    
+    protected $alias = 'm';
+    
+    function __construct()
+    {
         parent::__construct();
     }
-    //INSERT
-    function insert($data) {
-        $this->db->insert($this->table, $data);
+    function insert($data)
+    {
+        parent::insert($data);
         return $this->db->insert_id();
     }
-    function insertAksi($data, $aksi) {
+    function insertAksi($data, $aksi)
+    {
         $this->db->trans_start();
         
         $menu_id = $this->insert($data);    
@@ -60,17 +65,11 @@ class M_menu extends CI_Model {
         $this->db->trans_complete();
         return $this->db->trans_status();
     }
-    
-    //UPDATE
-    function update($id, $data) {
-        $this->db->where($this->id, $id);
-        $row = $this->db->update($this->table, $data);
-        return $row;
-    }
-    function updateAksi($id, $data, $aksi) {
+    function updateAksi($id, $data, $aksi)
+    {
         $this->db->trans_start();
         
-        $this->update($id, $data);
+        parent::update($id, $data);
         $module = $data['module_menu'];
         
         $query = $this->db->get_where('yk_menu_aksi', array('id_menu' => $id, 'id_aksi' => 1));
@@ -181,79 +180,44 @@ class M_menu extends CI_Model {
         $this->db->trans_complete();
         return $this->db->trans_status();
     }
-    
-    //DELETE
-    function delete($id) {
-        $this->db->where($this->id, $id);
-        $row = $this->db->delete($this->table);
-        return $row;
-    }
-    function deleteSub($id) {
+    function deleteSub($id)
+    {
         $this->db->trans_start();
         
-        $this->delete($id);
-        
-        $this->db->where('parent_menu', $id);
-        $this->db->delete($this->table);
+        parent::delete($id);
+        parent::delete(['parent_menu' => $id]);
         
         $this->db->trans_complete();
         return $this->db->trans_status();
     }
-    
-    //Menu
-    function getAll() {
-        $this->db->from($this->table);
-        $this->db->order_by('parent_menu', 'asc');
+    function getNavMenu($group_id)
+    {
+        $where = ['m.status_menu' => 1, 'gma.id_group' => $group_id];
         
-        $get = $this->db->get();
-        return [
-            'rows' => $get->num_rows(),
-            'data' => $get->result_array()
+        $options['select'] = 'm.id_menu, m.nama_menu, m.parent_menu, m.module_menu, m.status_menu, m.icon_menu, m.order_menu';
+        $options['join'] = [
+            ['yk_menu_aksi ma', 'm.id_menu = ma.id_menu', 'inner'],
+            ['yk_group_menu_aksi gma', 'ma.id_menu_aksi = gma.id_menu_aksi', 'inner']
         ];
-    }
-    function getId($id) {
-        $this->db->from($this->table)->where($this->id, $id);
-        return $this->db->get()->row_array();
-    }
-    function getParent($where = NULL) {
-        $this->db->from($this->table);
-        $this->db->where('parent_menu =','0');
-        if(!is_null($where)){
-            $this->db->where($where);
-        }
-        $get = $this->db->get();
-        return [
-            'rows' => $get->num_rows(),
-            'data' => $get->result_array()
-        ];
-    }
-    function getVisible() {
-        $this->db->from($this->table);
-        $this->db->where('status_menu =','1');
+        $options['order'] = ['m.order_menu', 'asc'];
         
-        $get = $this->db->get();
-        return [
-            'rows' => $get->num_rows(),
-            'data' => $get->result_array()
-        ];
-    } 
-    function getMenuAksi($menuId) {
-        $result = array(
-            'index' => false,
-            'add' => false,
-            'edit' => false,
-            'delete' => false,
-            'detail' => false,
-            'cetak' => false,
-            'export' => false
-        );
-        $this->db->select('ma.id_aksi');
-        $this->db->from('yk_menu m');
-        $this->db->join('yk_menu_aksi ma', 'm.id_menu = ma.id_menu', 'inner');
-        $this->db->where('m.id_menu', $menuId);
+        $this->db->distinct();
+        return parent::all($where, $options);
+    }
+    function getMenuAksi($menuId)
+    {
+        $result = $this->getAksiEmpty();
         
-        $query = $this->db->get()->result_array();
-        foreach($query as $record) {
+        $where = ['m.id_menu' => $menuId];
+        
+        $options['select'] = 'ma.id_aksi';
+        $options['join'] = [
+            ['yk_menu_aksi ma', 'm.id_menu = ma.id_menu', 'inner']
+        ];
+        $query = parent::all($where, $options);
+        
+        foreach($query['data'] as $record)
+        {
             if($record['id_aksi'] == 1) {
                 $result["index"] = true;
             } else if($record['id_aksi'] == 2) {
@@ -272,19 +236,21 @@ class M_menu extends CI_Model {
         }
         return $result;
     }
-    function getEmpty() {
-        $data['id_menu'] = NULL;
-        $data['parent_menu'] = NULL;
-        $data['nama_menu'] = NULL;
-        $data['module_menu'] = NULL;
-        $data['status_menu'] = NULL;
-        $data['icon_menu'] = NULL;
-        $data['order_menu'] = NULL;
-       
-        return $data;
+    function getEmpty()
+    {
+        return [
+            $this->id => null,
+            'parent_menu' => null,
+            'nama_menu' => null,
+            'module_menu' => null,
+            'status_menu' => null,
+            'icon_menu' => null,
+            'order_menu' => null
+        ];
    }
-    function getAksiEmpty() {
-        $result = array(
+    function getAksiEmpty()
+    {
+        return [
             'index' => false,
             'add' => false,
             'edit' => false,
@@ -292,10 +258,10 @@ class M_menu extends CI_Model {
             'detail' => false,
             'cetak' => false,
             'export' => false
-        );
-        return $result;
+        ];
     }
-    function getAuthenticationMenu($groupId) {
+    function getAuthenticationMenu($groupId)
+    {
         $sql = "SELECT * FROM ( SELECT m.id_menu, m.nama_menu, m.parent_menu, m.module_menu,
             sum(1-abs( sign(ma.id_aksi-1))) AS `index`, 
             sum(1-abs( sign(ma.id_aksi-2))) AS `add`, 
@@ -314,19 +280,42 @@ class M_menu extends CI_Model {
         $query = $this->db->query($sql, array($groupId, $groupId));
         return $query->result_array();
     }
-    function getNavMenu($group_id) {
-        $this->db->distinct();
-        $this->db->select('m.id_menu, m.nama_menu, m.parent_menu, m.module_menu, m.status_menu, m.icon_menu, m.order_menu');
-        $this->db->from('yk_menu m');
-        $this->db->join('yk_menu_aksi ma', 'm.id_menu = ma.id_menu', 'inner');
-        $this->db->join('yk_group_menu_aksi gma', 'ma.id_menu_aksi = gma.id_menu_aksi', 'inner');
-        
-        $this->db->where(array('m.status_menu' => 1, 'gma.id_group' => $group_id));
-        $this->db->order_by('m.order_menu', 'asc');
-        $get = $this->db->get();
+    public function getRecursive($where = [])
+    {
+        $sql = "
+            WITH RECURSIVE menu_tree AS (
+                SELECT 
+                    id_menu,
+                    parent_menu,
+                    nama_menu,
+                    module_menu,
+                    status_menu,
+                    icon_menu,
+                    order_menu,
+                    CAST(nama_menu AS CHAR(255)) AS full_path
+                FROM yk_menu
+                WHERE parent_menu = 0
+
+                UNION ALL
+
+                SELECT 
+                    m.id_menu,
+                    m.parent_menu,
+                    m.nama_menu,
+                    m.module_menu,
+                    m.status_menu,
+                    m.icon_menu,
+                    m.order_menu,
+                    CONCAT(mt.full_path, ' > ', m.nama_menu)
+                FROM yk_menu m
+                INNER JOIN menu_tree mt ON mt.id_menu = m.parent_menu
+            )
+            SELECT * FROM menu_tree ORDER BY full_path
+        ";
+        $query = $this->db->query($sql);
         return [
-            'rows' => $get->num_rows(),
-            'data' => $get->result_array()
+            'rows' => $query->num_rows(),
+            'data' => $query->result_array()
         ];
     }
 }

@@ -5,7 +5,7 @@ use Ifsnop\Mysqldump as IMysqldump;
 class Aplikasi extends KZ_Controller {
 
     private $module = 'sistem/aplikasi';
-    private $path = 'theme/img/';
+    private $path = 'private/';
     private $url_route = array('id', 'source', 'type');
     
     function __construct() {
@@ -15,7 +15,8 @@ class Aplikasi extends KZ_Controller {
     }
     function index() {
         $this->data['is_admin'] = ($this->sessionlevel == '1') ? true : false;
-        $this->data['log_path'] = $this->config->item('log_path');
+        $this->data['log_path'] = config_item('log_path');
+        
         $this->data['module'] = $this->module;
         $this->data['action'] = $this->module . '/edit/';
         $this->data['title'] = array('Aplikasi', 'Ubah Pengaturan');
@@ -23,7 +24,7 @@ class Aplikasi extends KZ_Controller {
             array('title' => $this->uri->segment(1), 'url' => '#'),
             array('title' => $this->uri->segment(2), 'url' => '')
         );
-        $this->load_view('sistem/aplikasi/v_ubah', $this->data);
+        $this->load_view('sistem/aplikasi/v_edit', $this->data);
     }
     function add($get = null) {
         if(empty($get)){
@@ -51,7 +52,7 @@ class Aplikasi extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        $path = $this->config->item('log_path').decode($id);
+        $path = config_item('log_path').decode($id);
         if (is_file($path)) {
             unlink($path);
             $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Data berhasil dihapus'));
@@ -62,7 +63,7 @@ class Aplikasi extends KZ_Controller {
         if(empty(decode($id))) {
             redirect($this->module);
         }
-        if(!$this->_validation($this->rules)) {
+        if(!$this->fungsi->Validation($this->rules)) {
             redirect($this->module);
         }
         $param = $this->input->post(NULL, TRUE);
@@ -70,52 +71,51 @@ class Aplikasi extends KZ_Controller {
         $data['judul'] = element('judul', $param);
         $data['cipta'] = element('cipta', $param);
         $data['deskripsi'] = element('deskrip', $param);
-        $data['update_aplikasi'] = date('Y-m-d H:i:s');
-        $data['session_aplikasi'] = $this->sessionname;
+        $data['log'] = $this->sessionname.' mengubah data '.date('d-m-Y H:i:s');
 
-        $nav = (element('navbar', $param)) ? 1 : 0;
-        $side = (element('sidebar', $param)) ? 1 : 0;
-        $bread = (element('bread', $param)) ? 1 : 0;
-        $compact = (element('compact', $param)) ? 1 : 0;
-        $hover = (element('hover', $param)) ? 1 : 0;
-        $horizon = (element('horizontal', $param)) ? 1 : 0;
-        $website = element('website', $param, '#000000');
-        $website_dua = element('website_dua', $param, '#000000');
+        $navbar = element('navbar', $param, 0);
+        $sidebar = element('sidebar', $param, 0);
+        $bread = element('bread', $param, 0);
+        $compact = element('compact', $param, 0);
+        $hover = element('hover', $param, 0);
+        $horizontal = element('horizontal', $param, 0);
+        $webcolor = element('webcolor', $param, '#000000');
+        $webcolor_other = element('webcolor_other', $param, '#000000');
         
-        if ($side == 1) {
-            $nav = 1;
+        if ($sidebar == 1) {
+            $navbar = 1;
         }
         if ($bread == 1) {
-            $nav = 1;
-            $side = 1;
+            $navbar = 1;
+            $sidebar = 1;
         }
         if ($compact == 1) {
             $hover = 1;
         }
-        if ($horizon == 1) {
+        if ($horizontal == 1) {
             $compact = 1;
             $hover = 1;
         }
-        $aksi = array(
-            0 => element('tema', $param),
-            1 => element('back', $param),
-            2 => $nav,
-            3 => $side,
-            4 => $bread,
-            5 => (element('container', $param)) ? 1 : 0,
-            6 => $hover,
-            7 => $compact,
-            8 => $horizon,
-            9 => (element('item', $param)) ? 1 : 0,
-            10 => $website,
-            11 => $website_dua
+        $theme = array(
+            'theme' => element('theme', $param),
+            'login' => element('login', $param),
+            'navbar' => $navbar,
+            'sidebar' => $sidebar,
+            'bread' => $bread,
+            'container' => element('container', $param, 0),
+            'hover' => $hover,
+            'compact' => $compact,
+            'horizontal' => $horizontal,
+            'altitem' => element('altitem', $param, 0),
+            'webcolor' => $webcolor,
+            'webcolor_other' => $webcolor_other
         );
-        $data['tema'] = implode(",", ($aksi));
+        $data['tema'] = json_encode($theme);
         
         $this->load->library(array('upload'));
         if (!empty($_FILES['foto']['name'])) {
             $img = url_title($data['judul'].' '.random_string('alnum', 4),'dash',TRUE);
-            $upload = $this->_upload_img('foto', $img, $this->path, 1050, FALSE, 150);
+            $upload = $this->fungsi->ImgUpload('foto', $img, $this->path, 1050, FALSE, 150);
             if(is_null($upload)){
                 redirect($this->module);
             }
@@ -125,6 +125,8 @@ class Aplikasi extends KZ_Controller {
         }
         $result = $this->m_aplikasi->update(decode($id), $data);
         if ($result) {
+            $this->session->set_userdata(['app_session' => $this->m_aplikasi->get(1)]);
+            
             $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Data berhasil diubah'));
             redirect($this->module);
         } else {
@@ -137,8 +139,8 @@ class Aplikasi extends KZ_Controller {
         if(is_null($routing_module['type'])){
             redirect('');
         }
-        if ($routing_module['type'] == 'list') {
-            //LIST
+        if ($routing_module['type'] == 'table') {
+            //TABLE
             if ($routing_module['source'] == 'visitor') {
                 $this->_list_visitor();
             }else if ($routing_module['source'] == 'grafik') {
@@ -157,31 +159,8 @@ class Aplikasi extends KZ_Controller {
             'DATE(access_date) >=' => empty($awal) ? date('Y-m-d') : $awal,
             'DATE(access_date) <=' => empty($akhir) ? date('Y-m-d') : $akhir
         );
-        $visitor = $this->m_visitor->get_datatables($where);
-        
-        $data = array();
-        $no = $_POST['start'];
-        foreach ($visitor as $items) {
-            $no++;
-            $row = array();
-
-            $row[] = ctk($no);
-            $row[] = format_date($items['access_date'], 0);
-            $row[] = ($items['ip_address']);
-            $row[] = ctk($items['no_of_visits']);
-            $row[] = ctk($items['requested_url']);
-            $row[] = ctk($items['page_name']);
-            $row[] = ctk($items['user_agent']);
-
-            $data[] = $row;
-        }
-        $output = array(
-            "draw" => $_POST['draw'],
-            "recordsTotal" => $this->m_visitor->count_all(),
-            "recordsFiltered" => $this->m_visitor->count_filtered($where),
-            "data" => $data,
-        );
-        jsonResponse($output);
+        $datatables = $this->m_visitor->getDatatables($where);
+        jsonResponse($datatables);
     } 
     function _chart_visitor() {
         $this->load->model(array('m_visitor'));
@@ -189,24 +168,27 @@ class Aplikasi extends KZ_Controller {
         $awal = empty($this->input->post('awal')) ? date('Y-m-d') : $this->input->post('awal');
         $akhir = empty($this->input->post('akhir')) ? date('Y-m-d') : $this->input->post('akhir');
         
-        $rs = $this->m_visitor->get_chart_range($awal, $akhir);
-        if(strcmp($awal, $akhir) == 0){
-            $rs = $this->m_visitor->get_chart_today($awal);
-        }   
-        $data = array();
+        if (strcmp($awal, $akhir) == 0){
+            $result = $this->m_visitor->getChart(['DATE(access_date)' => $awal]);
+        } else {
+            $result = $this->m_visitor->getChart(
+                ['DATE(access_date) >=' => $awal, 'DATE(access_date) <=' => $akhir],
+                false
+            );
+        }
+        if($result['rows'] < 1){
+            jsonResponse(array('data' => [], 'total' => 0));
+        }
+        $data = [];
         $total = 0;
-        if($rs['rows'] > 0){
-            foreach ($rs['data'] as $item) {
-                $row = array();
-                $row['day'] = $item['day'];
-                $row['visit'] = (int)$item['visits'];
-                $row['akses'] = (int)$item['akses'];
+        foreach ($result['data'] as $item) {
+            $row = [];
+            $row['day'] = $item['day'];
+            $row['visit'] = (int)$item['visits'];
+            $row['akses'] = (int)$item['akses'];
 
-                $data[] = $row;
-                $total += $item['visits'];
-            }
-        }else{
-            $data[] = array(array('day' => '', 'visit' => 0, 'akses' => 0));
+            $data[] = $row;
+            $total += $item['visits'];
         }
         jsonResponse(array('data' => $data, 'total' => $total));
     }
@@ -224,20 +206,20 @@ class Aplikasi extends KZ_Controller {
             'label' => 'Deskripsi',
             'rules' => 'required|trim|xss_clean|min_length[5]|max_length[200]'
         ),array(
-            'field' => 'tema',
+            'field' => 'theme',
             'label' => 'Tema Admin',
             'rules' => 'required|trim|xss_clean'
-        ),array(
-            'field' => 'website',
-            'label' => 'Warna Pertama',
-            'rules' => 'required|trim|xss_clean'
-        ),array(
-            'field' => 'website_dua',
-            'label' => 'Warna Kedua',
-            'rules' => 'required|trim|xss_clean'
         ), array(
-            'field' => 'back',
+            'field' => 'login',
             'label' => 'Background Login',
+            'rules' => 'required|trim|xss_clean'
+        ),array(
+            'field' => 'webcolor',
+            'label' => 'Warna Utama',
+            'rules' => 'required|trim|xss_clean'
+        ),array(
+            'field' => 'webcolor_other',
+            'label' => 'Warna Kedua',
             'rules' => 'required|trim|xss_clean'
         )
     );

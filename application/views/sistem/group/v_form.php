@@ -19,7 +19,7 @@ $this->load->view('sistem/v_breadcrumb');
             <h3 class="lighter center block blue"><?= $title[1] ?></h3>
             <form id="validation-form" action="<?= site_url($action); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-5 no-padding-right">Nama Group :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Nama Group :</label>
                     <div class="col-xs-12 col-sm-7">
                         <div class="clearfix">
                             <input value="<?= ctk($group['nama_group']) ?>" type="text" name="nama" id="nama" class="col-xs-12  col-sm-6" placeholder="Nama Group" />
@@ -27,7 +27,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-5 no-padding-right">Super Admin :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Super Admin :</label>
                     <div class="col-xs-12 col-sm-7">
                         <div class="clearfix">
                             <label class="control-label">
@@ -42,7 +42,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-5 no-padding-right">Keterangan :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Keterangan :</label>
                     <div class="col-xs-12 col-sm-7">
                         <div class="clearfix">
                             <input value="<?= ctk($group['keterangan_group']) ?>" type="text" name="keterangan" id="keterangan" class="col-xs-12  col-sm-6" placeholder="Keterangan" />
@@ -50,7 +50,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="clearfix form-actions">
-                    <div class="col-md-offset-5 col-md-4">
+                    <div class="col-md-offset-4 col-md-4">
                         <button class="btn" type="reset">
                             <i class="ace-icon fa fa-undo bigger-110"></i>
                             Batal
@@ -69,47 +69,14 @@ $this->load->view('sistem/v_breadcrumb');
 </div><!-- /.page-content -->
 <?php load_js(array("theme/aceadmin/assets/js/jquery.validate.js")); ?>
 <script type="text/javascript">
-    $('#validation-form').validate({
-        errorElement: 'div',
-        errorClass: 'help-block',
-        focusInvalid: false,
-        ignore: "",
-        rules: {
-            nama: {
-                required: true
-            },
-            keterangan: {
-                required: true
-            },
-            status: {
-                required: true
-            }
-        },
-        highlight: function(e) {
-            $(e).closest('.form-group').removeClass('has-success').addClass('has-error');
-        },
-        success: function(e) {
-            $(e).closest('.form-group').removeClass('has-error').addClass('has-success');
-            $(e).remove();
-        },
-        errorPlacement: function(error, element) {
-            if (element.is('input[type=checkbox]') || element.is('input[type=radio]')) {
-                var controls = element.closest('div[class*="col-"]');
-                if (controls.find(':checkbox,:radio').length > 1)
-                    controls.append(error);
-                else
-                    error.insertAfter(element.nextAll('.lbl:eq(0)').eq(0));
-            }
-            else if (element.is('.select2')) {
-                error.insertAfter(element.siblings('[class*="select2-container"]:eq(0)'));
-            }
-            else if (element.is('.chosen-select')) {
-                error.insertAfter(element.siblings('[class*="chosen-container"]:eq(0)'));
-            }
-            else
-                error.insertAfter(element.parent());
-        },
-        invalidHandler: function(form) {
-        }
+    $(document).ready(function () {
+        validate_form();
     });
+    function validate_form() {
+        jsfValidate("#validation-form", {
+            nama: { required: true },
+            keterangan: { required: true },
+            status: { required: true }
+        });
+    }
 </script>                  

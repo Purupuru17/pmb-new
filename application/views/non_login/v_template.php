@@ -4,11 +4,11 @@
         <?php
             $param = $_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '';
             $meta = isset($meta) ? $meta : [];
-            $meta_title_default = $app['judul'] .' | '.ctk($app['deskripsi']);
-            $meta_desc_default = ctk($app['deskripsi']);
-            $meta_author_default = $app['judul'];
+            $meta_title_default = $app_session['judul'] .' | '.ctk($app_session['deskripsi']);
+            $meta_desc_default = ctk($app_session['deskripsi']);
+            $meta_author_default = $app_session['judul'];
             $meta_url_default  = current_url() . $param;
-            $meta_img_default  = base_url($app['logo']);    
+            $meta_img_default  = base_url($app_session['logo']);  
         ?>
         <!-- Basic page needs ============================================ -->
         <title><?= element('title', $meta, $meta_title_default); ?></title>
@@ -26,7 +26,7 @@
         <meta name="rating" content="general">
         
         <!-- Favicon -->
-        <link rel="shortcut icon" href="<?= load_file('theme/img/logo.png') ?>">
+        <link rel="shortcut icon" href="<?= load_file('private/logo.png') ?>">
         
         <?php
         load_css(array(
@@ -63,7 +63,7 @@
                 document.write("<script src='<?= base_url('theme/aceadmin/assets/js/jquery.mobile.custom.js') ?>'>" + "<" + "/script>");
             
             $(document).ready(function() {
-                var login = "<?= $theme[1] ?>";
+                var login = "<?= $app_theme['login'] ?>";
                 if (login === "1") {
                     $('body').attr('class', 'login-layout');
                     $('#id-text2').attr('class', 'white');

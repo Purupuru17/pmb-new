@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
-<div id="navbar" class="navbar navbar-default">
+<div id="navbar" class="navbar navbar-default web-color">
     <script type="text/javascript">
         try {
             ace.settings.check('navbar', 'fixed')
@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="navbar-header pull-left">
             <!-- #section:basics/navbar.layout.brand -->
             <a href="<?= site_url() ?>" class="navbar-brand">
-                <span class="bolder"><?= $app['judul'] ?></span>
+                <span class="bolder"><?= $app_session['judul'] ?></span>
             </a>
         </div>
         <!-- #section:basics/navbar.dropdown -->
@@ -34,10 +34,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <li class="transparent hidden-xs hidden-sm">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <i class="ace-icon fa fa-calendar"></i>
-                        <span class="jam"><?= format_date(date('Y-m-d H:i:s'),0) ?></span>
+                        <span class="is-clock"><?= format_date(date('Y-m-d H:i:s'),0) ?></span>
                     </a>
                 </li>
-                <li class="transparent hide">
+                <li class="<?= ($this->session->userdata('level') == '1') ? '' : 'hide' ?> transparent hidden-xs hidden-sm">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <i class="ace-icon fa fa-bell icon-animated-bell"></i>
                         <span id="item-notif" class="badge badge-important">0</span>
@@ -92,7 +92,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </li>
                         <li class="divider"></li>
                         <?php
-                            foreach ($this->session->userdata('group_role')['data'] as $role) {
+                            foreach ($this->session->userdata('group_role') as $role) {
                                 echo $this->session->userdata('groupid') == $role['group_id'] ? '' : '<li>
                                     <a href="'. site_url('non_login/login/changed/'. encode($role['group_id']).'/'.encode($role['level'])).'">
                                         <i class="ace-icon fa fa-users"></i>

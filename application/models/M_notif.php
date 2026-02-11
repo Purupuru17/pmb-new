@@ -1,40 +1,49 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class M_notif extends CI_Model {
+class M_notif extends KZ_Model {
 
-    private $id = 'id_notif';
-    private $table = 'yk_notif';
-
-    function __construct() {
+    protected $id = 'id_notif';
+    protected $table = 'yk_notif';
+    protected $uuid = true;
+    
+    protected $alias = 'n';
+    protected $select = '*';
+    protected $joins = [
+        ['yk_user u','n.send_id = u.id_user','left']
+    ];
+    protected $columns = [null,'fullname','subject_notif','msg_notif','buat_notif',null];
+    protected $searchable = ['fullname','subject_notif','msg_notif','buat_notif'];
+    protected $order = ['buat_notif' => 'desc'];
+   
+    function __construct()
+    {
         parent::__construct();
     }
-    //INSERT
-    function insert($data) {
-        $this->db->set($this->id, 'UUID()', FALSE);
+    function getAll($where = NULL, $limit = NULL) {
+        $options['select'] = $this->select;
+        $options['join'] = $this->joins;
+        $options['order'] = ['buat_notif','desc'];
+        $options['limit'] = $limit;
         
-        $this->db->insert($this->table, $data);
-        return $this->db->affected_rows() > 0 ? true : false;
+        return parent::all($where, $options);
     }
-    function insertAll($value, $level) {
+    function insertAll($value, $level)
+    {
         $this->db->trans_start();
         $user_id = NULL;
         
         switch($level) {
-            //Langsung
             case 1 :
                 $user_id = $value['send_id'];
                 break;
-            /*Opsi
             case 2 :
                 $this->db->select('user_id')->from('tmp_shop')->where('shop_id', $value['send_id']);
                 $user_id = $this->db->get()->row_array()['user_id'];
                 break;
-            */
             case 3 :
                 $this->db->select('user_id')->from('tmp_cst')->where('cst_id', $value['send_id']);
                 $user_id = $this->db->get()->row_array()['user_id'];
                 break;
-            //Admin
             default:
                 $user_id = 1;
         }
@@ -51,13 +60,12 @@ class M_notif extends CI_Model {
         $this->db->trans_complete();
         return $this->db->trans_status();
     }
-    //BATCH
-    function insertBatch($post, $from_id) {
+    function insertBatch($post, $from_id)
+    {
         $this->db->trans_start();
         
         $rs_user = NULL;
         switch($post['user']) {
-            /*
             case 'shop' :
                 $this->db->select('user_id')->from('tmp_shop');
                 $rs_user = $this->db->get()->result_array();
@@ -66,7 +74,6 @@ class M_notif extends CI_Model {
                 $this->db->select('user_id')->from('tmp_cst');
                 $rs_user = $this->db->get()->result_array();
                 break;
-            */
             default:
                 $row['from_id'] = $from_id;
                 $row['send_id'] = decode($post['user']);
@@ -98,68 +105,61 @@ class M_notif extends CI_Model {
         $this->db->trans_complete();
         return $this->db->trans_status();
     }
-    //UPDATE
-    function update($id, $data) {
-        if(is_array($id)){
-            $this->db->where($id);
-        }else{
-            $this->db->where($this->id, $id);
-        }
-        $this->db->update($this->table, $data);
-        return $this->db->affected_rows() > 0 ? true : false;
-    }
-    //DELETE
-    function delete($id) {
-        if(is_array($id)){
-            $this->db->where($id);
-        }else{
-            $this->db->where($this->id, $id);
-        }
-        $this->db->delete($this->table);
-        return $this->db->affected_rows() > 0 ? true : false;
-    }
-    function deleteAll($id) {
+    function deleteBatch($arr_id = [])
+    {
         $this->db->trans_start();
-        
-        $notif_id = explode(",", $id);
-        foreach ($notif_id as $val) {
-            $this->delete(decode($val));
-        }
+        $this->db->where_in($this->id, $arr_id)->delete($this->table);
         $this->db->trans_complete();
-        return $this->db->trans_status();
+        
+        return ($this->db->trans_status()) ? $this->db->affected_rows() : 0;
     }
-    //GET
-    function getAll($where = NULL, $limit = NULL, $orwhere = NULL) {
-        $this->db->from('yk_notif n');
-        $this->db->join('yk_user u','n.send_id = u.id_user','left');
-        if(!is_null($where)){
-            $this->db->where($where);
-        }
-        if(!is_null($orwhere)){
-            $this->db->or_where($orwhere);
-        }
-        if(!is_null($limit)){
-            $this->db->limit($limit);
-        }
-        $this->db->order_by('n.buat_notif','desc');
-        
-        $get = $this->db->get();
-        
+    function getEmpty()
+    {
         return [
-            'rows' => $get->num_rows(),
-            'data' => $get->result_array()
+            $this->id => null,
+            'subject_notif' => null,
+            'msg_notif' => null,
+            'link_notif' => null
         ];
-    }
-    function getId($id) {
-        $this->db->from($this->table)->where($this->id, $id);
-        return $this->db->get()->row_array();
-    }
-    function getEmpty() {
-        $data[$this->id] = NULL;
-        $data['subject_notif'] = NULL;
-        $data['msg_notif'] = NULL;
-        $data['link_notif'] = NULL;
-       
-        return $data;
    }
+    function getDatatables($where = [], $param = []) 
+    {
+        $result = parent::datatable($where);
+        $data = [];
+        $no = $this->input->post('start');
+        foreach ($result['data'] as $items) {
+            $no++;
+            $btn_aksi = ($this->sessionlevel != '1') ? '' : '<a href="'. site_url($items['link_notif']) .'" itemid="'. encode($items['id_notif']).'"
+                    class="tooltip-warning btn btn-white btn-warning btn-sm btn-round" id="link-btn" data-rel="tooltip" title="Link">
+                    <span class="orange"><i class="ace-icon fa fa-external-link bigger-120"></i></span>
+                </a>'; 
+            $btn_aksi .= '<a href="#" itemid="'.encode($items['id_notif']).'" itemprop="'.$items['fullname'].' - '.$items['subject_notif'].'" id="delete-btn" 
+                class="tooltip-error btn btn-white btn-danger btn-mini btn-round" data-rel="tooltip" title="Hapus Data">
+                    <span class="red"><i class="ace-icon fa fa-trash-o"></i></span>
+                </a>';
+            $box = '<label class="pos-rel">
+                <input value="'.encode($items['id_notif']).'" type="checkbox" class="ace" id="checkboxData" name="dataCheckbox[]" />
+                <span class="lbl"></span></label>';
+            $status = ($items['status_notif'] == '1') ? '<i class="bigger-120 fa fa-check green"></i>' : '';
+            $message = !in_array($items['subject_notif'], array('BNI','BMI','BRI','BTN')) ? $items['msg_notif']
+                : '<span id="log-msg" itemid="'.$items['subject_notif'].'" itemname="'. base64_encode($items['msg_notif']).'">'.limit_text($items['msg_notif'],100).'</span>';
+            
+            $row = [];
+            $row[] = $status.' '.$no.' '.$box;
+            $row[] = '<strong>'.$items['fullname'].'</strong>';
+            $row[] = '<strong>'.$items['subject_notif'].'</strong>';
+            $row[] = $message;
+            $row[] = '<small>'.format_date($items['buat_notif'],0).'</small>';
+            $row[] = '<div class="action-buttons">'.$btn_aksi.'</div>';
+
+            $data[] = $row;
+        }
+        $output = array(
+            "draw" => $result['draw'],
+            "recordsTotal" => $result['recordsTotal'],
+            "recordsFiltered" => $result['recordsFiltered'],
+            "data" => $data,
+        );
+        return $output;
+    }
 }

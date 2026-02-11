@@ -1,6 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class User_do extends KZ_Controller {
+    
     private $module = 'sistem/user';
     private $module_do = 'sistem/user_do';
     
@@ -9,7 +10,7 @@ class User_do extends KZ_Controller {
         $this->load->model(array('m_user'));
     }
     function add() {
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/add');
         }
         $data['fullname'] = $this->input->post('nama');
@@ -31,10 +32,10 @@ class User_do extends KZ_Controller {
         }
     }
     function edit($id = NULL) {
-        if($id == NULL){
+        if(empty(decode($id))){
             redirect($this->module);
         }
-        if(!$this->_validation($this->rules_edit)){
+        if(!$this->fungsi->Validation($this->rules_edit)){
             redirect($this->module.'/edit/'.$id);
         }
         $data['fullname'] = $this->input->post('nama');
@@ -50,7 +51,7 @@ class User_do extends KZ_Controller {
             $data['password'] = password_hash(date('dmY'), PASSWORD_DEFAULT);
             $data['log_user'] = $this->sessionname. ' me-RESET password Akun';
         }
-        $result = $this->m_user->update(decode($id), $data, 1);
+        $result = $this->m_user->update(decode($id), $data);
         if ($result) {
             $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Data berhasil diubah'));
             redirect($this->module);

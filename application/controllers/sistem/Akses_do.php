@@ -9,7 +9,7 @@ class Akses_do extends KZ_Controller {
         parent::__construct();
     }
     function add() {
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module);
         }
         $this->load->model(array('m_group'));
@@ -18,7 +18,7 @@ class Akses_do extends KZ_Controller {
         $data['group_id'] = decode($id);
         $data['user_id'] = decode($this->input->post('user'));
         
-        $role = $this->m_group->getRole(array('r.user_id' => $data['user_id'],'r.group_id' => $data['group_id']));
+        $role = $this->m_group->getRole($data);
         if($role['rows'] > 0){
             $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Data telah tersimpan sebelumnya'));
             redirect($this->module.'/add/'.$id);
@@ -52,8 +52,7 @@ class Akses_do extends KZ_Controller {
                 "cetak" => isset($param['cetak' . $i]) ? $param['cetak' . $i] : '',
                 "export" => isset($param['export' . $i]) ? $param['export' . $i] : ''));
         }
-
-        $result = $this->m_authentication->update(decode($id), $auth);
+        $result = $this->m_authentication->updateGroupMenuAksi(decode($id), $auth);
         if ($result) {
             $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Data berhasil disimpan'));
             redirect($this->module . '/edit/' . $id);

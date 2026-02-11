@@ -123,7 +123,13 @@ class Storage
             if (!empty($name)) {
                 $this->file->customName = $new_path . $name;
             }
-            $this->CI->s3->upload($this->file);
+            try {
+                $this->CI->s3->upload($this->file);
+                return $this->file;
+            } catch (Exception $exc) {
+                $this->CI->session->set_flashdata('notif', notif('danger', 'Peringatan', $exc->getMessage()));
+                return $this->file;
+            }
         }
         if ($this->storage == 'local') {
             $new_path = $path['local'].'/';
@@ -134,6 +140,7 @@ class Storage
             //Upload File
             if($this->CI->upload->do_upload($field)) {
                 $this->data($this->CI->upload->data(), $new_path);
+                return $this->file;
             }else{
                 $this->CI->session->set_flashdata('notif', notif('danger', 'Peringatan', strip_tags($this->CI->upload->display_errors())));
                 return $this->file;
@@ -151,7 +158,13 @@ class Storage
             if (!empty($name)) {
                 $this->file->customName = $new_path . $name;
             }
-            $this->CI->s3->upload($this->file);
+            try {
+                $this->CI->s3->upload($this->file);
+                return $this->file;
+            } catch (Exception $exc) {
+                $this->CI->session->set_flashdata('notif', notif('danger', 'Peringatan', $exc->getMessage()));
+                return $this->file;
+            }
         }
         if ($this->storage == 'local') {
             $new_path = $path['local'].'/';
@@ -189,6 +202,7 @@ class Storage
                 if($this->CI->image_lib->resize()){
                     //Return Image
                     $this->data($this->CI->upload->data(), $new_path);
+                    return $this->file;
                 }else{
                     (is_file($new_path . $upload)) ? unlink($new_path . $upload) : '';    
                     $this->CI->session->set_flashdata('notif', notif('danger', 'Peringatan Foto', strip_tags($this->CI->image_lib->display_errors())));

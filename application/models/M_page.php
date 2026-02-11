@@ -3,7 +3,7 @@
 class M_page extends CI_Model {
     
     var $id = 'id_page';
-    var $table = 'rf_page';
+    var $table = 'wb_page';
 
     function __construct() {
         parent::__construct();
@@ -69,5 +69,5 @@ class M_page extends CI_Model {
         $data['update_page'] = NULL;
         $data['log_page'] = NULL;
         return $data;
-   }
+    }
 }

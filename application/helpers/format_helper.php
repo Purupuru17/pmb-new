@@ -26,7 +26,12 @@ if (!function_exists('ctk')) {
         }
         return $hasil;
     }
+}
+if (!function_exists('filter')) {
 
+    function filter($string) {
+        return preg_replace("/[^A-Za-z0-9.!?\s]/","",$string);
+    }
 }
 if (!function_exists('limit_text')) {
     
@@ -51,13 +56,13 @@ if (!function_exists('is_keyword')) {
 if (!function_exists('format_date')) {
 
     function format_date($tanggal, $format = NULL) {
-        if (is_null($tanggal) || $tanggal === '0000-00-00') {
+        if (empty($tanggal) || $tanggal === '0000-00-00') {
             return NULL;
         }
         $get = date_create($tanggal);
-        $day = hari(date_format($get, 'N'));
+        $day = format_day(date_format($get, 'N'));
         $date = date_format($get, 'd');
-        $month = bulan(date_format($get, 'n'));
+        $month = format_month(date_format($get, 'n'));
         $year = date_format($get, 'Y');
         
         $output = '';
@@ -78,9 +83,9 @@ if (!function_exists('format_date')) {
     }
 
 }
-if (!function_exists('bulan')) {
+if (!function_exists('format_month')) {
 
-    function bulan($month) {
+    function format_month($month) {
         switch ($month) {
             case 1 : $bulan = "Januari";
                 break;
@@ -113,9 +118,9 @@ if (!function_exists('bulan')) {
     }
 
 }
-if (!function_exists('hari')) {
+if (!function_exists('format_day')) {
 
-    function hari($day) {
+    function format_day($day) {
         switch ($day) {
             case 1 : $hari = "Senin";
                 break;
@@ -161,33 +166,6 @@ if (!function_exists('selisih_wkt')) {
             $val = format_date($tgl, 0);
         }
         return $val;
-    }
-}
-if (!function_exists('range_date')) {
-
-    function range_date($check_date, $start_date, $end_date) {
-        // Convert to timestamp
-        $start_ts = strtotime($start_date);
-        $end_ts = strtotime($end_date);
-        $check_ts = strtotime($check_date);
-        
-        $diff = $end_ts - $check_ts;
-        $jam   = floor($diff / (60 * 60));
-        $menit = $diff - ( $jam * (60 * 60) );
-        $detik = $diff % 60;
-        
-        if( ($check_ts >= $start_ts) && ($check_ts <= $end_ts) ){
-            $st = TRUE;
-            $rs = $jam .  ' Jam - ' . floor( $menit / 60 ) . ' Menit - ' . $detik . ' Detik' ;
-            //$rs = $jam .  ':' . floor( $menit / 60 ) . ':' . $detik;
-        }else if($check_ts < $start_ts){
-            $st = FALSE;
-            $rs = 'Sesi Ini Belum Dimulai';
-        }else{
-            $st = FALSE;
-            $rs = 'Sesi Ini Telah Berakhir';
-        }
-        return [ 'rs' => $rs, 'st' => $st ];
     }
 }
 if (!function_exists('is_online')) {

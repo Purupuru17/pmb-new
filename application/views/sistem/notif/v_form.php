@@ -23,12 +23,6 @@ $this->load->view('sistem/v_breadcrumb');
                     <div class="col-xs-12 col-sm-4">
                         <div class="clearfix">
                             <input type="hidden" name="user" id="user" class="width-100"/>
-<!--                            <select class="select2 width-100" name="user" id="user" data-placeholder="">
-                                <option value="">  </option>
-                                <option class="bolder" value="shop"> Semua Toko </option>
-                                <option class="bolder" value="cst"> Semua Pelanggan </option>
-                                
-                            </select>-->
                         </div>
                     </div>
                 </div>
@@ -57,7 +51,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="clearfix form-actions">
-                    <div class="col-md-offset-5 col-md-4">
+                    <div class="col-md-offset-4 col-md-4">
                         <button class="btn" type="reset">
                             <i class="ace-icon fa fa-undo bigger-110"></i>
                             Batal
@@ -80,32 +74,12 @@ $this->load->view('sistem/v_breadcrumb');
 )); ?>
 <script type="text/javascript">
     const module = "<?= site_url($module) ?>";
-     
     $(document).ready(function () {
-        $(".select2").select2({allowClear: true})
-        $("#user").select2({
-            placeholder: "-------> Pilih User Aplikasi <-------",
-            ajax: {
-                url: module + "/ajax/type/list/source/user",
-                type: "POST",
-                dataType: 'json',
-                delay: 250,
-                data: function (key) {
-                    return { key: key };
-                },
-                results: function (data) {
-                    return { results: data };
-                },
-                cache: true
-            }
-        });
+        $(".select2").select2({allowClear: true});
+        validate_form();
     });
-    $("#validation-form").validate({
-        errorElement: 'div',
-        errorClass: 'help-block',
-        focusInvalid: false,
-        ignore: "",
-        rules: {
+    function validate_form() {
+        jsfValidate("#validation-form", {
             user: {
                 required: true
             },
@@ -118,32 +92,6 @@ $this->load->view('sistem/v_breadcrumb');
             link: {
                 required: true
             }
-        },
-        highlight: function(e) {
-            $(e).closest('.form-group').removeClass('has-success').addClass('has-error');
-        },
-        success: function(e) {
-            $(e).closest('.form-group').removeClass('has-error').addClass('has-success');
-            $(e).remove();
-        },
-        errorPlacement: function(error, element) {
-            if (element.is('input[type=checkbox]') || element.is('input[type=radio]')) {
-                var controls = element.closest('div[class*="col-"]');
-                if (controls.find(':checkbox,:radio').length > 1)
-                    controls.append(error);
-                else
-                    error.insertAfter(element.nextAll('.lbl:eq(0)').eq(0));
-            }
-            else if (element.is('.select2')) {
-                error.insertAfter(element.siblings('[class*="select2-container"]:eq(0)'));
-            }
-            else if (element.is('.chosen-select')) {
-                error.insertAfter(element.siblings('[class*="chosen-container"]:eq(0)'));
-            }
-            else
-                error.insertAfter(element.parent());
-        },
-        invalidHandler: function(form) {
-        }
-    });
+        });
+    }
 </script>                  

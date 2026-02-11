@@ -118,20 +118,6 @@ $this->load->view('sistem/v_breadcrumb');
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <?php
-                                                            $no = 1;
-                                                            foreach ($log['data'] as $row) {
-                                                                ?>
-                                                                <tr>
-                                                                    <td><?= ctk($no); ?></td>
-                                                                    <td><?= selisih_wkt($row['buat_log']); ?></td>
-                                                                    <td><?= ($row['msg_log']); ?></td>
-                                                                    <td><?= ctk($row['ip_log']); ?></td>
-                                                                </tr>
-                                                                <?php
-                                                                $no++;
-                                                            }
-                                                            ?>
                                                         </tbody>
                                                     </table>
                                                 </div>

@@ -3,7 +3,7 @@
 class M_jenis extends CI_Model {
 
     var $id = 'id_jenis';
-    var $table = 'rf_jenis_artikel';
+    var $table = 'wb_jenis_artikel';
 
     function __construct() {
         parent::__construct();
@@ -55,8 +55,8 @@ class M_jenis extends CI_Model {
     }
     function getGroup($where = NULL, $order = 'asc', $limit = 0) {
         $this->db->select('j.*, COUNT(a.id_artikel) AS total_artikel');
-        $this->db->from('rf_artikel a');
-        $this->db->join('rf_jenis_artikel j', 'a.jenis_id = j.id_jenis', 'inner');
+        $this->db->from('wb_artikel a');
+        $this->db->join('wb_jenis_artikel j', 'a.jenis_id = j.id_jenis', 'inner');
         if(!is_null($where)){
             $this->db->where($where);
         }

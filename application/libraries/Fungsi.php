@@ -3,12 +3,81 @@
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-class Fungsi{
+class Fungsi {
     
     protected $ci;
     
     function __construct() {
         $this->ci = get_instance();
+    }
+    function Validation($rules, $delimiter = NULL) {
+        $this->ci->load->library(array('form_validation'));
+        
+        $this->ci->form_validation->set_rules($rules);
+        $this->ci->form_validation->set_message('required', 'Kolom %s harus diisi.');
+        $this->ci->form_validation->set_message('min_length', 'Kolom %s harus minimal %s karakter.');
+        $this->ci->form_validation->set_message('valid_email', 'Format %s tidak sesuai.');
+        $this->ci->form_validation->set_message('numeric', 'Kolom %s harus berupa angka.');
+        $this->ci->form_validation->set_message('is_natural', 'Kolom %s harus berupa angka.');
+        $this->ci->form_validation->set_message('xss_clean', 'Programer yang baik tidak akan bertindak iseng dengan programer lainnya.');
+        $this->ci->form_validation->set_error_delimiters('<div class="">', '</div>');
+        if(!is_null($delimiter)){
+            $this->ci->form_validation->set_error_delimiters('', '<br/>');
+        }
+        if ($this->ci->form_validation->run() == FALSE) {
+            if(is_null($delimiter)){
+                $this->ci->session->set_flashdata('notif', notif('danger', 'Peringatan', validation_errors()));
+            }
+            return FALSE;
+        }else{
+            return TRUE;
+        }
+    }
+    //upload image
+    function ImgUpload($post, $name, $path, $width = 0, $ratio = FALSE, $height = 0){
+        $this->ci->load->library(array('upload','image_lib'));
+        
+        $file = $_FILES[$post]['tmp_name'];
+        if(empty($file)){
+            $this->ci->session->set_flashdata('notif', notif('danger', 'Peringatan', 'File tidak dapat ditemukan'));
+            return NULL;
+        }
+        list($get_width, $get_height) = getimagesize($file);
+        if($get_width < $width){
+            $width = $get_width;
+        }
+        $cfg['file_name'] = $name.'-'.$get_width.'-'.$get_height;
+        $cfg['upload_path'] = './' . $path;
+        $cfg['allowed_types'] = $this->ci->config->item('app.allowed_img');
+        $cfg['max_size'] = $this->ci->config->item('app.max_img');
+        //Upload Image
+        $this->ci->upload->initialize($cfg);
+        if($this->ci->upload->do_upload($post)) {
+            $upload = $this->ci->upload->data('file_name');
+            //Compress Config
+            $resize['image_library'] = 'gd2';
+            $resize['source_image'] = './' . $path . $upload;
+            $resize['create_thumb'] = FALSE;
+            $resize['maintain_ratio'] = ($ratio) ? TRUE : FALSE;
+            $resize['quality'] = '100%';
+            $resize['width'] = ($width == 0) ? $this->ci->config->item('app.resize') : $width;
+            $resize['height'] = ($height == 0) ? $width : $height;
+            $resize['new_image']= './' . $path . $upload;
+            //Compress Image
+            $this->ci->image_lib->initialize($resize);
+            if($this->ci->image_lib->resize()){
+                return $path . $upload;
+            }else{
+                (is_file($path . $upload)) ? unlink($path . $upload) : '';    
+                $this->ci->session->set_flashdata('notif', notif('danger', 
+                        'Peringatan Foto Resize', strip_tags($this->ci->image_lib->display_errors())));
+                return NULL;
+            }
+        }else{
+            $this->ci->session->set_flashdata('notif', notif('danger', 
+                    'Peringatan Foto', strip_tags($this->ci->upload->display_errors())));
+            return NULL;
+        }
     }
     function PdfGenerate($html, $filename='', $attach = 0 ,$paper = 'A4', $orientation = 'portrait', $stream = TRUE) {
         $tmp = sys_get_temp_dir();

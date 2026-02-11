@@ -10,7 +10,7 @@ class Beranda extends KZ_Controller {
         $this->load->model(array('m_mhs'));
     }
     function index() {
-        empty($this->sessionid) ? redirect('non_login/login') : null;
+        empty($this->sessionid) ? redirect('login') : null;
         
         $this->data['groupid'] = $this->sessiongroup;
         $this->data['module'] = $this->module;
@@ -18,7 +18,19 @@ class Beranda extends KZ_Controller {
         $this->data['breadcrumb'] = array( 
             array('title'=>'Beranda', 'url'=>'#')
         );
-        $this->load_view('non_login/v_home', $this->data);
+        $this->load_view('non_login/v_dashboard', $this->data);
+    }
+    function err_404() {
+        $this->data['breadcrumb'] = array( 
+            array('title'=>'Halaman Tidak Ditemukan', 'url'=>'#')
+        );
+        $this->load_view('errors/html/error_404', $this->data);
+    }
+    function err_module() {
+        $this->data['breadcrumb'] = array( 
+            array('title'=>'Gagal Akses Module', 'url'=>'#')
+        );
+        $this->load_view('errors/html/error_module', $this->data);
     }
     function ajax() {
         $routing_module = $this->uri->uri_to_assoc(4, $this->url_route);
@@ -35,18 +47,6 @@ class Beranda extends KZ_Controller {
                 $this->_chart_sekolah();
             }
         }
-    }
-    function err_404() {
-        $this->data['breadcrumb'] = array( 
-            array('title'=>'Halaman Tidak Ditemukan', 'url'=>'#')
-        );
-        $this->load_view('errors/html/error_404', $this->data);
-    }
-    function err_module() {
-        $this->data['breadcrumb'] = array( 
-            array('title'=>'Gagal Akses Module', 'url'=>'#')
-        );
-        $this->load_view('errors/html/error_module', $this->data);
     }
     //function
     function _chart_maba() {

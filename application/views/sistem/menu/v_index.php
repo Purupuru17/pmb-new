@@ -11,7 +11,6 @@ $this->load->view('sistem/v_breadcrumb');
             </small>
         </h1>
     </div><!-- /.page-header -->
-
     <div class="row">
         <div class="col-xs-12">
             <?= $this->session->flashdata('notif'); ?>
@@ -33,7 +32,7 @@ $this->load->view('sistem/v_breadcrumb');
                 </div>
                 <div class="widget-body">
                     <div class="widget-main padding-2 table-responsive">
-                        <table id="dynamic-table" class="table table-striped table-bordered table-hover">
+                        <table id="index-table" class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -46,37 +45,7 @@ $this->load->view('sistem/v_breadcrumb');
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            <?php
-                            $no = 1;
-                            foreach ($menu as $row) {
-                            ?>
-                                <tr>
-                                    <td><?= $no; ?></td>
-                                    <td><?= $row['a']['nama_menu']; ?></td>
-                                    <td><?= $row['a']['module_menu']; ?></td>
-                                    <td><?= ($row['a']['parent_menu'] == '0') ?  'Menu Utama' : $row['b']['nama_menu'] ; ?></td>
-                                    <td><?= st_aktif($row['a']['status_menu']) ?></td>
-                                    <td><i class="<?= $row['a']['icon_menu']; ?> blue bigger-120"></i></td>
-                                    <td><?= $row['a']['order_menu'] ?></td>
-                                    <td nowrap>
-                                        <div class="action-buttons">
-                                            <a href="<?= site_url($module.'/edit/'.encode($row['a']['id_menu'])) ?>" class="tooltip-warning btn btn-white btn-warning btn-sm btn-round" data-rel="tooltip" title="Ubah Data">
-                                                <span class="orange">
-                                                    <i class="ace-icon fa fa-pencil-square-o bigger-130"></i>
-                                                </span>
-                                            </a>
-                                            <a href="#" name="<?= encode($row['a']['id_menu']) ?>" itemprop="<?= $row['a']['nama_menu'] ?>" id="delete-btn" class="tooltip-error btn btn-white btn-danger btn-sm btn-round" data-rel="tooltip" title="Hapus Data">
-                                                <span class="red"><i class="ace-icon fa fa-trash-o bigger-130"></i></span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php
-                                $no++;
-                            }
-                            ?>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
@@ -89,68 +58,55 @@ $this->load->view('sistem/v_breadcrumb');
 load_js(array(
     'theme/aceadmin/assets/js/dataTables/jquery.dataTables.js',
     'theme/aceadmin/assets/js/dataTables/jquery.dataTables.bootstrap.js',
-    'theme/aceadmin/assets/js/bootbox.min.js'
+    
 ));
 ?>
 <script type="text/javascript">
-    $(document.body).on("click", "#delete-btn", function(event) {
-        var id = $(this).attr("name");
+    const module = "<?= site_url($module) ?>";
+    let indexTable;
+    $(document).ready(function () {
+        table_manager();
+        load_index();
+    });
+    $(document.body).on("click", "#delete-btn", function(e) {
+        e.preventDefault();
+        var id = $(this).attr("itemid");
         var name = $(this).attr("itemprop");
-        var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i>" + 
-                " Peringatan !</h4>";
+        var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
         var msg = "<p class='center grey bigger-120'><i class='ace-icon fa fa-hand-o-right blue'></i>" + 
                 " Apakah anda yakin akan menghapus data <br/><b>" + name + "</b> ? </p>";
-        bootbox.confirm({
-            title: title,
-            message: msg, 
+        bootbox.confirm({ title: title, message: msg, 
             buttons: {
-                cancel: {
-                    label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal",
-                    className: "btn btn-sm"
-                },
-                confirm: {
-                    label: "<i class='ace-icon fa fa-trash-o bigger-110'></i> Hapus",
-                    className: "btn btn-sm btn-danger"
-                }
+                cancel: { label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal", className: "btn btn-sm" },
+                confirm: { label: "<i class='ace-icon fa fa-trash-o bigger-110'></i> Hapus", className: "btn btn-sm btn-danger"}
             },
             callback: function(result) {
                 if (result === true) {
-                    window.location.replace("<?= site_url($module . '/delete/'); ?>" + id);
+                    var form = $('<form>', {  method: 'POST', action: module + '/delete' });
+                    form.append($('<input>', { type: 'hidden', name: 'id', value: id }));
+                    $('body').append(form); form.submit();
                 }
             }
         });
     });
-</script>
-<script type="text/javascript">
-    var table;
-    $(document).ready(function() {
-        $('[data-rel="tooltip"]').tooltip({placement: 'top'});
-	
-        table = $('#dynamic-table')
-            .dataTable({
-                bScrollCollapse: true,
-                bAutoWidth: false,
-                aaSorting: [],
-                aoColumnDefs: [
-                {
-                    bSortable: false,
-                    aTargets: [0,5,7]
-                },
-                {
-                    bSearchable: false,
-                    aTargets: [0,5,7]
-                },
-                {   sClass: "center", aTargets: [0,1,2,3,4,5,6,7]}
-            ],
-            oLanguage: {
-                sSearch: "Cari : ",
-                sInfoEmpty: "Menampilkan dari 0 sampai 0 dari total 0 data",
-                sInfo: "Menampilkan dari _START_ sampai _END_ dari total _TOTAL_ data",
-                sLengthMenu: "Menampilkan _MENU_ data per halaman",
-                sZeroRecords: "Maaf tidak ada data yang ditemukan",
-                sInfoFiltered: "(Menyaring dari _MAX_ total data)"
+    function load_index(){
+        indexTable.loadData(
+            module + "/ajax/type/table/source/index", {  },
+            function (rs) {
+                if (!rs.status) {
+                    jsfNotif("Peringatan", rs.msg, 2);
+                }
             }
-        });
-        table.fnAdjustColumnSizing();
-    });
-</script>                      
+        );
+    }
+    function table_manager() {
+        indexTable = new DataTableManager("#index-table", {
+            aoColumnDefs: [
+                {bSortable: false, aTargets: [0,7]},
+                {bSearchable: false, aTargets: [0,7]},
+                {sClass: "center", aTargets: [0, 1, 2, 3, 4, 5, 6]},
+                {sClass: "center nowrap", aTargets: [7]}
+            ]
+        }).init();
+    }
+</script>               

@@ -3,7 +3,7 @@
 class M_file extends CI_Model {
 
     var $id = 'id_file';
-    var $table = 'rf_file';
+    var $table = 'wb_file';
 
     function __construct() {
         parent::__construct();

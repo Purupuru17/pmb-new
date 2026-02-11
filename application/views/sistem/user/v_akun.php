@@ -140,8 +140,7 @@ $this->load->view('sistem/v_breadcrumb');
 <script type="text/javascript">
     $(document).ready(function() {
         var img_ext = ["jpg", "png", "jpeg", "PNG", "JPG"];
-
-        $('#foto').ace_file_input({
+        $("#foto").ace_file_input({
             no_file: 'Plih Foto ...',
             no_icon: 'fa fa-file-image-o',
             icon_remove: 'fa fa-times',
@@ -152,16 +151,13 @@ $this->load->view('sistem/v_breadcrumb');
             allowExt: img_ext,
             maxSize: 1100000
         }).on('file.error.ace', function(ev, info) {
-            if(info.error_count['ext']) myNotif('Peringatan', 'Format gambar harus berupa *.jpg, *.png', 3);
-            if(info.error_count['size']) myNotif('Peringatan', 'Ukuran gambar maksimal 1 MB', 3);
+            if(info.error_count['ext']) jsfNotif('Peringatan', 'Format gambar harus berupa *.jpg, *.png', 3);
+            if(info.error_count['size']) jsfNotif('Peringatan', 'Ukuran gambar maksimal 1 MB', 3);
         });
+        validate_form();
     });
-    $("#validation-form").validate({
-        errorElement: 'div',
-        errorClass: 'help-block',
-        focusInvalid: false,
-        ignore: "",
-        rules: {
+    function validate_form() {
+        jsfValidate("#validation-form", {
             nama: {
                 required: true,
                 minlength: 5
@@ -174,32 +170,6 @@ $this->load->view('sistem/v_breadcrumb');
                 required: true,
                 email: true
             }
-        },
-        highlight: function(e) {
-            $(e).closest('.form-group').removeClass('has-success').addClass('has-error');
-        },
-        success: function(e) {
-            $(e).closest('.form-group').removeClass('has-error').addClass('has-success');
-            $(e).remove();
-        },
-        errorPlacement: function(error, element) {
-            if (element.is('input[type=checkbox]') || element.is('input[type=radio]')) {
-                var controls = element.closest('div[class*="col-"]');
-                if (controls.find(':checkbox,:radio').length > 1)
-                    controls.append(error);
-                else
-                    error.insertAfter(element.nextAll('.lbl:eq(0)').eq(0));
-            }
-            else if (element.is('.select2')) {
-                error.insertAfter(element.siblings('[class*="select2-container"]:eq(0)'));
-            }
-            else if (element.is('.chosen-select')) {
-                error.insertAfter(element.siblings('[class*="chosen-container"]:eq(0)'));
-            }
-            else
-                error.insertAfter(element.parent());
-        },
-        invalidHandler: function(form) {
-        }
-    });
+        });
+    }
 </script> 

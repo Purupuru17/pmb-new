@@ -19,28 +19,26 @@ class Password extends KZ_Controller {
         $this->load_view('sistem/user/v_password', $this->data);
     }
     function edit() {
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module);
         }
         $passphp = $this->input->post('lama');
-        $passdb = $this->m_user->getId($this->sessionid)['password'];
-        if(password_verify($passphp, $passdb)){
-            
-            $data['password'] = password_hash($this->input->post('confirm'), PASSWORD_DEFAULT);
-            $data['update_user'] = date('Y-m-d H:i:s');
-            $data['log_user'] = $this->sessionname . ' mengubah Password';
-            $data['ip_user'] = ip_agent();
-
-            $result = $this->m_user->update($this->sessionid, $data,1);
-            if ($result) {
-                $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Password berhasil diubah'));
-                redirect($this->module);
-            } else {
-                $this->session->set_flashdata('notif', notif('danger', 'Peringatan', 'Password gagal diubah'));
-                redirect($this->module);
-            }
-        }else{
+        $passdb = $this->m_user->get($this->sessionid);
+        if(!password_verify($passphp, $passdb['password'])){
             $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Password Lama anda salah'));
+            redirect($this->module);
+        }   
+        $data['password'] = password_hash($this->input->post('confirm'), PASSWORD_DEFAULT);
+        $data['update_user'] = date('Y-m-d H:i:s');
+        $data['log_user'] = $this->sessionname . ' mengubah Password';
+        $data['ip_user'] = ip_agent();
+
+        $result = $this->m_user->update($this->sessionid, $data);
+        if ($result) {
+            $this->session->set_flashdata('notif', notif('success', 'Informasi', 'Password berhasil diubah'));
+            redirect($this->module);
+        } else {
+            $this->session->set_flashdata('notif', notif('danger', 'Peringatan', 'Password gagal diubah'));
             redirect($this->module);
         }
     }

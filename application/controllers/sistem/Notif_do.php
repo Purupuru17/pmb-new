@@ -10,7 +10,7 @@ class Notif_do extends KZ_Controller {
         $this->load->model(array('m_notif'));
     }
     function add() {
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/add');
         }
         $post = $this->input->post();

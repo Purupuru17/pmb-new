@@ -31,9 +31,11 @@ class Recaptcha
     public function __construct()
     {
         $this->_ci = & get_instance();
-        $this->_siteKey = $this->_ci->config->item('recaptcha_site_key');
-        $this->_secretKey = $this->_ci->config->item('recaptcha_secret_key');
-        $this->_language = $this->_ci->config->item('recaptcha_lang');
+        global $ENV;
+        
+        $this->_siteKey = $ENV['recaptcha_site_key'];
+        $this->_secretKey = $ENV['recaptcha_secret_key'];
+        $this->_language = $ENV['recaptcha_lang'];
 
         if (empty($this->_siteKey) or empty($this->_secretKey)) {
             die("To use reCAPTCHA you must get an API key from <a href='"
@@ -51,9 +53,9 @@ class Recaptcha
     private function _submitHTTPGet($data)
     {
         $url = self::site_verify_url.'?'.http_build_query($data);
-        $response = file_get_contents($url);
+        $response = @file_get_contents($url);
 
-        return $response;
+        return ($response == false) ? null : $response;
     }
 
     /**

@@ -10,7 +10,7 @@ class Group_do extends KZ_Controller {
         $this->load->model(array('m_group'));
     }
     function add() {
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/add');
         }
         $data['nama_group'] = $this->input->post('nama');
@@ -30,7 +30,7 @@ class Group_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/edit/'.$id);
         }
         $data['nama_group'] = $this->input->post('nama');

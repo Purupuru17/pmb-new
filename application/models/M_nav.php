@@ -3,7 +3,7 @@
 class M_nav extends CI_Model {
     
     var $id = 'id_nav';
-    var $table = 'rf_nav';
+    var $table = 'wb_nav';
 
     function __construct() {
         parent::__construct();

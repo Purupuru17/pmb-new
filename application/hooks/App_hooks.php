@@ -5,7 +5,7 @@ class App_hooks {
     private $ci;
 
     function __construct() {
-        $this->ci = & get_instance();
+        $this->ci = &get_instance();
     }
 
     public function redirect_ssl() {
@@ -62,21 +62,9 @@ class App_hooks {
         )  # If we made it here, we are not in a blacklist tag.
         %Six';
         $new_buffer = preg_replace($re, " ", $buffer);
-        /*
-        $search = array(
-            '/\>[^\S ]+/s',    //strip whitespaces after tags, except space
-            '/[^\S ]+\</s',    //strip whitespaces before tags, except space
-            '/(\s)+/s'    // shorten multiple whitespace sequences
-            );
-        $replace = array(
-            '>',
-            '<',
-            '\\1'
-            );
-        $new_buffer = preg_replace($search, $replace, $buffer);
-        */
-        if ($new_buffer === null || ENVIRONMENT === 'production') {
-             $buffer = $new_buffer;
+
+        if (ENVIRONMENT === 'production') {
+            $buffer = $new_buffer;
         }
         $this->ci->output->set_output($buffer);
         $this->ci->output->_display();
@@ -88,4 +76,68 @@ class App_hooks {
             die();
         }
     }
+    
+    public function log_queries() {
+        $this->ci->db->save_queries = TRUE;
+        $queries = $this->ci->db->queries;
+        $times = $this->ci->db->query_times;
+        
+        if (empty($queries)) return;
+        
+        $router = $this->ci->router;
+        $controller = $router->fetch_class();
+        $method = $router->fetch_method();
+        $uri = uri_string();
+        
+        $log_file = './log/query-log-' . date('d-m-Y') . '.txt';
+        $log = '';
+        $threshold = 0.5; // detik, misalnya 0.1s (100ms)
+
+        foreach ($queries as $key => $query) {
+            $time = $times[$key];
+
+            if ($time >= $threshold) {
+                $log .= "========== HEAVY QUERY (HOOK) ==========\n";
+                $log .= 'Datetime    : ' . date('Y-m-d H:i:s') . "\n";
+                $log .= "URI         : {$uri}\n";
+                $log .= "Controller  : {$controller}::{$method}()\n";
+                $log .= "Exec Time   : " . number_format($time, 4) . "s\n";
+                $log .= "Query       : {$query}\n";
+                $log .= "===============================\n\n";
+            }
+        }
+        if (!empty($log)) {
+            file_put_contents($log_file, $log, FILE_APPEND);
+        }
+    }
+    
+    public function log_server() {
+        $method = $_SERVER['REQUEST_METHOD'] ?? '';
+        $uri    = $_SERVER['REQUEST_URI'] ?? '';
+        $excluded_keywords = ['login', 'auth', 'register', 'konten', 'sistem', 'api', 'snap'];
+
+        $is_uri_allowed = true;
+        foreach ($excluded_keywords as $word) {
+            if (stripos($uri, $word) !== false) {
+                $is_uri_allowed = false;
+                break;
+            }
+        }
+        if ($is_uri_allowed && in_array($method, ['POST', 'PUT'])) {
+            $post = [
+                'ip'     => $_SERVER['REMOTE_ADDR'] ?? '',
+                'server' => $_SERVER['REQUEST_URI'] ?? '',
+                'raw'    => file_get_contents('php://input'),
+                'file'   => $_FILES
+            ];
+
+            $log_file    = './log/server-log-' . date('d-m-Y') . '.txt';
+            $log_message = "[" . date('Y-m-d H:i:s') . "] " . json_encode($post) . "\n\n";
+            
+            if (empty($_SESSION['id'])) {
+                file_put_contents($log_file, $log_message, FILE_APPEND);
+            }
+        }
+    }
+
 }
