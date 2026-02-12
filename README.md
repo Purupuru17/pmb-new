@@ -41,9 +41,10 @@ Rev
 - Tambah Course
 - Cek kembali/optimasi saat mulai pngerjaan, bug ragu2
 - Grafik payment
-- SEO website sitemap pmb
 - NIM status masih bug saat s1 jadi s2, validate ny jg bug
 - Menu home menumpuk tidak bs d klik
+- Edit NIM di Seleksi TAB
+
 
 UPDATE m_mhs m
 JOIN (

@@ -112,7 +112,7 @@ $this->load->view('sistem/v_breadcrumb');
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Tanggal Lahir :</label>
-                    <div class="col-xs-12 col-sm-3">
+                    <div class="col-xs-12 col-sm-4">
                         <div class="clearfix">
                             <input value="<?= $edit['tgl_lahir'] ?>" type="text" name="lahir" id="lahir" class="col-xs-12  col-sm-6 date-picker" placeholder="Tanggal Lahir" />
                         </div>
@@ -169,10 +169,10 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Alamat di Sorong :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Alamat Tinggal :</label>
                     <div class="col-xs-12 col-sm-8">
                         <div class="clearfix">
-                            <textarea rows="2" cols="1" name="alamat" id="alamat" placeholder="Alamat Tinggal di Sorong" class="col-xs-12 col-sm-6"><?= ctk($edit['alamat_mhs']) ?></textarea>
+                            <textarea rows="2" cols="1" name="alamat" id="alamat" placeholder="Alamat Tinggal Saat Ini" class="col-xs-12 col-sm-6"><?= ctk($edit['alamat_mhs']) ?></textarea>
                         </div>
                     </div>
                     <span class="help-inline col-xs-8 col-md-offset-4">
@@ -322,8 +322,8 @@ load_js(array(
             allowExt: img_ext,
             maxSize: 510000
         }).on('file.error.ace', function(ev, info) {
-            if(info.error_count['ext']) myNotif('Peringatan!', 'Format gambar harus berupa *.jpg, *.png', 3);
-            if(info.error_count['size']) myNotif('Peringatan!', 'Ukuran gambar maksimal 500 KB', 3);
+            if(info.error_count['ext']) jsfNotif('Peringatan!', 'Format gambar harus berupa *.jpg, *.png', 3);
+            if(info.error_count['size']) jsfNotif('Peringatan!', 'Ukuran gambar maksimal 500 KB', 3);
         });
     });
     $("#lahir").change(function () {

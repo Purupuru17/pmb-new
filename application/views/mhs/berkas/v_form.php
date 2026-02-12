@@ -111,8 +111,8 @@ $this->load->view('sistem/v_breadcrumb');
             allowExt: file_ext,
             maxSize: 3100000 //3.1 Mb
         }).on('file.error.ace', function(ev, info) {
-            if(info.error_count['ext']) myNotif('Peringatan!', 'Format file harus berupa File PDF', 3);
-            if(info.error_count['size']) myNotif('Peringatan!', 'Ukuran file maksimal 3 MB', 3);
+            if(info.error_count['ext']) jsfNotif('Peringatan!', 'Format file harus berupa File PDF', 3);
+            if(info.error_count['size']) jsfNotif('Peringatan!', 'Ukuran file maksimal 3 MB', 3);
         });
         
         

@@ -314,7 +314,7 @@ $this->load->view('sistem/v_breadcrumb');
                         series2.push([obj.day, obj.bmi]);
                     });
                 }else{
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
                 chart_pay.series[0].update({ data: series0});
                 //chart_pay.series[1].update({ data: series1});

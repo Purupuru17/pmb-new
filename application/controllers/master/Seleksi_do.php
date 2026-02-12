@@ -100,7 +100,7 @@ class Seleksi_do extends KZ_Controller {
         jsonResponse(array('data' => $rs['data'], 'status' => true, 'msg' => 'Data berhasil tersimpan'));  
     }
     function _insert_nim() {
-        if(!$this->_validation($this->rules_update,'ajax')) {
+        if(!$this->fungsi->Validation($this->rules_update,'ajax')) {
             jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
         }
         $id = decode($this->input->post('mid'));
@@ -167,7 +167,7 @@ class Seleksi_do extends KZ_Controller {
         jsonResponse(array('data' => $rs['data'], 'status' => true, 'msg' => 'Data berhasil tersimpan'));
     }
     function _update_nim() {
-        if(!$this->_validation($this->rules_update,'ajax')) {
+        if(!$this->fungsi->Validation($this->rules_update,'ajax')) {
             jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
         }
         $id = decode($this->input->post('mid'));
@@ -232,7 +232,7 @@ class Seleksi_do extends KZ_Controller {
         jsonResponse(array('data' => $rs['data'], 'status' => true, 'msg' => 'Data berhasil tersimpan'));
     }
     function _delete_nim() {
-        if(!$this->_validation($this->rules_update,'ajax')) {
+        if(!$this->fungsi->Validation($this->rules_update,'ajax')) {
             jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
         }
         $id = decode($this->input->post('mid'));

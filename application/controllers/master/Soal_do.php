@@ -11,7 +11,7 @@ class Soal_do extends KZ_Controller {
         $this->load->model(array('m_soal'));
     }
     function add() {
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/add');
         }
         $data['bank_id'] = decode($this->input->post('bank'));
@@ -64,7 +64,7 @@ class Soal_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/edit/'.$id);
         }
         $data['bank_id'] = decode($this->input->post('bank'));

@@ -25,7 +25,7 @@ class Payment_do extends KZ_Controller {
         }
     }
     function _virtual_add() {
-        if(!$this->_validation($this->rules_va,'ajax')){
+        if(!$this->fungsi->Validation($this->rules_va,'ajax')){
             jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
         }
         $id = decode($this->input->post('id'));
@@ -64,7 +64,7 @@ class Payment_do extends KZ_Controller {
         jsonResponse(array('data' => $virtual.$va_mhs, 'status' => true, 'msg' => 'Data berhasil diperbarui'));
     }
     function _invoice_add() {
-        if(!$this->_validation($this->rules, 'ajax')){
+        if(!$this->fungsi->Validation($this->rules, 'ajax')){
             jsonResponse(array('status' => false, 'msg' => validation_errors()));
         }
         $data['mhs_id'] = decode($this->input->post('mhs'));

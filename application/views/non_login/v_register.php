@@ -19,7 +19,7 @@ $this->load->view('sistem/v_breadcrumb');
             <form id="validation-form" action="<?= site_url($module.'/add'); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                 <div class="space-6"></div>
                 <div class="social-or-login center">
-                    <span class="bigger-110 orange">Sarjana (S1) & Pascasarjana (S2)</span>
+                    <span class="bigger-110 orange">Program Studi</span>
                 </div>
                 <div class="space-6"></div>
                 <div class="form-group">
@@ -75,10 +75,7 @@ $this->load->view('sistem/v_breadcrumb');
                             <select class="select2 width-100 bolder" name="jalur" id="jalur" data-placeholder="----> Pilih Jalur Pendaftaran <----">
                                 <option value=""> </option>
                                 <?php
-                                $lain = array('Pemda-Misol','Pemda-Wondama','Pemda-RajaAmpat');
-                                $jalur_daftar = array_diff(load_array('jalur'), $lain);
-                                
-                                foreach ($jalur_daftar as $val) {
+                                foreach (config_item('pmb')['jalur'] as $val) {
                                     echo '<option value="'.$val.'">'.$val.'</option>';
                                 }
                                 ?>
@@ -86,9 +83,8 @@ $this->load->view('sistem/v_breadcrumb');
                         </div>
                     </div>
                     <span class="help-inline col-xs-8 col-md-offset-4">
-                        <span class="middle blue">* Informasi mengenai Jalur Pendaftaran, 
-                            <a class="red bigger-110" href="<?= site_url('pages/info-pendaftaran') ?>" target="_blank">Klik di sini!</a>
-                        </span>
+                        <small class="middle grey">* Informasi lengkap mengenai Jalur Pendaftaran, hubungi Admin
+                        </small>
                     </span>
                 </div>
                 <div class="social-or-login center">
@@ -115,7 +111,7 @@ $this->load->view('sistem/v_breadcrumb');
                         </div>
                     </div>
                     <span class="help-inline col-xs-8 col-md-offset-4">
-                        <span class="middle blue bolder">* Nama harus sesuai IJAZAH</span>
+                        <span class="middle blue bolder">* Nama harus sesuai IJAZAH terakhir</span>
                     </span>
                 </div>
                 <div class="form-group">
@@ -126,7 +122,7 @@ $this->load->view('sistem/v_breadcrumb');
                         </div>
                     </div>
                     <span class="help-inline col-xs-8 col-md-offset-4">
-                        <span class="middle blue bolder">* Nomor harus selalu Aktif</span>
+                        <span class="middle blue bolder">* Nomor harus Aktif</span>
                     </span>
                 </div>
                 <div class="form-group">
@@ -147,9 +143,9 @@ $this->load->view('sistem/v_breadcrumb');
                 <div class="form-group" style="margin-bottom: 0px">
                     <label class="control-label col-xs-12 col-sm-3 no-padding-right"></label>
                     <div class="col-xs-12 col-sm-6">
-                        <div class="well well-sm bigger-130">
-                            <span class="lbl red"> <b>Kode Registrasi (Username) & Password</b> digunakan saat LOGIN pada Website PMB UNIMUDA Sorong, 
-                                harap dicatat agar tidak lupa atau hilang.
+                        <div class="well well-sm bigger-130 text-center">
+                            <span class="lbl red"> <b>Username (= Kode Registrasi) & Password</b> digunakan saat Login pada sistem ini.<br/> 
+                                Harap dicatat agar tidak lupa atau hilang.
                             </span>
                         </div>
                     </div>
@@ -163,13 +159,13 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                     <span class="help-inline col-xs-8 col-md-offset-4">
                         <div class="space-2"></div>
-                        <button onclick="generate_kode()" class="btn btn-danger btn-white btn-bold btn-sm" id="btn-kode" type="button">
+                        <button onclick="generate_kode()" class="btn btn-danger btn-white btn-bold" id="btn-kode" type="button">
                             <i class="ace-icon fa fa-key"></i>
                             Klik untuk dapatkan Kode Registrasi
                         </button><div class="space-2"></div>
-                        <button onclick="set_password()" class="btn btn-default btn-white btn-bold btn-mini" id="btn-set" type="button">
-                            <i class="ace-icon fa fa-paste"></i>
-                            Klik jadikan Kode Registrasi sebagai Password
+                        <button onclick="set_password()" class="btn btn-default btn-white btn-bold btn-sm" id="btn-set" type="button">
+                            <i class="ace-icon fa fa-lock"></i>
+                            Klik untuk jadikan Kode Registrasi sebagai Password
                         </button>
                     </span>
                 </div>
@@ -215,7 +211,7 @@ $this->load->view('sistem/v_breadcrumb');
                             Batal
                         </a>
                         &nbsp; &nbsp; &nbsp;
-                        <button class="btn btn-primary btn-white btn-round btn-lg hide" name="simpan" id="simpan" type="submit">
+                        <button class="btn btn-primary btn-white btn-round btn-lg" style="display: none" name="simpan" id="simpan" type="submit">
                             <i class="ace-icon fa fa-send"></i>
                             DAFTAR SEKARANG
                         </button>
@@ -287,7 +283,8 @@ $this->load->view('sistem/v_breadcrumb');
         $("#password, #confirm").val(kode);
     }
     function generate_kode() {
-        $("#kode").val('');
+        $("#kode,#password,#confirm").val('');
+        $("#simpan").hide();
         $.ajax({
             url: module + "/ajax/type/action/source/kode",
             dataType: "json",
@@ -296,15 +293,15 @@ $this->load->view('sistem/v_breadcrumb');
             success: function (rs) {
                 if(rs.status){
                     $("#kode").val(rs.data);
-                    $("#simpan").removeClass('hide');
+                    $("#simpan").show();
                     
-                    myNotif('Informasi', rs.msg, 1);
+                    jsfNotif('Informasi', rs.msg, 1);
                 }else {
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                myNotif('Error', 'Kesalahan jaringan. Mohon ulangi proses', 3); 
+                jsfNotif('Error', 'Kesalahan jaringan. Mohon ulangi proses', 3); 
             }
         });
     }
@@ -346,7 +343,7 @@ $this->load->view('sistem/v_breadcrumb');
             },
             nama: {
                 required: true,
-                minlength: 5
+                minlength: 3
             },
             ibu: {
                 required: true,

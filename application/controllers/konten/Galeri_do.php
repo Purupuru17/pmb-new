@@ -11,7 +11,7 @@ class Galeri_do extends KZ_Controller {
         $this->load->model(array('m_galeri'));
     }
     function add() {
-        if($this->_validation($this->rules) == FALSE){
+        if($this->fungsi->Validation($this->rules) == FALSE){
             redirect($this->module);
         }
         $data['judul_galeri'] = $this->input->post('judul');
@@ -54,7 +54,7 @@ class Galeri_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if($this->_validation($this->rules) == FALSE){
+        if($this->fungsi->Validation($this->rules) == FALSE){
             redirect($this->module.'/edit/'.$id);
         }
         $data['judul_galeri'] = $this->input->post('judul');

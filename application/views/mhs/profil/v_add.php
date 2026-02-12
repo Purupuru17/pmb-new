@@ -129,7 +129,7 @@ load_js(array(
     $(document.body).on("click", "#btn-simpan", function(event) {
         var essay = $("#essay").val();
         if(essay === null || essay === ''){
-            myNotif('Peringatan', 'Jawaban anda masih kosong', 2, 'swal');
+            jsfNotif('Peringatan', 'Jawaban anda masih kosong', 2, 'swal');
             return;
         }
         update_jawab();
@@ -183,7 +183,7 @@ load_js(array(
                     count_down(rs.data);
                 } else {
                     $(".is-reset").html("");
-                    myNotif('Peringatan', rs.msg, 2, 'swal');
+                    jsfNotif('Peringatan', rs.msg, 2, 'swal');
                 }
                 setTimeout(function () {
                     progress.modal("hide");
@@ -210,9 +210,9 @@ load_js(array(
                     list_soal($("#btn-next").attr("itemid"));
                     $("#span-update").html(rs.waktu);
                     
-                    myNotif('Informasi', rs.msg, 1);
+                    jsfNotif('Informasi', rs.msg, 1);
                 } else {
-                    myNotif('Peringatan', rs.msg, 2, 'swal');
+                    jsfNotif('Peringatan', rs.msg, 2, 'swal');
                 }
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -234,14 +234,14 @@ load_js(array(
             },
             success: function (rs) {
                 if (rs.status) {
-                    myNotif('Informasi', rs.msg, 1, 'swal');
+                    jsfNotif('Informasi', rs.msg, 1, 'swal');
                     setTimeout(function () {
                         progress.modal("hide");
                         window.location.replace(module);
                     }, 3000);
                 } else {
                     progress.modal("hide");
-                    myNotif('Peringatan', rs.msg, 2, 'swal');
+                    jsfNotif('Peringatan', rs.msg, 2, 'swal');
                 }
             },
             error: function (xhr, ajaxOptions, thrownError) {

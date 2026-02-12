@@ -91,8 +91,8 @@ $this->load->view('sistem/v_breadcrumb');
             //allowExt: file_ext,
             maxSize: 10100000
         }).on('file.error.ace', function(ev, info) {
-            if(info.error_count['ext']) myNotif('Peringatan!', 'Format file tidak sesuai', 3);
-            if(info.error_count['size']) myNotif('Peringatan!', 'Ukuran file maksimal 10 Mb', 3);
+            if(info.error_count['ext']) jsfNotif('Peringatan!', 'Format file tidak sesuai', 3);
+            if(info.error_count['size']) jsfNotif('Peringatan!', 'Ukuran file maksimal 10 Mb', 3);
         });
         
         $('input[type="file"]').change(function(e){

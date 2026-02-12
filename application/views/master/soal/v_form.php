@@ -239,8 +239,8 @@ $(document).ready(function() {
             return valid;
         }
     }).on('file.error.ace', function(ev, info) {
-        if(info.error_count['ext']) myNotif('Peringatan!', 'Format file tidak didukung', 3);
-        if(info.error_count['size']) myNotif('Peringatan!', 'Ukuran file maksimal 5 MB', 3);
+        if(info.error_count['ext']) jsfNotif('Peringatan!', 'Format file tidak didukung', 3);
+        if(info.error_count['size']) jsfNotif('Peringatan!', 'Ukuran file maksimal 5 MB', 3);
     });
 });
 </script>

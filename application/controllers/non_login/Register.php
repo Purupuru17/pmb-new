@@ -20,7 +20,7 @@ class Register extends KZ_Controller {
         $this->data['script_captcha'] = $this->recaptcha->getScriptTag();
         
         $this->data['module'] = $this->module;
-        $this->data['title'] = array('Mahasiswa','Pendaftaran');
+        $this->data['title'] = array('Mahasiswa Baru','Pendaftaran');
         $this->data['breadcrumb'] = array( 
             array('title'=>$this->data['title'][0], 'url'=>'#'),
             array('title'=>$this->data['title'][1], 'url'=>'')
@@ -29,7 +29,7 @@ class Register extends KZ_Controller {
         //$this->load_home('home/h_count', $this->data);
     }
     function add() {
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module);
         }
         $user['id_group'] = 4;
@@ -90,10 +90,10 @@ class Register extends KZ_Controller {
     }
     //function
     function _generate_kode() {
-        if(!$this->_validation($this->rules_ajax,'ajax')) {
+        if(!$this->fungsi->Validation($this->rules_ajax,'ajax')) {
             jsonResponse(array('status' => false, 'msg' => validation_errors()));
         }
-        $rs = $this->m_mhs->getNomor('UNMD');
+        $rs = $this->m_mhs->getNomor();
         if(!empty($rs)) {
             jsonResponse(array('status' => true, 'data' => strval($rs), 'msg' => 'Kode Registrasi berhasil dibuat'));
         }else{
@@ -119,7 +119,7 @@ class Register extends KZ_Controller {
         
         $rs = $this->m_user->update($data['id_user'], $usr, 1);
         if($rs){
-           $this->session->set_flashdata('notif', notif('success', 'Pendaftaran Berhasil', 'Selamat Datang di UNIMUDA Sorong, '.$data['fullname']));
+           $this->session->set_flashdata('notif', notif('success', 'Pendaftaran Berhasil', 'Selamat Datang, '.$data['fullname']));
            redirect('beranda'); 
         }   
     }
@@ -127,14 +127,9 @@ class Register extends KZ_Controller {
         $this->load->model(array('m_authentication'));
         
         $check = $this->m_mhs->isExist(array('kode_reg' => $str));
-        $rs = $this->m_authentication->getAuth($str);
-        $code = date('my').'UNMD';
+        $user = $this->m_authentication->getAuth($str);
         
-        if(strpos($str, $code) === false) {
-            $this->form_validation->set_message("_valid_kode", "Format {field} tidak sesuai. 
-                Silahkan klik tombol untuk buat ulang");
-            return FALSE;
-        }else if($check > 0 || sizeof($rs) > 0) {
+        if($check > 0 || sizeof($user) > 0) {
             $this->form_validation->set_message("_valid_kode", "Kolom {field} yang anda input sudah terdaftar di sistem kami. 
                 Mohon ulangi Pendaftaran kembali");
             return FALSE;
@@ -145,8 +140,8 @@ class Register extends KZ_Controller {
     function _valid_nik($str) {
         $check = $this->m_mhs->isExist(array('nik' => $str));
         if($check > 0) {
-            $this->form_validation->set_message("_valid_nik", "Akun anda dengan Nomor Induk Kependudukan (NIK) ini sudah tersimpan sebelumnya. 
-                Apabila tidak dapat mengakses atau Lupa Akun, hubungi pihak PMB");
+            $this->form_validation->set_message("_valid_nik", "Nomor Induk Kependudukan (NIK) : ".$str." ini sudah terdaftar sebelumnya. 
+                Apabila tidak dapat mengakses, silahkan Reset Password akun");
             return FALSE;
         }else {
             return TRUE;
@@ -155,7 +150,7 @@ class Register extends KZ_Controller {
     function _valid_phone($str) {
         $check = $this->m_mhs->isExist(array('telepon_mhs' => $str));
         if($check > 0) {
-            $this->form_validation->set_message("_valid_phone", "Akun anda dengan Nomor Telepon ini sudah tersimpan sebelumnya");
+            $this->form_validation->set_message("_valid_phone", "Nomor Telepon : ".$str." ini sudah terdaftar sebelumnya");
             return FALSE;
         } else {
             return TRUE;
@@ -195,7 +190,7 @@ class Register extends KZ_Controller {
         ),array(
             'field' => 'nama',
             'label' => 'Nama Lengkap',
-            'rules' => 'required|trim|xss_clean|min_length[5]'
+            'rules' => 'required|trim|xss_clean|min_length[3]'
         ),array(
             'field' => 'ibu',
             'label' => 'Nama Ibu Kandung',
@@ -207,7 +202,7 @@ class Register extends KZ_Controller {
         ),array(
             'field' => 'kode',
             'label' => 'Kode Registrasi',
-            'rules' => 'required|trim|xss_clean|min_length[10]|callback__valid_kode'
+            'rules' => 'required|trim|xss_clean|min_length[5]|callback__valid_kode'
         ),array(
             'field' => 'password',
             'label' => 'Password',
@@ -246,7 +241,7 @@ class Register extends KZ_Controller {
         ),array(
             'field' => 'nama',
             'label' => 'Nama Lengkap',
-            'rules' => 'required|trim|xss_clean|min_length[5]'
+            'rules' => 'required|trim|xss_clean|min_length[3]'
         ),array(
             'field' => 'ibu',
             'label' => 'Nama Ibu Kandung',

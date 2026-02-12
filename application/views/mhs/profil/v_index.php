@@ -251,7 +251,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="profile-info-row">
-                                                        <div class="profile-info-name"> Alamat di Sorong </div>
+                                                        <div class="profile-info-name"> Alamat Tinggal </div>
                                                         <div class="profile-info-value">
                                                             <span><?= $detail['alamat_mhs'] ?></span>
                                                         </div>
@@ -320,7 +320,7 @@
                                             Catatan : <br/>
                                             * Setelah dinyatakan <b class="green">LULUS</b>, anda diwajibkan membayar <strong>Biaya Registrasi Ulang</strong>.<br/>
                                             * Pembayaran dilakukan melalui rekening <b class="blue">Virtual Account</b> masing-masing.<br/>
-                                            * Apabila ada pertanyaan dapat menghubungi Panitia PMB UNIMUDA Sorong secara langsung.
+                                            * Apabila ada pertanyaan dapat menghubungi Admin Panitia secara langsung.
                                         </div>
                                         <div class="space-4"></div>
                                         <p id="one-spin" style="display: none" class="bigger-130 blue" align="center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> Loading . . .</p>
@@ -412,7 +412,7 @@
                 if (rs.status) {
                     $(".list-course").html(rs.data.course);
                 } else {
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
                 $("#one-spin").hide();
             },
@@ -437,10 +437,10 @@
                         progress.modal("hide");
                         window.open(rs.link, '_blank').focus();
                     }, 3000);
-                    myNotif('Informasi', rs.msg, 1, 'swal');
+                    jsfNotif('Informasi', rs.msg, 1, 'swal');
                 } else {
                     progress.modal("hide");
-                    myNotif('Peringatan', rs.msg, 2, 'swal');
+                    jsfNotif('Peringatan', rs.msg, 2, 'swal');
                 }
             },
             error: function (xhr, ajaxOptions, thrownError) {

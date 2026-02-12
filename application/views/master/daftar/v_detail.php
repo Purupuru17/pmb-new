@@ -261,7 +261,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="profile-info-row">
-                                                        <div class="profile-info-name"> Alamat di Sorong </div>
+                                                        <div class="profile-info-name"> Alamat Tinggal </div>
                                                         <div class="profile-info-value">
                                                             <span><?= $detail['alamat_mhs'] ?></span>
                                                         </div>

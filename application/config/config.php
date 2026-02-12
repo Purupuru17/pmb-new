@@ -28,11 +28,20 @@ $config['app.allowed_img']    = 'jpg|png|jpeg|JPG|PNG';
 $config['app.storage']        = $ENV['APP_STORAGE'];
 $config['app.max_delete']     = $ENV['APP_DELETE'];
 
-$config['app.periode'] = '20251';
-$config['app.tanggal'] = '2025-08-18';
-$config['app.jenis_daftar'] = '1';
-$config['app.jenis_daftar_all'] = '18';
-$config['app.tanggal_all'] = '2025-08-18';
+$config['kampus'] = [
+    'menteri' => $ENV['UNIV_MENTERI'], 'nama' => $ENV['UNIV_NAMA'], 
+    'alamat' => $ENV['UNIV_SK'].' <br> '.$ENV['UNIV_ALAMAT'], 'ttd' => $ENV['UNIV_KOTA_TTD'],
+    
+    'wa' => $ENV['UNIV_SOSMED']['WA'], 'ig' => $ENV['UNIV_SOSMED']['IG'],
+    'fb' => $ENV['UNIV_SOSMED']['FB'], 'x' => $ENV['UNIV_SOSMED']['X'],
+    'youtube' => $ENV['UNIV_SOSMED']['YTB']
+];
+$config['pmb'] = [
+    'jalur' => $ENV['PMB_JALUR'], 'pemda' => $ENV['PMB_PEMDA'],
+    'periode' => $ENV['PMB_PERIODE']['periode'],
+    'tanggal' => $ENV['PMB_PERIODE']['tanggal'],
+    'jenis' => $ENV['PMB_PERIODE']['jenis']
+];
 /*
 |--------------------------------------------------------------------------
 | Base Site URL

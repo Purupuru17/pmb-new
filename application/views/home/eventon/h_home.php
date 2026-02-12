@@ -1,10 +1,10 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <!-- Background -->
-<section class="newsection background clearfix">
+<section class="newsection background clearfix" style="margin-bottom: 0px">
     <div class="container">
         <div class="border-cover">
             <div class="background-content clearfix">
-                <h2 class="title">Ayo Gabung Bersama UNIMUDA</h2>
+                <h2 class="title">Ayo Gabung Bersama Kami !</h2>
                 <p>
                     Silahkan buat Akun dan lengkapi Data Diri anda dengan klik <b>DAFTAR</b>.<br/>
                     Jika ada pertanyaan dan ingin berkonsultasi, silahkan klik <b>KONSULTASI</b>
@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="but-ticket">
-                        <a target="_blank" href="https://api.whatsapp.com/send?phone=6282397004684&text=Hai PMB UNIMUDA"> Klik <b>KONSULTASI!</b></a>
+                        <a target="_blank" href="https://api.whatsapp.com/send?phone=<?= config_item('kampus')['wa'] ?>&text=Hai <?= ctk($app_session['judul']) ?>"> Klik <b>KONSULTASI!</b></a>
                     </div>
 
                     <span class="round">atau</span>
@@ -26,23 +26,6 @@
     </div>
 </section>
 
-<!-- Events -->
-<section class="events">
-    <div class="container">
-        <div class="event-container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="event">
-                        <div class="event-content">
-                            <iframe width="100%" height="515" src="https://www.youtube.com/embed/hEzYkGaio6E?autoplay=1&mute=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- row -->
-    </div>  
-</section> 
-<!-- Events -->
 <section class="events">
     <div class="container">
         <h2 class="title">Alur Pendaftaran Online</h2>
@@ -59,7 +42,7 @@
                         </div>
                         <div class="event-content">
                             <h3 class="title">DAFTAR ONLINE</h3>
-                            <p>Buat Akun untuk mendapatkan akses ke Website PMB UNIMUDA Sorong melalui link pendaftaran</p>
+                            <p>Buat Akun Pendaftaran untuk mendapatkan akses ke Sistem pada menu Daftar/Registrasi</p>
                         </div>
                     </div>
                 </div>
@@ -94,36 +77,53 @@
                             <i class="fa fa-check-square-o"></i>
                         </div>
                         <div class="event-content">
-                            <h3 class="title">MABA</h3>
-                            <p>Selamat anda telah Resmi menjadi Mahasiswa Baru UNIMUDA Sorong. MATRAS <?= date('Y') ?> Siap Menanti! </p>
+                            <h3 class="title">CAMABA</h3>
+                            <p>Selamat anda telah Resmi menjadi Calon Mahasiswa Baru <?= date('Y') ?>. Siapkan diri anda dalam kegiatan pengenalan kampus</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div><!-- row -->
     </div>  
-</section>  
+</section>
+
+<!-- Events -->
+<section class="events">
+    <div class="container">
+        <div class="event-container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="event">
+                        <div class="event-content">
+                            <iframe width="100%" height="515" src="<?= config_item('kampus')['youtube'] ?>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- row -->
+    </div>  
+</section> 
+<!-- Events -->
+
 <!-- Background  -->
-<section class="background clearfix newsection">
+<!--<section class="background clearfix newsection">
     <div class="container">
         <div class="border-cover">
             <div class="background-content">
                 <h2 class="title">Jadwal Pendaftaran</h2>
                 <p></p> 
                 <div class="row ">
-
-                    <div class="col-sm-12">
+                    <div class="col-md-4 col-sm-6">
                         <div class="event">
                             <div class="eventsicon">
-                                <strong><i class="fa fa-calendar"></i></strong>
+                                <strong>I</strong>
                             </div>
                             <div class="event-content">
-                                <h2 style="color:#5ab4e6">12 Desember 2024 - 30 Agustus 2025</h2>
+                                <h3 style="color:#5ab4e6">12 Desember 2024 - 30 Agustus 2025</h3>
                             </div>
                         </div>
                     </div>
-
-<!--                <div class="col-md-4 col-sm-6">
+                    <div class="col-md-4 col-sm-6">
                         <div class="event">
                             <div class="eventsicon">
                                 <strong>II</strong>
@@ -133,7 +133,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="col-md-4 col-sm-6">
                         <div class="event">
                             <div class="eventsicon">
@@ -143,61 +142,72 @@
                                 <h3 style="color:#5ab4e6">18 Agustus - 30 September 2024</h3>
                             </div>
                         </div>
-                    </div>-->
-
-
+                    </div>
                 </div>
             </div> 
         </div>
     </div>  
-</section>
+</section>-->
 
 <!-- Events -->
 <section class="events newsection">
     <div class="container">
         <h2 class="title">Agenda dan Berita</h2>
         <p class="contentcenter">
-            Segala informasi berupa Agenda, Berita dan Pengumuman terkait Penerimaan Mahasiswa Baru (PMB) UNIMUDA Sorong akan 
-            disampaikan melalui Website resmi ini.
+            Segala update informasi berupa Agenda, Berita dan Pengumuman akan 
+            disampaikan melalui Website resmi ini
         </p>
         <div class="event-container">
-            <div class="row">
-                <?php
-                foreach ($terbaru['data'] as $tb) {
-                    ?>
-                    <div class="col-md-3">
-                        <div class="event" style="margin-bottom: 20px; min-height:460px">
-                            <div class="eventsimg">
-                                <a href="<?= site_url('artikel/' . $tb['slug_artikel']) ?>">
-                                    <img style="height: 200px" class="lazyload blur-up" src="<?= load_file($tb['foto_artikel']) ?>" alt="<?= ctk($tb['judul_artikel']) ?>">
-                                </a>
-                            </div>
-                            <div class="event-content">
-                                <a href="<?= site_url('artikel/' . $tb['slug_artikel']) ?>">
-                                    <h3 class="title">
-                                        <?= limit_text($tb['judul_artikel'], 20) ?>
-                                    </h3>
-                                </a>
-                                <ul class="meta">
-                                    <li><?= format_date($tb['update_artikel'], 2) ?></li>
-                                </ul>
-                                <span class="sep"></span>
-                                <p><?= limit_text($tb['isi_artikel'], 200) ?></p>
-                                <a href="<?= site_url('artikel/' . $tb['slug_artikel']) ?>" class="btn btn-pri" style="background-color:<?= $tb['color_jenis'] ?>"><?= $tb['judul_jenis'] ?></a>
-                            </div>
-                            <div class="links clearfix">
-                                <ul>
-                                    <li><a href="<?= site_url('artikel/' . $tb['slug_artikel']) ?>"><i class="icon fa fa-share"></i></a></li>
-                                    <li><a href="#"><i class="icon fa fa-eye"></i><?= angka($tb['view_artikel']) ?></a></li>
-                                    <li><a href="#" ><i class="icon fa fa-heart"></i>0</a> </li> 
-                                </ul> 
-                            </div>
-                        </div>
-                    </div>
-                <?php } ?>
+            <div class="row the-berita">
             </div>
 
         </div>
         <a href="<?= site_url('tag/all') ?>" class="btn btn-border btn-lg">Lebih Banyak</a>
     </div>  
 </section>  
+<script async type="text/javascript">
+    $(document).ready(function() {
+        //Berita
+        $.ajax({
+            url: module + "/ajax/type/list/source/artikel",
+            type: 'POST', dataType: "json",
+            data: { jenis: 'berita', tipe: '', order: 'DESC', limit: 12,
+                [$('meta[name="csrf-token"]').attr('content')] : $('meta[name="csrf-token"]').attr('accesskey')
+            },
+            success: function (result) {
+                $.each(result.data, function (index, value) {
+                    $(".the-berita").append(`<div class="col-md-3">
+                        <div class="event" style="margin-bottom: 20px; min-height:460px">
+                            <div class="eventsimg">
+                                <a href="${value.slug}">
+                                    <img style="height: 200px" class="lazyload blur-up" src="${value.foto}" alt="${value.judul}">
+                                </a>
+                            </div>
+                            <div class="event-content">
+                                <a href="${value.slug}">
+                                    <h3 class="title">${value.judul}</h3>
+                                </a>
+                                <ul class="meta">
+                                    <li>${value.update}</li>
+                                </ul>
+                                <span class="sep"></span>
+                                <p>${value.isi}</p>
+                                <a href="${value.slug}" class="btn btn-pri" style="background-color:${value.color}">${value.jenis}</a>
+                            </div>
+                            <div class="links clearfix">
+                                <ul>
+                                    <li><a href="${value.slug}"><i class="icon fa fa-share"></i></a></li>
+                                    <li><a href="#"><i class="icon fa fa-eye"></i>${value.view}</a></li>
+                                    <li><a href="#" ><i class="icon fa fa-heart"></i>0</a> </li> 
+                                </ul> 
+                            </div>
+                        </div>
+                    </div>`);
+                });
+            },
+            error: function (xhr, ajax, err) {
+                console.log('Error : ' + xhr.responseText);
+            }
+        });
+    });
+</script>

@@ -14,7 +14,7 @@ class Profil_do extends KZ_Controller {
         $this->_getMhs();
     }
     function edit() {
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/edit');
         }
         $data['nisn'] = $this->input->post('nisn');
@@ -186,7 +186,7 @@ class Profil_do extends KZ_Controller {
         if(empty($this->mid)){
             jsonResponse(array('status' => FALSE, 'msg' => 'Tidak memiliki akses pada menu ini'));
         }
-        if(!$this->_validation($this->rules_jawab,'ajax')){
+        if(!$this->fungsi->Validation($this->rules_jawab,'ajax')){
             jsonResponse(array('status' => FALSE, 'msg' => strval(validation_errors())));
         }
         $this->load->model(array('m_soal'));

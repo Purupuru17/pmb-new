@@ -154,13 +154,6 @@ if (!function_exists('load_array')) {
                     $val[] = $i . '2';
                 }
                 break;
-            case 'jalur':
-                $val = array(
-                    'Reguler','Alih-Jenjang','SBMPTMu','Beasiswa-KIP','Prestasi-Raport','Prestasi-ATBK','Prestasi-Akademik','Prestasi-Seni',
-                    'Prestasi-Olahraga','Kader-Muhammadiyah','Hafidz-Quran','Pemda-Misol','Pemda-Wondama','Pemda-RajaAmpat','Pemda-Fakfak',
-                    'PPG-Prajabatan', 'PPG-Dalamjabatan', 'PPG-GuruTertentu'
-                );
-                break;
             case 'kip':
                 $val = array(
                     'PENDING','VALID', 'TIDAK VALID', 'Tanggungan Negara', 'NIK Tidak Sesuai',

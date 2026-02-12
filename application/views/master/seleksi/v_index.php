@@ -71,7 +71,8 @@ $this->load->view('sistem/v_breadcrumb');
                             <select class="select2 width-100" name="jalur" id="jalur" data-placeholder="-------> Pilih Jalur <-------">
                                 <option value=""> </option>
                                 <?php
-                                foreach (load_array('jalur') as $val) {
+                                $jalur = array_merge(config_item('pmb')['jalur'], config_item('pmb')['pemda']);
+                                foreach ($jalur as $val) {
                                     echo '<option value="'.$val.'">'.$val.'</option>';
                                 }
                                 ?>
@@ -188,9 +189,9 @@ $this->load->view('sistem/v_breadcrumb');
             success: function (rs) {
                 progress.modal("hide");
                 if (rs.status) {
-                    myNotif('Informasi', rs.msg, 1);
+                    jsfNotif('Informasi', rs.msg, 1);
                 } else {
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
             },
             error: function (xhr, ajaxOptions, thrownError) {

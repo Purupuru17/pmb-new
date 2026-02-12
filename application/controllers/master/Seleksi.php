@@ -92,12 +92,14 @@ class Seleksi extends KZ_Controller {
             $bio = empty($row['id_bio']) ? ' <i class="fa fa-question bigger-110 red"></i>' : ' <i class="fa fa-check-square-o green"></i>';
             $feeder = empty($row['id_reg']) ? ' <i class="fa fa-question bigger-110 red"></i>' : ' <i class="fa fa-check-square-o green"></i>';
             
-            $btn_aksi = !in_array($row['status_mhs'], array('LULUS','VALID','AKTIF')) ? '' : '<a href="' . site_url($this->module . '/add/' . encode($row['id_mhs'])) . '" 
+            $btn_aksi = !in_array($row['status_mhs'], array('LULUS','VALID','AKTIF')) ? '' : 
+                '<a href="' . site_url($this->module . '/add/' . encode($row['id_mhs'])) . '" 
                     class="tooltip-success btn btn-white btn-success btn-round btn-sm" data-rel="tooltip" title="Tambah NIM">
                     <span class="green"><i class="ace-icon fa fa-graduation-cap bigger-120"></i></span>
                 </a>';
-            $btn_aksi .= '<a target="_blank" href="'. site_url('master/daftar/detail/'. encode($row['id_mhs'])) .'" class="tooltip-info btn btn-white btn-info btn-round btn-sm" data-rel="tooltip" title="Lihat Data">
-                    <span class="blue"><i class="ace-icon fa fa-search-plus bigger-120"></i></span>
+            $btn_aksi .= '<a target="_blank" href="'. site_url('master/daftar/detail/'. encode($row['id_mhs'])) .'" 
+                class="tooltip-info btn btn-white btn-info btn-round btn-mini" data-rel="tooltip" title="Lihat Data">
+                    <span class="blue"><i class="ace-icon fa fa-search-plus"></i></span>
                 </a>';
             
             $rows[] = ctk($no);
@@ -159,7 +161,7 @@ class Seleksi extends KZ_Controller {
         jsonResponse(array('data' => $rs['data'][0], 'status' => true, 'msg' => 'Data ditemukan'));
     }
     function _generate_nim() {
-        if (!$this->_validation($this->rules_nim,'ajax')) {
+        if (!$this->fungsi->Validation($this->rules_nim,'ajax')) {
             jsonResponse(array('nim' => NULL, 'status' => FALSE, 'msg' => validation_errors()));
         }
         $id = decode($this->input->post('prodi'));
@@ -177,7 +179,7 @@ class Seleksi extends KZ_Controller {
     function _insert_all() {
         $this->load->library(array('feeder'));
         
-        if (!$this->_validation($this->rules_insert,'ajax')) {
+        if (!$this->fungsi->Validation($this->rules_insert,'ajax')) {
             jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
         }
         $limit = 1;
@@ -263,9 +265,10 @@ class Seleksi extends KZ_Controller {
             $prodi = $mhs['prodi_id'];
             $nim = $mhs['nim'];
             $tahun = $mhs['angkatan'];
-            $periode = $this->config->item('app.periode');
-            $tanggal = $this->config->item('app.tanggal_all');
-            $jenis = $this->config->item('app.jenis_daftar_all');
+            
+            $periode = config_item('pmb')['periode'];
+            $tanggal = config_item('pmb')['tanggal'];
+            $jenis = config_item('pmb')['jenis'];
 
             $cek_nim = $this->m_mhs->getId(array('nim' => $nim));
             if(!is_null($cek_nim) && $cek_nim['id_mhs'] != $id){

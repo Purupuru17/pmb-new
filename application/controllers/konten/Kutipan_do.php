@@ -10,7 +10,7 @@ class Kutipan_do extends KZ_Controller {
         $this->load->model(array('m_kutipan'));
     }
     function add() {
-        if($this->_validation($this->rules) == FALSE){
+        if($this->fungsi->Validation($this->rules) == FALSE){
             redirect($this->module);
         }
         $data['oleh'] = $this->input->post('oleh');
@@ -31,7 +31,7 @@ class Kutipan_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if($this->_validation($this->rules) == FALSE){
+        if($this->fungsi->Validation($this->rules) == FALSE){
             redirect($this->module.'/edit/'.$id);
         }
         $data['oleh'] = $this->input->post('oleh');

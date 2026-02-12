@@ -2,7 +2,7 @@
 
 class M_galeri extends CI_Model {
     var $id = 'id_galeri';
-    var $table = 'rf_galeri';
+    var $table = 'wb_galeri';
     
     function __construct() {
         parent::__construct();
@@ -26,7 +26,7 @@ class M_galeri extends CI_Model {
     }
     
     //GET
-    function getAll($where = NULL, $order = 'asc', $limit = 0, $offset = 0, $search = NULL) {
+    function getAll($where = NULL, $order = 'desc', $limit = 0, $offset = 0, $search = NULL) {
         $this->db->from($this->table);
         if(!is_null($where)){
             $this->db->where($where);

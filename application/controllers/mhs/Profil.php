@@ -62,11 +62,16 @@ class Profil extends KZ_Controller {
         $this->load_view('mhs/profil/v_add', $this->data);
     }
     function edit() {
-        $this->data['edit'] = $this->m_mhs->getId($this->mid);
+        $edit = $this->m_mhs->getId($this->mid);
         
+        if(in_array($edit['status_mhs'], ['AKTIF'])){
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Data tidak dapat diubah karena sudah terinput ke PDDikti'));
+            redirect($this->module);
+        }
+        $this->data['edit'] = $edit;
         $this->data['module'] = $this->module;
         $this->data['action'] = $this->module_do . '/edit/';
-        $this->data['title'] = array('Profil', 'Ubah Data');
+        $this->data['title'] = array($edit['nama_mhs'], 'Ubah Data');
         $this->data['breadcrumb'] = array(
             array('title' => 'Mahasiswa', 'url' => '#'),
             array('title'=> $this->uri->segment(2), 'url'=> site_url($this->module)),

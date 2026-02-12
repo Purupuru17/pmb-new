@@ -129,7 +129,7 @@
                             </div>
                         </div>
                         <div class="profile-info-row">
-                            <div class="profile-info-name"> Alamat di Sorong </div>
+                            <div class="profile-info-name"> Alamat Tinggal </div>
                             <div class="profile-info-value">
                                 <span><?= $detail['alamat_mhs'] ?></span>
                             </div>
@@ -271,7 +271,7 @@
                                                     $semester .= ' Pendek';
                                                     break;
                                             }
-                                            $selected = ($this->config->item('app.periode') == $val) ? 'selected' : '';
+                                            $selected = (config_item('pmb')['periode'] == $val) ? 'selected' : '';
                                             echo '<option value="'.$val.'" '.$selected.'>'.$semester.'</option>';
                                         }
                                         ?>
@@ -287,7 +287,7 @@
                                         <option value=""> </option>
                                         <?php
                                         foreach (load_array('jenis_daftar') as $val) {
-                                            $selected = ($this->config->item('app.jenis_daftar') == $val['id']) ? 'selected' : '';
+                                            $selected = (config_item('pmb')['jenis'] == $val['id']) ? 'selected' : '';
                                             echo '<option value="'.$val['id'].'" '.$selected.'>'.$val['text'].'</option>';
                                         }
                                         ?>
@@ -299,17 +299,19 @@
                             <label class="control-label col-xs-12 col-sm-4 no-padding-right">Tanggal Masuk :</label>
                             <div class="col-xs-12 col-sm-7">
                                 <div class="clearfix">
-                                    <input value="<?= $this->config->item('app.tanggal') ?>" type="text" name="tanggal" id="tanggal" class="col-sm-6 col-xs-12 date-picker" placeholder="Tanggal Masuk" />
+                                    <input value="<?= config_item('pmb')['tanggal'] ?>" type="text" name="tanggal" id="tanggal" 
+                                        class="col-sm-6 col-xs-12 date-picker" placeholder="Tanggal Masuk" />
                                 </div>
                             </div>
                         </div>
                         <div class="clearfix form-actions">
                             <div class="col-md-offset-4 col-md-8">
                                 <button class="btn btn-danger btn-white btn-round" name="btn-nim" id="btn-nim" type="button">
-                                    <i class="ace-icon fa fa-check-square-o"></i>
+                                    <i class="ace-icon fa fa-check-square-o bigger-120"></i>
                                     Generate NIM
                                 </button>
-                                <a target="_blank" href="<?= site_url('master/daftar/edit/'. encode($detail['id_mhs'])) ?>" class="btn btn-warning btn-white btn-round btn-mini" >
+                                <a target="_blank" href="<?= site_url('master/daftar/edit/'. encode($detail['id_mhs'])) ?>" 
+                                    class="btn btn-warning btn-white btn-round btn-sm" >
                                     <i class="ace-icon fa fa-pencil-square-o"></i>
                                     Ubah Data
                                 </a>
@@ -439,16 +441,16 @@ load_js(array(
                     $("#span-bio").html(rs.data.id_mahasiswa);
                     $("#span-reg").html(rs.data.id_registrasi_mahasiswa);
                     
-                    myNotif('Informasi', rs.msg, 1);
+                    jsfNotif('Informasi', rs.msg, 1);
                 } else {
                     $("#span-mhs").html(rs.msg);
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
                 show_data(rs.data);
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 progress.modal("hide");
-                myNotif('Error', 'Kesalahan Jaringan', 3);
+                jsfNotif('Error', 'Kesalahan Jaringan', 3);
             }
         });
     }
@@ -470,21 +472,21 @@ load_js(array(
                     $("#span-bio").html(rs.data.id_mahasiswa);
                     show_data(rs.data);
                     
-                    myNotif('Informasi', rs.msg, 1);
+                    jsfNotif('Informasi', rs.msg, 1);
                 } else {
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 progress.modal("hide");
-                myNotif('Error', 'Kesalahan Jaringan', 3);
+                jsfNotif('Error', 'Kesalahan Jaringan', 3);
             }
         });
     }
     function insert_nim() {
         var nim = $("#nim").val();
         if(nim === '' || nim === null){
-            myNotif('Peringatan', 'Generate NIM mahasiswa', 2);
+            jsfNotif('Peringatan', 'Generate NIM mahasiswa', 2);
             return;
         }
         var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
@@ -500,15 +502,15 @@ load_js(array(
                 progress.modal("hide");
                 if (rs.status) {
                     $("#span-reg").html(rs.data.id_registrasi_mahasiswa);
-                    myNotif('Informasi', rs.msg, 1);
+                    jsfNotif('Informasi', rs.msg, 1);
                 } else {
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
                 show_data(rs.data);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 progress.modal("hide");
-                myNotif('Error', 'Kesalahan Jaringan', 3);
+                jsfNotif('Error', 'Kesalahan Jaringan', 3);
             }
         });
     }
@@ -526,15 +528,15 @@ load_js(array(
                 progress.modal("hide");
                 if (rs.status) {
                     $("#span-reg").html('');
-                    myNotif('Informasi', rs.msg, 1);
+                    jsfNotif('Informasi', rs.msg, 1);
                 } else {
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
                 show_data(rs.data);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 progress.modal("hide");
-                myNotif('Error', 'Kesalahan Jaringan', 3);
+                jsfNotif('Error', 'Kesalahan Jaringan', 3);
             }
         });
     }
@@ -542,7 +544,7 @@ load_js(array(
         var id = $("select#prodi").val();
         if (id === '') {
             $("select#prodi").select2('open');
-            myNotif('Peringatan', 'Pilih Program Studi', 2);
+            jsfNotif('Peringatan', 'Pilih Program Studi', 2);
             return;
         }
         var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
@@ -557,15 +559,15 @@ load_js(array(
             success: function(rs) {
                 progress.modal("hide");
                 if (rs.status) {
-                    myNotif('Informasi', rs.msg, 1);
+                    jsfNotif('Informasi', rs.msg, 1);
                 } else {
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
                 $("input#nim").val(rs.nim);
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 progress.modal("hide");
-                myNotif('Error', 'Kesalahan Jaringan', 3);
+                jsfNotif('Error', 'Kesalahan Jaringan', 3);
             }
         });
     }

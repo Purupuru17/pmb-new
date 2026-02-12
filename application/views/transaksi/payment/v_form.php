@@ -177,9 +177,9 @@ load_js(array(
                         progress.modal("hide");
                         window.location.replace(rs.data);
                     }, 2000);
-                    myNotif('Informasi', rs.msg, 1, 'swal');
+                    jsfNotif('Informasi', rs.msg, 1, 'swal');
                 } else {
-                    myNotif('Peringatan', rs.msg, 2, 'swal');
+                    jsfNotif('Peringatan', rs.msg, 2, 'swal');
                     progress.modal("hide");
                 }
             },
@@ -204,7 +204,7 @@ load_js(array(
                 if (rs.status) {
                     $("#virtual").val(rs.data);
                 } else {
-                    myNotif('Peringatan', rs.msg, 2, 'swal');
+                    jsfNotif('Peringatan', rs.msg, 2, 'swal');
                 }
                 $("#one-spin").hide();
             },

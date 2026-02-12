@@ -13,7 +13,7 @@ class Berkas_do extends KZ_Controller {
         $this->_getMhs();
     }
     function add() {
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/add');
         }
         $where['mhs_id'] = $data['mhs_id'] = $this->mid;
@@ -58,7 +58,7 @@ class Berkas_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/edit/'.$id);
         }
         if(empty($_FILES['file']['name'])){

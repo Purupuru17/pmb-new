@@ -133,7 +133,8 @@ $opsi3 = element(1, $exp, '');
                             <select class="select2 width-100" name="jalur" id="jalur" data-placeholder="----> Pilih Jalur Pendaftaran <----">
                                 <option value=""> </option>
                                 <?php
-                                foreach (load_array('jalur') as $val) {
+                                $jalur = array_merge(config_item('pmb')['jalur'], config_item('pmb')['pemda']);
+                                foreach ($jalur as $val) {
                                     $selected = ($edit['jalur_mhs'] == $val) ? 'selected' : '';
                                     echo '<option value="'.$val.'"  '.$selected.'>'.$val.'</option>';
                                 }
@@ -257,7 +258,7 @@ $opsi3 = element(1, $exp, '');
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Tanggal Lahir :</label>
-                    <div class="col-xs-12 col-sm-3">
+                    <div class="col-xs-12 col-sm-4">
                         <div class="clearfix">
                             <input value="<?= $edit['tgl_lahir'] ?>" type="text" name="lahir" id="lahir" class="col-xs-12  col-sm-6 date-picker" placeholder="Tanggal Lahir" />
                         </div>
@@ -310,17 +311,17 @@ $opsi3 = element(1, $exp, '');
                 </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Email :</label>
-                    <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-12 col-sm-4">
                         <div class="clearfix">
                             <input value="<?= $edit['email_mhs'] ?>" type="text" name="email" id="email" class="col-xs-12  col-sm-6" placeholder="Email Aktif" />
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Alamat di Sorong :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Alamat Tinggal :</label>
                     <div class="col-xs-12 col-sm-8">
                         <div class="clearfix">
-                            <textarea rows="2" cols="1" name="alamat" id="alamat" placeholder="Alamat Tinggal di Sorong" class="col-xs-12 col-sm-6"><?= ctk($edit['alamat_mhs']) ?></textarea>
+                            <textarea rows="2" cols="1" name="alamat" id="alamat" placeholder="Alamat Tinggal Saat Ini" class="col-xs-12 col-sm-6"><?= ctk($edit['alamat_mhs']) ?></textarea>
                         </div>
                     </div>
                     <span class="help-inline col-xs-8 col-md-offset-4">
@@ -415,11 +416,8 @@ $opsi3 = element(1, $exp, '');
                     <label class="control-label col-xs-12 col-sm-2 no-padding-right"></label>
                     <div class="col-xs-12 col-sm-8">
                         <div class="alert alert-info center">
-                            <p class="bigger-110">Mohon Perhatian! <br/>Akun Mahasiswa Baru yang dibuat oleh Panitia PMB memiliki ketentuan : </p>
-                            <span class="lbl red"> <b>Username = Kode Registrasi<br>Password = Kode Registrasi</b> <br>
-                                Digunakan saat LOGIN pada Website PMB UNIMUDA Sorong, 
-                                harap dicatat agar tidak lupa atau hilang.
-                            </span>
+                            <p class="">Mohon Perhatian! <br/>Akun Mahasiswa Baru yang dibuat oleh Admin Panitia memiliki ketentuan : </p>
+                            <span class="lbl red bigger-130"> <b>Username = Kode Registrasi<br>Password = Kode Registrasi</b></span>
                         </div>
                     </div>
                 </div>
@@ -482,8 +480,8 @@ $opsi3 = element(1, $exp, '');
             allowExt: img_ext,
             maxSize: 1100000
         }).on('file.error.ace', function(ev, info) {
-            if(info.error_count['ext']) myNotif('Peringatan!', 'Format gambar harus berupa *.jpg, *.png', 3);
-            if(info.error_count['size']) myNotif('Peringatan!', 'Ukuran gambar maksimal 1 MB', 3);
+            if(info.error_count['ext']) jsfNotif('Peringatan!', 'Format gambar harus berupa *.jpg, *.png', 3);
+            if(info.error_count['size']) jsfNotif('Peringatan!', 'Ukuran gambar maksimal 1 MB', 3);
         });
     });
     $("#lahir").change(function () {

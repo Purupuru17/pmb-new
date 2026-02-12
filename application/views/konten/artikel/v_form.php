@@ -185,8 +185,8 @@ load_css(array(
             allowExt: img_ext,
             maxSize: 1100000
         }).on('file.error.ace', function(ev, info) {
-            if(info.error_count['ext']) myNotif('Peringatan!', 'Format gambar harus berupa *.jpg, *.png', 3);
-            if(info.error_count['size']) myNotif('Peringatan!', 'Ukuran gambar maksimal 1 MB', 3);
+            if(info.error_count['ext']) jsfNotif('Peringatan!', 'Format gambar harus berupa *.jpg, *.png', 3);
+            if(info.error_count['size']) jsfNotif('Peringatan!', 'Ukuran gambar maksimal 1 MB', 3);
         });
         CKEDITOR.disableAutoInline = true;
         CKEDITOR.replace('isi', {

@@ -71,7 +71,8 @@ $this->load->view('sistem/v_breadcrumb');
                             <select class="select2 width-100" name="jalur" id="jalur" data-placeholder="-------> Pilih Jalur <-------">
                                 <option value=""> </option>
                                 <?php
-                                foreach (load_array('jalur') as $val) {
+                                $jalur = array_merge(config_item('pmb')['jalur'], config_item('pmb')['pemda']);
+                                foreach ($jalur as $val) {
                                     echo '<option value="'.$val.'">'.$val.'</option>';
                                 }
                                 ?>

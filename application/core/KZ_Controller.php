@@ -49,8 +49,8 @@ class KZ_Controller extends CI_Controller {
         $this->load->model(array('m_authentication'));
         
         $modules = [
-            'non_login' => ['error_404', 'error_module', 'register','non_login', 'login', 
-                'home', 'pages', 'galeri', 'artikel', 'tag'],
+            'non_login' => ['error_404','error_module','register','non_login', 'login', 
+                'home','pages','galeri','artikel','tag','sitemap.xml'],
             'login' => ['beranda', 'logout'],
             'session' => [
                 'non_login/login/ajax/type/action/source/auth',
@@ -147,21 +147,12 @@ class KZ_Controller extends CI_Controller {
         $this->load->view('sistem/v_body', $this->data);
     }
     function load_home($template, $data = '') {
-        $this->load->model(array('m_nav'));
         
-        $topbar = $this->m_nav->getNav();
-        $arrtop = array();
-        if (!is_null($topbar)) {
-            foreach ($topbar['data'] as $top) {
-                $arrtop[$top['parent_nav']][] = $top;
-            }
-            $data['navbar'] = $arrtop;
-        } 
         $data['app_session'] = $this->session->userdata('app_session');
         $data['app_theme'] = json_decode($data['app_session']['tema'], true);
         
-        $this->data['content'] = $this->load->view($template, $data, TRUE);
-        $this->load->view('home/h_body', $this->data);
+        $this->data['content'] = $this->load->view('home/'.APP_THEME.'/'.$template, $data, TRUE);
+        $this->load->view('home/'.APP_THEME.'/h_body', $this->data);
     }
     //cache
     function _refresh(){

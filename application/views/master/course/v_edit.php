@@ -281,8 +281,8 @@ load_js(array(
             allowExt: ["pdf", "PDF", "zip"],
             maxSize: 10100000 //10.1 Mb
         }).on('file.error.ace', function(ev, info) {
-            if(info.error_count['ext']) myNotif('Peringatan!', 'Format file harus berupa File PDF atau ZIP', 3);
-            if(info.error_count['size']) myNotif('Peringatan!', 'Ukuran file maksimal 10 MB', 3);
+            if(info.error_count['ext']) jsfNotif('Peringatan!', 'Format file harus berupa File PDF atau ZIP', 3);
+            if(info.error_count['size']) jsfNotif('Peringatan!', 'Ukuran file maksimal 10 MB', 3);
         });
         soal_table();
     });
@@ -319,7 +319,7 @@ load_js(array(
             qty++;
         });
         if(qty < 1){
-            myNotif('Peringatan', 'Tidak ada data yang dipilih', 2, 1);
+            jsfNotif('Peringatan', 'Tidak ada data yang dipilih', 2, 1);
             return;
         }
         var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
@@ -377,7 +377,7 @@ load_js(array(
                         soalTable.fnAddData(value);
                     });
                 } else {
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
                 soalTable.fnDraw();
                 $("#two-spin").hide();
@@ -400,9 +400,9 @@ load_js(array(
             success: function (rs) {
                 if (rs.status) {
                     load_soal();
-                    myNotif('Informasi', rs.msg, 1);
+                    jsfNotif('Informasi', rs.msg, 1);
                 } else {
-                    myNotif('Peringatan', rs.msg, 2, 1);
+                    jsfNotif('Peringatan', rs.msg, 2, 1);
                 }
                 progress.modal("hide");
             },

@@ -15,7 +15,7 @@ class Course_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/edit/'.$id);
         }
         $data['nama_module'] = strtoupper($this->input->post('nama'));
@@ -81,7 +81,7 @@ class Course_do extends KZ_Controller {
     }
     //function
     function _add_activity() {
-        if(!$this->_validation($this->rules_activ,'ajax')){
+        if(!$this->fungsi->Validation($this->rules_activ,'ajax')){
             jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
         }
         $data['id_module'] = random_string('unique');
@@ -207,7 +207,7 @@ class Course_do extends KZ_Controller {
         }
     }
     function _update_jawab() {
-        if(!$this->_validation($this->rules_jawab,'ajax')){
+        if(!$this->fungsi->Validation($this->rules_jawab,'ajax')){
             jsonResponse(array('status' => FALSE, 'msg' => strval(validation_errors())));
         }
         $this->load->model(array('m_soal'));
@@ -363,7 +363,7 @@ class Course_do extends KZ_Controller {
         }
     }
     function _update_respon() {
-        if(!$this->_validation($this->rules_respon,'ajax')){
+        if(!$this->fungsi->Validation($this->rules_respon,'ajax')){
             jsonResponse(array('status' => FALSE, 'msg' => strval(validation_errors())));
         }
         $id = decode($this->input->post('id'));

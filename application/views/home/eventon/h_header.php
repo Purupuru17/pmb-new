@@ -1,17 +1,9 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <style>
-    @media (max-width:480px) { 
-        .site-identity h1 a{
-            display: none !important;
-        }
-        .site-identity span {
-            display: none !important;
-        }
-    }
     .site-identity {
         float: left;
-        width: 50%;
-        line-height: 100%;
+        width: 70%;
+        line-height: 1;
     }
     .site-identity h1 {
         font-size: 2em !important;
@@ -39,6 +31,7 @@
     }
     .main-nav li {
         padding: 5px 0 !important;
+        margin-right: 20px;
     }
     .main-nav a{
         font-size: 14px;
@@ -71,14 +64,14 @@
             <div class="row">
                 <div class="col-md-6">
                     <ul class="login-details clearfix">
-                        <li class="membericon"><span id="jam"></span></li>
+                        <li class="membericon"><span class="waktu"></span></li>
                     </ul>
                 </div>
                 <div class="col-md-6">
                     <div class="social-icon pull-right">
-                        <a target="_blank" href="https://www.instagram.com/admisiunimuda" class="dribble fa fa-instagram"> </a>
-                        <a target="_blank" href="https://www.facebook.com/profile.php?id=100089302566025" class="facebook fa fa-facebook"></a>
-                        <a target="_blank" href="https://twitter.com/admisiunimuda" class="twitter fa fa-twitter"></a>
+                        <a target="_blank" href="https://www.instagram.com/<?= config_item('kampus')['ig'] ?>" class="dribble fa fa-instagram"> </a>
+                        <a target="_blank" href="https://www.facebook.com/<?= config_item('kampus')['fb'] ?>" class="facebook fa fa-facebook"></a>
+                        <a target="_blank" href="https://twitter.com/<?= config_item('kampus')['x'] ?>" class="twitter fa fa-twitter"></a>
                     </div>
                 </div>
             </div> 
@@ -91,10 +84,9 @@
             <div class="container ">
                 <!-- logo -->
                 <div class="site-identity">
-                    <a href="<?= site_url() ?>"><img src="<?= load_file('theme/img/logo.png') ?>" alt="<?= ctk($app['judul']) ?>"></a>
-                    <h1><a href="<?= site_url() ?>"><?= ctk($app['judul']) ?></a></h1>
-                    <span style="text-transform: uppercase;font-size: 1.3em"><?= ctk($app['deskripsi']) ?></span><br/>
-                    <span><?= ctk($app['cipta']) ?></span>
+                    <a href="<?= site_url() ?>"><img src="<?= load_file('private/logo.png') ?>" alt="<?= ctk($app_session['judul']) ?>"></a>
+                    <span style="padding-top: 15px; font-size: 1.8em"><?= ctk($app_session['judul']) ?></span><br/>
+                    <span><?= ctk($app_session['deskripsi']) ?></span>
                 </div>  
                 <div id="sb-search" class="sb-search">
                     <form method="GET" action="<?= site_url('tag/all') ?>">
@@ -109,9 +101,7 @@
                 </div> 
                 <!--Main Nav -->
                 <nav class="main-nav mobile-menu">
-                    <ul class="clearfix">
-                        <li><a href="<?= site_url() ?>">Beranda</a></li>
-                        <?= navbar($navbar, 0, NULL) ?>
+                    <ul class="clearfix the-menu">
                     </ul>
                 </nav>
             </div>

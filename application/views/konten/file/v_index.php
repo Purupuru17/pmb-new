@@ -99,7 +99,7 @@ $this->load->view('sistem/v_breadcrumb');
         document.execCommand('copy');
         document.body.removeChild(el);
         
-        myNotif('Informasi', 'Link berhasil di Copy pada clipboard');
+        jsfNotif('Informasi', 'Link berhasil di Copy pada clipboard');
     });
     $(document.body).on("click", "#delete-btn", function(event) {
         var id = $(this).attr("name");

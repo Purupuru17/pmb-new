@@ -24,7 +24,7 @@ class Rekap extends KZ_Controller {
         $this->load_view('master/rekap/v_index', $this->data);
     }
     function edit() {
-        if(!$this->_validation($this->rules_berkas)){
+        if(!$this->fungsi->Validation($this->rules_berkas)){
             redirect($this->module);
         }
         $berkas_id = decode($this->input->post('berkasid'));
@@ -117,7 +117,7 @@ class Rekap extends KZ_Controller {
         jsonResponse($output);
     }
     function export() {
-        if (!$this->_validation($this->rules_export)) {
+        if (!$this->fungsi->Validation($this->rules_export)) {
             redirect($this->module);
         }
         $where['m.angkatan'] = $this->input->post('tahun');
@@ -145,7 +145,7 @@ class Rekap extends KZ_Controller {
         
         $fields = array('No', 'Kode Registrasi & Berkas', 'Jalur Pendaftaran', 'Program Studi', 'NIM', 
             'NIK', 'Nama Lengkap', 'Tempat Lahir', 'Tanggal Lahir', 'Ibu Kandung',
-            'Jenis Kelamin', 'Agama', 'Alamat Sorong', 'Alamat Asal', 'Telepon', 
+            'Jenis Kelamin', 'Agama', 'Alamat Tinggal', 'Alamat Asal', 'Telepon', 
             'Email', 'NISN', 'Asal Sekolah', 'NPSN');
         $col = 1;
         foreach ($fields as $field) {

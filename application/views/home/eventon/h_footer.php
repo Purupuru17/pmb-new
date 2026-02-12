@@ -5,8 +5,11 @@
 
             <div class="widget col-md-6">
                 <div class="">
-                    <p style="color: #fff; font-size: 12px">&copy; 2020 Copyright <?= $app['judul'] ?> | <small>{elapsed_time} detik ~ {memory_usage}</small>
-                        <br/>Designed by <a  style="color: #fff" href="https://unimudasorong.ac.id/" target="_blank" class=""><b> UNIMUDA Sorong</b></a>
+                    <p style="color: #fff; font-size: 12px">
+                        <?= $app_session['deskripsi'] ?>
+                        <br/>
+                        <b><?= $app_session['cipta'] ?></b> &copy; <?= APP_VER ?> 
+                        | <small>{elapsed_time} detik ~ {memory_usage}</small>
                     </p>
                 </div>     
             </div>

@@ -12,7 +12,7 @@ class Wali_do extends KZ_Controller {
         $this->_getMhs();
     }
     function add() {
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/add');
         }
         $data['mhs_id'] = $this->mid;
@@ -52,7 +52,7 @@ class Wali_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/edit/'.$id);
         }
         $data['nik_ayah'] = $this->input->post('nik');

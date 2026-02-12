@@ -11,7 +11,7 @@ class Halaman_do extends KZ_Controller {
         $this->load->model(array('m_page'));
     }
     function add() {
-        if($this->_validation($this->rules) == FALSE){
+        if($this->fungsi->Validation($this->rules) == FALSE){
             redirect($this->module);
         }
         $data['judul_page'] = $this->input->post('judul');
@@ -43,7 +43,7 @@ class Halaman_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if($this->_validation($this->rules) == FALSE){
+        if($this->fungsi->Validation($this->rules) == FALSE){
             redirect($this->module.'/edit/'.$id);
         }
         

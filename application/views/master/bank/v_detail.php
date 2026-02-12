@@ -112,8 +112,8 @@ load_js(array(
             allowExt: ["xls","xlsx"],
             maxSize: 5100000 //10.1 Mb
         }).on('file.error.ace', function(ev, info) {
-            if(info.error_count['ext']) myNotif('Peringatan!', 'Format file harus berupa excel', 3);
-            if(info.error_count['size']) myNotif('Peringatan!', 'Ukuran file maksimal 5 MB', 3);
+            if(info.error_count['ext']) jsfNotif('Peringatan!', 'Format file harus berupa excel', 3);
+            if(info.error_count['size']) jsfNotif('Peringatan!', 'Ukuran file maksimal 5 MB', 3);
         });
         load_table();
         $("#soal-spin").hide();
@@ -134,7 +134,7 @@ load_js(array(
                         soalTable.fnAddData(value);
                     });
                 } else {
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
                 soalTable.fnDraw();
                 $("#soal-spin").hide();

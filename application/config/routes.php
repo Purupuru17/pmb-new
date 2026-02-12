@@ -59,6 +59,10 @@ $route['register'] = "non_login/register";
 $route['pages/(:any)'] = "home/pages/$1";
 $route['artikel/(:any)'] = "home/artikel/$1";
 $route['tag/(:any)'] = "home/tag/$1";
+$route['galeri'] = "home/galeri";
+$route['galeri/(:any)'] = "home/galeri/$1";
+
+$route['sitemap\.xml'] = "home/sitemap";
 
 $route['error_404'] = "home/err_404";
 $route['error_module'] = "home/err_module";

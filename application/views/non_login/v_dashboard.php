@@ -105,8 +105,7 @@ $this->load->view('sistem/v_breadcrumb');
             <div class="widget-box transparent">
                 <div class="widget-header widget-header-flat">
                     <h4 class="widget-title lighter red">
-                        <i class="ace-icon fa fa-warning bigger-130"></i>
-                        Mohon Segera Lengkapi Data - Data Di Bawah Ini !
+                        
                     </h4>
 
                     <div class="widget-toolbar">
@@ -117,22 +116,26 @@ $this->load->view('sistem/v_breadcrumb');
                 </div>
                 <div class="widget-body">
                     <div class="widget-main no-padding" style="text-align: center">
-                        <p></p>
+                        <div class="space-10"></div>
+                        <p class="bigger-130 red">
+                            <i class="ace-icon fa fa-warning"></i>
+                            Mohon Segera Lengkapi Data - Data Berikut :
+                        </p>
                         <a href="<?= site_url('mhs/profil') ?>" class="btn btn-default btn-app radius-4 btn-yellow">
                             <i class="ace-icon fa fa-user bigger-230"></i>
                             Profil
-                        </a>
-                        <a href="<?= site_url('transaksi/payment') ?>" class="btn btn-default btn-app radius-4 btn-danger">
-                            <i class="ace-icon fa fa-money bigger-230"></i>
-                            Biaya
                         </a>
                         <a href="<?= site_url('mhs/wali') ?>" class="btn btn-default btn-app radius-4 btn-primary">
                             <i class="ace-icon fa fa-users bigger-230"></i>
                             Wali
                         </a>
-                        <a href="<?= site_url('mhs/berkas') ?>" class="btn btn-default btn-app radius-4 btn-success">
+                        <a href="<?= site_url('mhs/berkas') ?>" class="btn btn-default btn-app radius-4 btn-grey">
                             <i class="ace-icon fa fa-upload bigger-230"></i>
                             Berkas
+                        </a>
+                        <a href="<?= site_url('transaksi/payment') ?>" class="btn btn-default btn-app radius-4 btn-info">
+                            <i class="ace-icon fa fa-money bigger-230"></i>
+                            Tagihan
                         </a>
                     </div><!-- /.widget-main -->
                 </div><!-- /.widget-body -->

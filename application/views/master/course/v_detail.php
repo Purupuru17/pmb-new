@@ -303,7 +303,7 @@ load_js(array(
         let skor = $("#skor" + id).val();
         if(skor === '' || skor === null){
             $("#skor" + id).focus();
-            myNotif('Peringatan', 'Input Skor terlebih dahulu', 2);
+            jsfNotif('Peringatan', 'Input Skor terlebih dahulu', 2);
             return;
         }
         const formData = { id : $(this).attr("itemid"), tipe: 'simpan', skor: skor };
@@ -374,10 +374,10 @@ load_js(array(
                         progress.modal("hide");
                         window.open(rs.link, '_blank').focus();
                     }, 3000);
-                    myNotif('Informasi', rs.msg, 1, 'swal');
+                    jsfNotif('Informasi', rs.msg, 1, 'swal');
                 } else {
                     progress.modal("hide");
-                    myNotif('Peringatan', rs.msg, 2, 'swal');
+                    jsfNotif('Peringatan', rs.msg, 2, 'swal');
                 }
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -396,9 +396,9 @@ load_js(array(
             success: function (rs) {
                 if (rs.status) {
                     load_mhs();
-                    myNotif('Informasi', rs.msg, 1);
+                    jsfNotif('Informasi', rs.msg, 1);
                 } else {
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
                 $("#one-spin").hide();
             },
@@ -421,7 +421,7 @@ load_js(array(
                         mhsTable.fnAddData(value);
                     });
                 } else {
-                    myNotif('Peringatan', rs.msg, 2);
+                    jsfNotif('Peringatan', rs.msg, 2);
                 }
                 mhsTable.fnDraw();
                 $("#one-spin").hide();

@@ -10,7 +10,7 @@ class Daftar_do extends KZ_Controller {
         $this->load->model(array('m_mhs'));
     }
     function add() {
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/add');
         }
         $data['prodi_id'] = decode($this->input->post('opsi1'));
@@ -44,7 +44,7 @@ class Daftar_do extends KZ_Controller {
 
         $data['opsi_prodi'] = implode("|", $prodi);
         $data['id_mhs'] = random_string('unique');
-        $data['kode_reg'] = $this->m_mhs->getNomor('UVMD');
+        $data['kode_reg'] = $this->m_mhs->getNomor();
         $data['status_mhs'] = 'PENDAFTARAN';
         $data['kip_mhs'] = 'PENDING';
         $data['tgl_daftar'] = date('Y-m-d H:i:s');
@@ -91,10 +91,10 @@ class Daftar_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if(!$this->_validation($this->rules)){
+        if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/edit/'.$id);
         }
-        if(!$this->_validation($this->rules_edit)){
+        if(!$this->fungsi->Validation($this->rules_edit)){
             redirect($this->module.'/edit/'.$id);
         }
         $data['nim'] = $this->input->post('nim');
@@ -156,7 +156,7 @@ class Daftar_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if(!$this->_validation($this->rules_berkas)){
+        if(!$this->fungsi->Validation($this->rules_berkas)){
             redirect($this->module.'/detail/'.$id);
         }
         $this->load->model(array('m_berkas'));
@@ -176,7 +176,7 @@ class Daftar_do extends KZ_Controller {
         }
     }
     function export() {
-        if (!$this->_validation($this->rules_export)) {
+        if (!$this->fungsi->Validation($this->rules_export)) {
             redirect($this->module);
         }
         $prodi = decode($this->input->post('prodi'));
@@ -213,7 +213,7 @@ class Daftar_do extends KZ_Controller {
 
         $fields = array('No', 'Kode Registrasi', 'Jalur Pendaftaran', 'Program Studi', 'NIM', 
             'NIK', 'Nama Lengkap', 'Tempat Lahir', 'Tanggal Lahir', 'Ibu Kandung',
-            'Jenis Kelamin', 'Agama', 'Telepon', 'Email', 'Alamat Sorong', 'Alamat Asal',
+            'Jenis Kelamin', 'Agama', 'Telepon', 'Email', 'Alamat Tinggal', 'Alamat Asal',
             'Kecamatan', 'Kabupaten', 'NISN', 'Asal Sekolah', 'NPSN', 'Atribut', 'KIP',
             'Ayah/Suami', 'NIK', 'Pendidikan', 'Pekerjaan', 'Penghasilan', 'Ibu/Istri', 'NIK', 'Pekerjaan', 'Telepon', 'Alamat');
         $col = 1;
@@ -403,7 +403,7 @@ class Daftar_do extends KZ_Controller {
         ),array(
             'field' => 'nama',
             'label' => 'Nama Mahasiswa',
-            'rules' => 'required|trim|xss_clean|min_length[4]'
+            'rules' => 'required|trim|xss_clean|min_length[3]'
         ),array(
             'field' => 'ibu',
             'label' => 'Ibu Kandung',

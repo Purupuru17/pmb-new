@@ -11,7 +11,7 @@ class File_do extends KZ_Controller {
         $this->load->model(array('m_file'));
     }
     function add() {
-        if($this->_validation($this->rules) == FALSE){
+        if($this->fungsi->Validation($this->rules) == FALSE){
             redirect($this->module);
         }
         $nama = $data['nama_file'] = $this->input->post('nama');
@@ -49,7 +49,7 @@ class File_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if($this->_validation($this->rules) == FALSE){
+        if($this->fungsi->Validation($this->rules) == FALSE){
             redirect($this->module.'/edit/'.$id);
         }
         

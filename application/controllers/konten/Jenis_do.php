@@ -10,7 +10,7 @@ class Jenis_do extends KZ_Controller {
         $this->load->model(array('m_jenis'));
     }
     function add() {
-        if($this->_validation($this->rules) == FALSE){
+        if($this->fungsi->Validation($this->rules) == FALSE){
             redirect($this->module);
         }
         $data['judul_jenis'] = $this->input->post('judul');
@@ -31,7 +31,7 @@ class Jenis_do extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
-        if($this->_validation($this->rules) == FALSE){
+        if($this->fungsi->Validation($this->rules) == FALSE){
             redirect($this->module.'/edit/'.$id);
         }
         $data['judul_jenis'] = $this->input->post('judul');
