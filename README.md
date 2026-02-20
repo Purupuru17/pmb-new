@@ -44,6 +44,10 @@ Rev
 - NIM status masih bug saat s1 jadi s2, validate ny jg bug
 - Menu home menumpuk tidak bs d klik
 - Edit NIM di Seleksi TAB
+- TAmbah VA masih bug saat ganti mhs
+- Lengkapi config env bagian register yg s2
+- config kode reg
+
 
 
 UPDATE m_mhs m

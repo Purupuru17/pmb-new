@@ -136,6 +136,7 @@ load_js(array(
         $(this).closest('form').validate().element($(this));
     });
     form.submit(function(e){
+        e.preventDefault();
         let valid = form.validate().checkForm();
         let total = $("#total").val();
         let virtual = $("#bank").val() + ' - ' + $("#virtual").val();
@@ -145,7 +146,7 @@ load_js(array(
         var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
         var msg = "<p class='center grey bigger-150'><i class='ace-icon fa fa-hand-o-right blue'></i>" + 
             " Apakah anda yakin akan membuat pembayaran dengan Total : <br/><b class='red bigger-200'>Rp " 
-            + to_rupiah(total) + "</b><br><b>" + virtual + "</b></p>";
+            + jsfRupiah(total) + "</b><br><b>" + virtual + "</b></p>";
         bootbox.confirm({ title: title, message: msg, 
             buttons: {
                 cancel: { label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal", className: "btn btn-sm" },
@@ -157,7 +158,6 @@ load_js(array(
                 }
             }
         });
-        e.preventDefault();
     });
 </script>
 <script type="text/javascript">

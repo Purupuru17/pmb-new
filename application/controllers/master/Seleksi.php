@@ -141,7 +141,7 @@ class Seleksi extends KZ_Controller {
         if(count($rs['data']) < 1) {
             jsonResponse(array('data' => NULL, 'status' => false, 'msg' => 'Data tidak ditemukan'));
         }
-        if($mhs['nama_mhs'] != $rs['data'][0]['nama_mahasiswa']){
+        if(strtolower($mhs['nama_mhs']) != strtolower($rs['data'][0]['nama_mahasiswa'])){
             jsonResponse(array('data' => $rs['data'][0], 'status' => false, 'msg' => 'Nama tidak sesuai dengan data PDDikti'));
         }
         //update id bio
