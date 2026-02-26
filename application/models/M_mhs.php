@@ -77,7 +77,7 @@ class M_mhs extends CI_Model {
         
         return $this->db->get()->num_rows();
     }
-    function getNomor(){
+    function getNomor($kode = 'REG'){
         $sql = "SELECT MAX(MID(kode_reg,8,4)) AS kode
             FROM m_mhs
             WHERE MID(kode_reg,4,2) = DATE_FORMAT(CURDATE(), '%y')";
@@ -89,8 +89,8 @@ class M_mhs extends CI_Model {
         }else{
             $no = "0001";
         }
-        //UMD 26 02 0001
-        return 'UMD'.date('ym').$no;
+        //??? 26 02 0001
+        return $kode.date('ym').$no;
     }
     function getNIM($prodi, $tahun){
         $angkatan = str_replace('20', '', $tahun);

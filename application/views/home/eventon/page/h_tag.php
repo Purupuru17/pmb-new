@@ -44,7 +44,7 @@
                                             <li><a href="#"><i class="icon fa fa-bookmark"></i><?= $tb['judul_jenis'] ?></a></li>
                                         </ul>
                                         <p><?= limit_text($tb['isi_artikel'], 100) ?></p>
-                                        <a href="<?= site_url('artikel/' . $tb['slug_artikel']) ?>" class="btn btn-pri" style="background-color:<?= $tb['color_jenis'] ?>"><?= $tb['judul_jenis'] ?></a>
+                                        <a href="<?= site_url('tag/' . $tb['slug_jenis']) ?>" class="btn btn-pri" style="background-color:<?= $tb['color_jenis'] ?>"><?= $tb['judul_jenis'] ?></a>
                                         <a href="<?= site_url('artikel/' . $tb['slug_artikel']) ?>" class="btn btn-border">Selengkapnya</a>
                                     </div>
 
@@ -88,26 +88,12 @@
                     </div>
                     <div class="widget tag">
                         <h3 class="title">Kategori</h3>
-                        <?php
-                        foreach ($jenis['data'] as $jn) {
-                        ?>
-                        <a href="<?= site_url('tag/' . $jn['slug_jenis']) ?>"><?= $jn['judul_jenis'] ?></a>
-                        <?php } ?> 
+                        <div class="the-category"></div>
                     </div>  
                     <div class="widget">
                         <h3 class="title">Kutipan</h3>  
-                        <div class="owl-testimonial">
-                            <?php
-                            foreach ($kutipan['data'] as $kt) {
-                            ?>
-                            <div class="testimonials">
-                                <div class="testimonials-content">
-                                    <p><?= ctk($kt['quote']) ?></p>
-                                    <span class="arrow-down"></span>
-                                </div>
-                                <p class="name">by <?= ctk($kt['oleh']) ?></p>
-                            </div>
-                            <?php } ?> 
+                        <div class="owl-testimonial the-kutipan">
+                            
                         </div>
                     </div>
                 </aside>
@@ -115,3 +101,45 @@
         </div>
     </div>  
 </section>
+<script async type="text/javascript">
+    $(document).ready(function () {
+        //Jenis
+        $.ajax({
+            url: module + "/ajax/type/list/source/jenis",
+            type: 'POST', dataType: "json",
+            data: {
+                [$('meta[name="csrf-token"]').attr('content')] : $('meta[name="csrf-token"]').attr('accesskey')
+            },
+            success: function (result) {
+                $.each(result.data, function (index, value) {
+                    $(".the-category").append(`<a href="${value.slug_jenis}">${value.judul_jenis} (${value.total_artikel})</a>`);
+                });
+            },
+            error: function (xhr, ajax, err) {
+                console.log('Error : ' + xhr.responseText);
+            }
+        });
+        //Kutipan
+        $.ajax({
+            url: module + "/ajax/type/list/source/kutip",
+            type: 'POST', dataType: "json",
+            data: { order: 'RANDOM', limit: 3,
+                [$('meta[name="csrf-token"]').attr('content')] : $('meta[name="csrf-token"]').attr('accesskey')
+            },
+            success: function (result) {
+                $.each(result.data, function (index, value) {
+                    $(".the-kutipan").append(`<div class="testimonials">
+                        <div class="testimonials-content">
+                            <p>${value.quote}</p>
+                            <span class="arrow-down"></span>
+                        </div>
+                        <p class="name">by ${value.oleh}</p>
+                    </div><br>`);
+                });
+            },
+            error: function (xhr, ajax, err) {
+                console.log('Error : ' + xhr.responseText);
+            }
+        });
+    });
+</script>

@@ -93,7 +93,7 @@ class Register extends KZ_Controller {
         if(!$this->fungsi->Validation($this->rules_ajax,'ajax')) {
             jsonResponse(array('status' => false, 'msg' => validation_errors()));
         }
-        $rs = $this->m_mhs->getNomor();
+        $rs = $this->m_mhs->getNomor(config_item('pmb')['kode']);
         if(!empty($rs)) {
             jsonResponse(array('status' => true, 'data' => strval($rs), 'msg' => 'Kode Registrasi berhasil dibuat'));
         }else{

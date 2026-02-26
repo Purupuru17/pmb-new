@@ -61,34 +61,59 @@
                     </div>
                     <div class="widget tag">
                         <h3 class="title">Kategori</h3>
-                        <?php
-                        foreach ($jenis['data'] as $jn) {
-                        ?>
-                        <a href="<?= site_url('tag/' . $jn['slug_jenis']) ?>"><?= $jn['judul_jenis'] ?></a>
-                        <?php } ?> 
+                        <div class="the-category"></div>
                     </div>
                     <div class="widget clearfix">
                         <h3 class="title">Artikel Terbaru</h3>
-                        <?php
-                        foreach($terbaru['data'] as $tb){
-                        ?>
-                        <div class="top-ppost">
-                            <div class="date">
-                                <p><?= format_date($tb['update_artikel'],1) ?></p>
-                            </div>
-                            <div class="content">
-                                <h4  class="title">
-                                    <a href="<?= site_url('artikel/' . $tb['slug_artikel']) ?>"><?= limit_text($tb['judul_artikel'],20) ?></a>
-                                </h4>
-                                <a href="<?= site_url('tag/' . $tb['slug_jenis']) ?>" class="meta">
-                                    <i class="icon fa fa-bookmark"></i><?= $tb['judul_jenis'] ?>
-                                </a>
-                            </div>
-                        </div>
-                        <?php } ?>
+                        <div class="the-berita"></div>
                     </div> 
                 </aside>
             </div>
         </div> 
     </div> 
-</section>  
+</section>
+<script async type="text/javascript">
+    $(document).ready(function () {
+        //Terbaru
+        $.ajax({
+            url: module + "/ajax/type/list/source/artikel",
+            type: 'POST', dataType: "json",
+            data: { jenis: '', tipe: '', order: 'DESC', limit: 10,
+                [$('meta[name="csrf-token"]').attr('content')] : $('meta[name="csrf-token"]').attr('accesskey')
+            },
+            success: function (result) {
+                $.each(result.data, function (index, value) {
+                    $(".the-berita").append(`<div class="top-ppost">
+                        <div class="date">
+                            <p>${value.update}</p>
+                        </div>
+                        <div class="content">
+                            <h4 class="title"><a href="${value.slug}">${value.judul}</a></h4>
+                            <a href="${value.tag}" class="meta">
+                                <i class="icon fa fa-bookmark"></i>${value.jenis}
+                            </a>
+                    </div></div>`);
+                });
+            },
+            error: function (xhr, ajax, err) {
+                console.log('Error : ' + xhr.responseText);
+            }
+        });
+        //Jenis
+        $.ajax({
+            url: module + "/ajax/type/list/source/jenis",
+            type: 'POST', dataType: "json",
+            data: {
+                [$('meta[name="csrf-token"]').attr('content')] : $('meta[name="csrf-token"]').attr('accesskey')
+            },
+            success: function (result) {
+                $.each(result.data, function (index, value) {
+                    $(".the-category").append(`<a href="${value.slug_jenis}">${value.judul_jenis} (${value.total_artikel})</a>`);
+                });
+            },
+            error: function (xhr, ajax, err) {
+                console.log('Error : ' + xhr.responseText);
+            }
+        });
+    });
+</script>

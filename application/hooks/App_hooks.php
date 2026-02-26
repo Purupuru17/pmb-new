@@ -114,7 +114,7 @@ class App_hooks {
     public function log_server() {
         $method = $_SERVER['REQUEST_METHOD'] ?? '';
         $uri    = $_SERVER['REQUEST_URI'] ?? '';
-        $excluded_keywords = ['login', 'auth', 'register', 'konten', 'sistem', 'api', 'snap'];
+        $excluded_keywords = ['login', 'auth', 'register', 'konten', 'sistem', 'home'];
 
         $is_uri_allowed = true;
         foreach ($excluded_keywords as $word) {

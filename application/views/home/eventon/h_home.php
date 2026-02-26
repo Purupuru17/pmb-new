@@ -192,7 +192,7 @@
                                 </ul>
                                 <span class="sep"></span>
                                 <p>${value.isi}</p>
-                                <a href="${value.slug}" class="btn btn-pri" style="background-color:${value.color}">${value.jenis}</a>
+                                <a href="${value.tag}" class="btn btn-pri" style="background-color:${value.color}">${value.jenis}</a>
                             </div>
                             <div class="links clearfix">
                                 <ul>

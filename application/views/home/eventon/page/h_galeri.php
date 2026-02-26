@@ -14,12 +14,12 @@
                 <div class="col-md-3 col-sm-3">
                     <div class="event-gallery-content">
                         <div class="gallery-event-img">
-                            <a href="<?= site_url('galeri/detail/' . $gl['slug_galeri']) ?>">
+                            <a href="<?= site_url('galeri/' . $gl['slug_galeri']) ?>">
                                 <img  class="lazyload blur-up" src="<?= load_file($gl['foto_galeri']) ?>" alt="<?= ctk($gl['judul_galeri']) ?>">
                             </a>
                         </div>
                         <div class="content">
-                            <a href="<?= site_url('galeri/detail/' . $gl['slug_galeri']) ?>">
+                            <a href="<?= site_url('galeri/' . $gl['slug_galeri']) ?>">
                                 <h3 class="title"><?= $gl['judul_galeri'] ?></h3>
                             </a>
                             <p><?= format_date($gl['update_galeri'],0) ?></p>

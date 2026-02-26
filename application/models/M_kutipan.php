@@ -2,7 +2,7 @@
 
 class M_kutipan extends CI_Model {
     var $id = 'id_kutipan';
-    var $table = 'rf_kutipan';
+    var $table = 'wb_kutipan';
     
     function __construct() {
         parent::__construct();

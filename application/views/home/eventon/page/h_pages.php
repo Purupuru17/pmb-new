@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <!-- Sub Banner -->
-<section class="sub-banner newsection" style="display:none;">
+<section class="sub-banner newsection">
     <div class="container">
         <h2 class="title"><?= $detail['judul_page'] ?></h2>
     </div>
@@ -47,32 +47,23 @@
                     </div>
                     <div class="widget categories clearfix">
                         <h3 class="title">Artikel Populer</h3>
-                        <ul>
-                            <?php
-                            foreach ($populer['data'] as $pop) {
-                            ?>
-                            <li><a href="<?= site_url('artikel/' . $pop['slug_artikel']) ?>">
-                                    <strong><?= limit_text($pop['judul_artikel'], 40) ?></strong>
-                                    <span class="numbers"><?= angka($pop['view_artikel']) ?></span>
-                                </a>
-                            </li>
-                            <?php } ?>
+                        <ul class="the-berita">
+                            
                         </ul>
                     </div>
                     <div class="widget">
                         <h3 class="title">Kutipan</h3>  
                         <div class="owl-testimonial">
-                            <?php
-                            foreach ($kutipan['data'] as $kt) {
-                            ?>
+                            
                             <div class="testimonials">
                                 <div class="testimonials-content">
-                                    <p><?= ctk($kt['quote']) ?></p>
+                                    <p> ????? </p>
                                     <span class="arrow-down"></span>
                                 </div>
-                                <p class="name">by <?= ctk($kt['oleh']) ?></p>
+                                <p class="name">by  ????? </p>
                             </div>
-                            <?php } ?> 
+                            
+                            
                         </div>
                     </div>
                 </aside>
@@ -80,3 +71,26 @@
         </div> 
     </div> 
 </section>
+<script async type="text/javascript">
+    $(document).ready(function () {
+        //Populer
+        $.ajax({
+            url: module + "/ajax/type/list/source/artikel",
+            type: 'POST', dataType: "json",
+            data: { jenis: '', tipe: 'populer', order: 'RANDOM', limit: 10,
+                [$('meta[name="csrf-token"]').attr('content')] : $('meta[name="csrf-token"]').attr('accesskey')
+            },
+            success: function (result) {
+                $.each(result.data, function (index, value) {
+                     $(".the-berita").append(`<li><a href="${value.slug}">
+                        <strong>${value.judul}</strong>
+                        <span class="numbers">${value.view}</span>
+                    </a></li>`);
+                });
+            },
+            error: function (xhr, ajax, err) {
+                console.log('Error : ' + xhr.responseText);
+            }
+        });
+    });
+</script>

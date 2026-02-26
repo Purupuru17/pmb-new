@@ -44,7 +44,7 @@ class Daftar_do extends KZ_Controller {
 
         $data['opsi_prodi'] = implode("|", $prodi);
         $data['id_mhs'] = random_string('unique');
-        $data['kode_reg'] = $this->m_mhs->getNomor();
+        $data['kode_reg'] = $this->m_mhs->getNomor(config_item('pmb')['kode']);
         $data['status_mhs'] = 'PENDAFTARAN';
         $data['kip_mhs'] = 'PENDING';
         $data['tgl_daftar'] = date('Y-m-d H:i:s');

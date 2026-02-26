@@ -1,62 +1,4 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
-<style>
-    .site-identity {
-        float: left;
-        width: 70%;
-        line-height: 1;
-    }
-    .site-identity h1 {
-        font-size: 2em !important;
-        margin: .2em 0 0 0;
-        display: block;
-        font-weight: bold;
-        line-height: 1em !important;
-    }
-    .site-identity h1 a{
-        color: white;
-    }
-    .site-identity span {
-        font-size: 1.2em;
-        display: inline-block;
-        font-weight: bold;
-        color: white;
-    }
-    .site-identity img {
-        max-width: 70px;
-        float: left;
-        margin: 0 10px 0 0;
-    }
-    .main-nav{
-        float: left;
-    }
-    .main-nav li {
-        padding: 5px 0 !important;
-        margin-right: 20px;
-    }
-    .main-nav a{
-        font-size: 14px;
-        font-weight: bold;
-        text-transform: uppercase;
-        color: #ffffff;
-    }
-    .background{
-        background: none;
-    }
-    .white{
-        color: white !important;
-    }
-    iframe{
-        display: block;
-        vertical-align: baseline;
-        top: 0;
-        left: 0;
-        background-color: transparent;
-        object-fit: cover;
-        -o-object-fit: cover;
-        -o-object-position: center;
-        object-position: center;
-    }
-</style>
 <header class="header-container">
     <!-- Header Top -->
     <div class="header-top">
@@ -85,8 +27,10 @@
                 <!-- logo -->
                 <div class="site-identity">
                     <a href="<?= site_url() ?>"><img src="<?= load_file('private/logo.png') ?>" alt="<?= ctk($app_session['judul']) ?>"></a>
-                    <span style="padding-top: 15px; font-size: 1.8em"><?= ctk($app_session['judul']) ?></span><br/>
-                    <span><?= ctk($app_session['deskripsi']) ?></span>
+                    <span style="padding-top: 5px; font-size: 1.8em"><?= ctk($app_session['judul']) ?></span><br/>
+                    <span><?= ctk($app_session['deskripsi']) ?></span><br/>
+                    <span><?= config_item('kampus')['nama'] ?></span>
+                    <br><br>
                 </div>  
                 <div id="sb-search" class="sb-search">
                     <form method="GET" action="<?= site_url('tag/all') ?>">

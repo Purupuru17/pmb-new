@@ -23,7 +23,7 @@ class Halaman_do extends KZ_Controller {
         $data['log_page'] = $this->sessionname;
         
         if(!empty($_FILES['foto']['name'])){
-            $upload = $this->_upload_img('foto', $data['slug_page'], $this->path, 900, TRUE);
+            $upload = $this->fungsi->ImgUpload('foto', $data['slug_page'], $this->path, 900, TRUE);
             if(is_null($upload)){
                 redirect($this->module.'/add');
             }
@@ -56,7 +56,7 @@ class Halaman_do extends KZ_Controller {
         $data['log_page'] = $this->sessionname;
        
         if(!empty($_FILES['foto']['name'])){
-            $upload = $this->_upload_img('foto', $data['slug_page'], $this->path, 900, TRUE);
+            $upload = $this->fungsi->ImgUpload('foto', $data['slug_page'], $this->path, 900, TRUE);
             if(is_null($upload)){
                 redirect($this->module.'/edit/'.$id);
             }

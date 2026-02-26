@@ -35,7 +35,7 @@ class Galeri_do extends KZ_Controller {
             $height = 400;
         }
         if(!empty($_FILES['foto']['name'])){
-            $upload = $this->_upload_img('foto', $data['slug_galeri'], $this->path, 900, $ratio, $height);
+            $upload = $this->fungsi->ImgUpload('foto', $data['slug_galeri'], $this->path, 900, $ratio, $height);
             if(is_null($upload)){
                 redirect($this->module.'/add');
             }
@@ -78,7 +78,7 @@ class Galeri_do extends KZ_Controller {
             $height = 400;
         }
         if(!empty($_FILES['foto']['name'])){
-            $upload = $this->_upload_img('foto', $data['slug_galeri'], $this->path, 900, $ratio, $height);
+            $upload = $this->fungsi->ImgUpload('foto', $data['slug_galeri'], $this->path, 900, $ratio, $height);
             if(is_null($upload)){
                 redirect($this->module.'/edit/'.$id);
             }

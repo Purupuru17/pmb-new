@@ -37,10 +37,9 @@ $config['kampus'] = [
     'youtube' => $ENV['UNIV_SOSMED']['YTB']
 ];
 $config['pmb'] = [
-    'jalur' => $ENV['PMB_JALUR'], 'pemda' => $ENV['PMB_PEMDA'],
-    'periode' => $ENV['PMB_PERIODE']['periode'],
-    'tanggal' => $ENV['PMB_PERIODE']['tanggal'],
-    'jenis' => $ENV['PMB_PERIODE']['jenis']
+    'kode' => $ENV['PMB_KODE'], 'jalur' => $ENV['PMB_JALUR'], 'periode' => $ENV['PMB_PERIODE']['periode'],
+    'tanggal' => $ENV['PMB_PERIODE']['tanggal'], 'jenis' => $ENV['PMB_PERIODE']['jenis'],
+    'pemda' => $ENV['PMB_PEMDA']
 ];
 /*
 |--------------------------------------------------------------------------
