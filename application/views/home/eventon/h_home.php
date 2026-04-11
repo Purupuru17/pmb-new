@@ -11,7 +11,7 @@
                 </p>
                 <div class="both-btn clearfix">
                     <div class="but-ticket">
-                        <a style="background:#efbd05 !important" target="_blank" href="<?= site_url('register') ?>">Klik <b>DAFTAR!</b></a>
+                        <a style="background:#ff663a !important" target="_blank" href="<?= site_url('register') ?>">Klik <b>DAFTAR!</b></a>
                     </div>
 
                     <div class="but-ticket">

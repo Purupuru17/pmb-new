@@ -251,6 +251,18 @@
                                                         </div>
                                                     </div>
                                                     <div class="profile-info-row">
+                                                        <div class="profile-info-name"> Status OAP </div>
+                                                        <div class="profile-info-value">
+                                                            <span><?= $detail['oap_mhs'] ?></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> Suku </div>
+                                                        <div class="profile-info-value">
+                                                            <span><?= $detail['suku_mhs'] ?></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
                                                         <div class="profile-info-name"> Alamat Tinggal </div>
                                                         <div class="profile-info-value">
                                                             <span><?= $detail['alamat_mhs'] ?></span>

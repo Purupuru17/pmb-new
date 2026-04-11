@@ -95,6 +95,21 @@ $this->load->view('sistem/v_breadcrumb');
                         </div>
                     </div>
                 </div>
+                <div class="form-group <?= config_item('kampus')['oap'] ?>">
+                    <label class="control-label col-xs-12 col-sm-2 no-padding-right">Status OAP :</label>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="clearfix">
+                            <select class="select2 width-100" name="oap" id="oap" data-placeholder="----> Pilih Opsi <----">
+                                <option value=""> </option>
+                                <?php
+                                foreach (['OAP','LABEPA','NON-OAP'] as $val) {
+                                    echo '<option value="'.$val.'">'.$val.'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-6">
                         <button class="btn btn-primary btn-white btn-bold" name="cari" id="btn-search" type="button">
@@ -187,6 +202,7 @@ $this->load->view('sistem/v_breadcrumb');
                     val.jalur = $("#jalur").val();
                     val.status = $("#status").val();
                     val.kip = $("#kip").val();
+                    val.oap = $("#oap").val();
                 }
             },
             initComplete: function () {

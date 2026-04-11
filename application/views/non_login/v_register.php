@@ -240,10 +240,7 @@ $this->load->view('sistem/v_breadcrumb');
     const form = $("#validation-form");
     
     $(document).ready(function() {
-        $(".select2").select2({allowClear: true})
-            .on('change', function () {
-                $(this).closest('form').validate().element($(this));
-            });
+        $(".select2").select2({allowClear: true});
         $(".select2-chosen").addClass("center");
         $(".nav-list").css("display", "none");
         $.validator.addMethod("recaptchaValid", function(value, element, params) {
@@ -253,14 +250,14 @@ $this->load->view('sistem/v_breadcrumb');
     });
     $("#opsi1").change(function () {
         let data = $("#opsi1").select2('data');
-        let prodi = ['S2 Ilmu Manajemen','S2 Pedagogi','S1 Pendidikan Profesi Guru'];
+        let prodi = ['S2','Profesi'];
         
-        if(data !== null && (prodi.includes(data.text))){
-            $(".opsi").addClass('hide');
+        if (data && prodi.some(p => data.text.includes(p))) {
             $("#opsi2,#opsi3").val(data.text).trigger('change');
-        }else{
+            $(".opsi").addClass('hide');
+        } else {
             $(".opsi").removeClass('hide');
-            $("#opsi2,#opsi3").val(null).trigger('change');
+            $("#opsi2,#opsi3").val('').trigger('change');
         }
     });
     $("#gshow").on("click", function(e) {

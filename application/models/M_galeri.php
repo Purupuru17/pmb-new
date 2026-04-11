@@ -34,7 +34,7 @@ class M_galeri extends CI_Model {
         if(!is_null($search)){
             $this->db->like('judul_galeri', trim($search), 'both');
         }
-        if(!is_null($limit)){
+        if(!empty($limit)){
             $this->db->limit($limit, $offset);
         }
         if(!is_null($order)){

@@ -121,6 +121,12 @@ load_js(array(
     $(document).on("focusout", "#virtual, #total, #note", function() {
         $(this).prop('readonly', false); 
     });
+    $("#mhs").change(function(){
+        $("#bank").select2('val','');
+        $("#virtual").val('');
+        
+        $(this).closest('form').validate().element($(this));
+    });
     $("#bank").change(function(){
         get_virtual();
         $(this).closest('form').validate().element($(this));

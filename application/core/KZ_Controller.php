@@ -55,7 +55,7 @@ class KZ_Controller extends CI_Controller {
             'session' => [
                 'non_login/login/ajax/type/action/source/auth',
                 'non_login/login/ajax/type/action/source/autoload',
-                'mahasiswa/meeting_do/ajax/type/action/source/start'
+                'mhs/profil_do/ajax/type/action/source/start'
             ]
         ];
         // --- Ambil segment URL ---

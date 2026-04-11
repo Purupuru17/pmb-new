@@ -131,6 +131,8 @@ class M_mhs extends CI_Model {
         $data['telepon_mhs'] = NULL;
         $data['email_mhs'] = NULL;
         $data['alamat_mhs'] = NULL;
+        $data['oap_mhs'] = NULL;
+        $data['suku_mhs'] = NULL;
         
         $data['jalan'] = NULL;
         $data['rt'] = NULL;

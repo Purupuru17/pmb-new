@@ -25,6 +25,11 @@ class Daftar extends KZ_Controller {
         $this->data['edit'] = $this->m_mhs->getEmpty();
         $this->data['prodi'] = $this->m_prodi->getAll();
         
+        $status_lain = empty($this->data['edit']['nim']) ? 
+            array_diff(load_array('status'), ['AKTIF']) : ['AKTIF'];
+        $status = ($this->sessionlevel == '1') ? load_array('status') : $status_lain;
+        
+        $this->data['status_mhs'] = $status;
         $this->data['module'] = $this->module;
         $this->data['action'] = $this->module_do.'/add';
         $this->data['title'] = array('Pendaftaran','Tambah Data');
@@ -42,6 +47,11 @@ class Daftar extends KZ_Controller {
         $this->data['edit'] = $this->m_mhs->getId(decode($id));
         $this->data['prodi'] = $this->m_prodi->getAll();
         
+        $status_lain = empty($this->data['edit']['nim']) ? 
+            array_diff(load_array('status'), ['AKTIF']) : ['AKTIF'];
+        $status = ($this->sessionlevel == '1') ? load_array('status') : $status_lain;
+        
+        $this->data['status_mhs'] = $status;
         $this->data['module'] = $this->module;
         $this->data['action'] = $this->module_do.'/edit/'.$id;
         $this->data['title'] = array('Pendaftaran','Ubah Data');
@@ -105,6 +115,7 @@ class Daftar extends KZ_Controller {
         $jalur = $this->input->post('jalur');
         $status = $this->input->post('status');
         $kip = $this->input->post('kip');
+        $oap = $this->input->post('oap');
         
         $where = null;
         if ($prodi != '') {
@@ -121,6 +132,9 @@ class Daftar extends KZ_Controller {
         }
         if ($kip != '') {
             $where['m.kip_mhs'] = $kip;
+        }
+        if ($oap != '') {
+            $where['m.oap_mhs'] = $oap;
         }
         
         $list = $this->m_mhs->get_datatables($where);
@@ -146,7 +160,7 @@ class Daftar extends KZ_Controller {
             $rows[] = '<strong class="blue">'. $row['nama_mhs'] .'</strong><br/>'.$is_nim;
             $rows[] = '<strong>'.ctk($row['nama_prodi']).'</strong><br/><small>'. str_replace('|', ', ', ctk($row['opsi_prodi']).'</small>');
             $rows[] = ctk($row['nisn']).'<br/><small>'.ctk($row['kip_mhs']).'</small>';
-            $rows[] = ctk($row['kelamin_mhs']).'<br/>'.ctk($row['telepon_mhs']);
+            $rows[] = ctk($row['kelamin_mhs']).' ['.ctk($row['oap_mhs']).']<br/>'.ctk($row['telepon_mhs']);
             $rows[] = st_mhs($row['status_mhs']).'<br/><small>'.format_date($row['tgl_daftar'],2).'</small>';
             $rows[] = '<div class="action-buttons">'.$btn_aksi.'</div>';
 

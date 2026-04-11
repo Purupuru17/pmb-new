@@ -179,6 +179,30 @@ $this->load->view('sistem/v_breadcrumb');
                         <span class="middle blue">* Tulis lengkap berupa nama Jalan, RT/RW, Kelurahan dan Kecamatan</span>
                     </span>
                 </div>
+                <div class="form-group <?= config_item('kampus')['oap'] ?>">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Status OAP :</label>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="clearfix">
+                            <select class="select2 width-100" name="oap" id="oap" data-placeholder="----> Pilih Opsi <----">
+                                <option value=""> </option>
+                                <?php
+                                foreach (['OAP','LABEPA','NON-OAP'] as $val) {
+                                    $selected = ($edit['oap_mhs'] == $val) ? 'selected' : '';
+                                    echo '<option value="'.$val.'" '.$selected.'>'.$val.'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group <?= config_item('kampus')['oap'] ?>">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Suku :</label>
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="clearfix">
+                            <input value="<?= $edit['suku_mhs'] ?>" type="text" name="suku" id="suku" class="col-xs-12  col-sm-6" placeholder="Nama Suku" />
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="space-6"></div>
                 <div class="social-or-login center">
@@ -445,6 +469,12 @@ load_js(array(
             alamat: {
                 required: true,
                 minlength: 30
+            },
+            oap: {
+                minlength: 3
+            },
+            suku: {
+                minlength: 3
             },
             //Data KTP
             jalan: {

@@ -27,6 +27,8 @@ class Profil_do extends KZ_Controller {
         $data['agama'] = $this->input->post('agama');
         $data['email_mhs'] = strtolower($this->input->post('email'));
         $data['alamat_mhs'] = ucwords(strtolower($this->input->post('alamat')));
+        $data['oap_mhs'] = $this->input->post('oap');
+        $data['suku_mhs'] = strtoupper($this->input->post('suku'));
         
         $data['jalan'] = ucwords(strtolower($this->input->post('jalan')));
         $data['rt'] = $this->input->post('rt');
@@ -355,6 +357,14 @@ class Profil_do extends KZ_Controller {
             'field' => 'alamat',
             'label' => 'Alamat',
             'rules' => 'required|trim|xss_clean|min_length[30]'
+        ),array(
+            'field' => 'oap',
+            'label' => 'Status OAP',
+            'rules' => 'trim|xss_clean|min_length[3]'
+        ),array(
+            'field' => 'suku',
+            'label' => 'Suku',
+            'rules' => 'trim|xss_clean|min_length[3]'
         ),
         
         array(

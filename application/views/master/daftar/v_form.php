@@ -31,14 +31,6 @@ $opsi3 = element(1, $exp, '');
         <div class="col-xs-12">
             <h3 class="lighter center block blue"><?= $title[1] ?></h3>
             <form id="validation-form" action="<?= site_url($action); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
-                <div class="form-group hide">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">NIM :</label>
-                    <div class="col-xs-12 col-sm-4">
-                        <div class="clearfix">
-                            <input value="<?= $edit['nim'] ?>" type="text" name="nim" id="nim" class="col-xs-12  col-sm-6" placeholder="Nomor Induk Mahasiswa" />
-                        </div>
-                    </div>
-                </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Pilihan Program Studi :</label>
                     <div class="col-xs-12 col-sm-4">
@@ -110,14 +102,20 @@ $opsi3 = element(1, $exp, '');
                             <select class="select2 width-100" name="status" id="status" data-placeholder="---> Pilih Status <---">
                                 <option value=""> </option>
                                 <?php
-                                $st_nim = array('AKTIF');
-                                $stt = empty($edit['nim']) ? array_diff(load_array('status'), $st_nim) : $st_nim;
-                                foreach ($stt as $val) {
+                                foreach ($status_mhs as $val) {
                                     $selected = ($edit['status_mhs'] == $val) ? 'selected' : '';
                                     echo '<option value="'.$val.'"  '.$selected.'>'.$val.'</option>';
                                 }
                                 ?>
                             </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group <?= $this->session->userdata('level') == '1' ? '':'hide' ?>">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">NIM :</label>
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="clearfix">
+                            <input value="<?= $edit['nim'] ?>" type="text" name="nim" id="nim" class="col-xs-12  col-sm-6" placeholder="Nomor Induk Mahasiswa" />
                         </div>
                     </div>
                 </div>
@@ -328,6 +326,30 @@ $opsi3 = element(1, $exp, '');
                         <span class="middle blue">* Tulis lengkap berupa nama Jalan, RT/RW, Kelurahan dan Kecamatan</span>
                     </span>
                 </div>
+                <div class="form-group <?= config_item('kampus')['oap'] ?>">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Status OAP :</label>
+                    <div class="col-xs-12 col-sm-2">
+                        <div class="clearfix">
+                            <select class="select2 width-100" name="oap" id="oap" data-placeholder="----> Pilih Opsi <----">
+                                <option value=""> </option>
+                                <?php
+                                foreach (['OAP','LABEPA','NON-OAP'] as $val) {
+                                    $selected = ($edit['oap_mhs'] == $val) ? 'selected' : '';
+                                    echo '<option value="'.$val.'" '.$selected.'>'.$val.'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group <?= config_item('kampus')['oap'] ?>">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Suku :</label>
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="clearfix">
+                            <input value="<?= $edit['suku_mhs'] ?>" type="text" name="suku" id="suku" class="col-xs-12  col-sm-6" placeholder="Nama Suku" />
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="space-6"></div>
                 <div class="social-or-login center">
@@ -490,14 +512,14 @@ $opsi3 = element(1, $exp, '');
     });
     $("#opsi1").change(function () {
         let data = $("#opsi1").select2('data');
-        let prodi = ['S2 Ilmu Manajemen','S2 Pedagogi','S1 Pendidikan Profesi Guru'];
+        let prodi = ['S2','Profesi'];
         
-        if(data !== null && (prodi.includes(data.text))){
-            $(".opsi").addClass('hide');
+        if (data && prodi.some(p => data.text.includes(p))) {
             $("#opsi2,#opsi3").val(data.text).trigger('change');
-        }else{
+            $(".opsi").addClass('hide');
+        } else {
             $(".opsi").removeClass('hide');
-            $("#opsi2,#opsi3").val(null).trigger('change');
+            $("#opsi2,#opsi3").val('').trigger('change');
         }
     });
     $("#bupati").change(function () {
@@ -653,6 +675,12 @@ $opsi3 = element(1, $exp, '');
             alamat: {
                 required: true,
                 minlength: 10
+            },
+            oap: {
+                minlength: 3
+            },
+            suku: {
+                minlength: 3
             },
             //Data KTP
             jalan: {

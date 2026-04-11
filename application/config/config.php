@@ -31,7 +31,7 @@ $config['app.max_delete']     = $ENV['APP_DELETE'];
 $config['kampus'] = [
     'menteri' => $ENV['UNIV_MENTERI'], 'nama' => $ENV['UNIV_NAMA'], 
     'alamat' => $ENV['UNIV_SK'].' <br> '.$ENV['UNIV_ALAMAT'], 'ttd' => $ENV['UNIV_KOTA_TTD'],
-    
+    'oap' => $ENV['UNIV_OAP'],
     'wa' => $ENV['UNIV_SOSMED']['WA'], 'ig' => $ENV['UNIV_SOSMED']['IG'],
     'fb' => $ENV['UNIV_SOSMED']['FB'], 'x' => $ENV['UNIV_SOSMED']['X'],
     'youtube' => $ENV['UNIV_SOSMED']['YTB']

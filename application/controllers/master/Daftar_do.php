@@ -34,6 +34,8 @@ class Daftar_do extends KZ_Controller {
         $data['telepon_mhs'] = $this->input->post('telepon');
         $data['email_mhs'] = strtolower($this->input->post('email'));
         $data['alamat_mhs'] = ucwords(strtolower($this->input->post('alamat')));
+        $data['oap_mhs'] = $this->input->post('oap');
+        $data['suku_mhs'] = strtoupper($this->input->post('suku'));
         
         $data['jalan'] = ucwords(strtolower($this->input->post('jalan')));
         $data['rt'] = $this->input->post('rt');
@@ -123,6 +125,8 @@ class Daftar_do extends KZ_Controller {
         $data['telepon_mhs'] = $this->input->post('telepon');
         $data['email_mhs'] = strtolower($this->input->post('email'));
         $data['alamat_mhs'] = ucwords(strtolower($this->input->post('alamat')));
+        $data['oap_mhs'] = $this->input->post('oap');
+        $data['suku_mhs'] = strtoupper($this->input->post('suku'));
         
         $data['jalan'] = ucwords(strtolower($this->input->post('jalan')));
         $data['rt'] = $this->input->post('rt');
@@ -184,6 +188,7 @@ class Daftar_do extends KZ_Controller {
         $status = $this->input->post('status');
         $jalur = $this->input->post('jalur');
         $kip = $this->input->post('kip');
+        $oap = $this->input->post('oap');
         
         $where['m.angkatan'] = $tahun;
         $where['m.status_mhs'] = $status;
@@ -196,6 +201,9 @@ class Daftar_do extends KZ_Controller {
         }
         if ($kip != '') {
             $where['m.kip_mhs'] = $kip;
+        }
+        if ($oap != '') {
+            $where['m.oap_mhs'] = $oap;
         }
         $list = $this->db->order_by('m.tgl_daftar', 'ASC')
             ->join('m_prodi p', 'm.prodi_id = p.id_prodi', 'left')
@@ -322,7 +330,7 @@ class Daftar_do extends KZ_Controller {
         }
     }
     function _valid_zero($str) {
-        if(strpos($str, '000000') !== false) {
+        if(strpos($str, '00000') !== false) {
             $this->form_validation->set_message("_valid_zero", "Format {field} tidak sesuai. Mohon input data sebenarnya");
             return FALSE;
         }else{
@@ -436,6 +444,14 @@ class Daftar_do extends KZ_Controller {
             'field' => 'alamat',
             'label' => 'Alamat',
             'rules' => 'required|trim|xss_clean|min_length[10]'
+        ),array(
+            'field' => 'oap',
+            'label' => 'Status OAP',
+            'rules' => 'trim|xss_clean|min_length[3]'
+        ),array(
+            'field' => 'suku',
+            'label' => 'Suku',
+            'rules' => 'trim|xss_clean|min_length[3]'
         ),
         
         array(

@@ -228,7 +228,9 @@ class Course extends KZ_Controller {
         if(empty($result)){
             jsonResponse(array('status' => false, 'msg' => 'Data tidak ditemukan'));
         }
-        $list = $this->db->join('m_mhs m','m.id_mhs = j.peserta_id','left')->get_where('lm_jawab j', array('module_id' => $id));
+        $list = $this->db->order_by('update_jawab DESC')
+            ->join('m_mhs m','m.id_mhs = j.peserta_id','left')
+            ->get_where('lm_jawab j', array('module_id' => $id));
         if($list->num_rows() < 1){
             jsonResponse(array('status' => false, 'msg' => 'Data tidak ditemukan'));
         }
@@ -281,7 +283,8 @@ class Course extends KZ_Controller {
                 : '<a target="_blank" href="'.site_url('master/daftar/detail/'.encode($items['id_mhs']))
                 .'"><b>'.ctk($items['nama_mhs']).'</b></a><br> '. st_mhs($items['status_mhs']);
             $row[] = $st_sesi;
-            $row[] = '<b>'.$skor.'</b> / '.$jumlah_soal.'<br><b>Nilai</b> : <span class="bigger-120">[<strong class="blue">'.$nilai.'</strong>]</span>'.$is_file;
+            $row[] = '<b>Nilai</b> : <span class="bigger-120">[<strong class="blue">'.$nilai.
+                '</strong>]</span><br><b>'.$skor.'</b> / '.$jumlah_soal.' '.$is_file;
             $row[] = '<small>'. ctk($items['note_jawab']).'</small>';
             $row[] = $st_jawab.st_aktif($items['valid_jawab']);
             $row[] = '<div class="action-buttons">'.$btn_skor.' '.$btn_aksi.'</div>';
