@@ -677,7 +677,7 @@ $opsi3 = element(1, $exp, '');
                 minlength: 10
             },
             oap: {
-                minlength: 3
+                
             },
             suku: {
                 minlength: 3

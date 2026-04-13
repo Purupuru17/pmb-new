@@ -471,7 +471,7 @@ load_js(array(
                 minlength: 30
             },
             oap: {
-                minlength: 3
+                
             },
             suku: {
                 minlength: 3
