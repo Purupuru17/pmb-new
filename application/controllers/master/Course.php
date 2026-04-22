@@ -69,6 +69,10 @@ class Course extends KZ_Controller {
         if(empty(decode($id))){
             redirect($this->module);
         }
+        $this->load->model(array('m_prodi'));
+        
+        $this->data['prodi'] = $this->m_prodi->getAll();
+        
         $this->data['detail'] = $this->m_module->getId(decode($id));
         $this->data['module'] = $this->module;
         $this->data['title'] = array('Aktivitas', 'Detail Data');
@@ -223,14 +227,24 @@ class Course extends KZ_Controller {
     }
     function _table_rekap() {
         $id = decode($this->input->post('id'));
+        $prodi = decode($this->input->post('prodi'));
+        $tahun = $this->input->post('tahun');
         
         $result = $this->m_module->getId($id);
         if(empty($result)){
             jsonResponse(array('status' => false, 'msg' => 'Data tidak ditemukan'));
         }
-        $list = $this->db->order_by('update_jawab DESC')
+        $where['module_id'] = $id;
+        if ($prodi != '') {
+            $where['m.prodi_id'] = $prodi;
+        }
+        if ($tahun != '') {
+            $where['m.angkatan'] = $tahun;
+        }
+        $list = $this->db->select('j.*, m.id_mhs, m.nama_mhs, m.status_mhs')->order_by('update_jawab DESC')
             ->join('m_mhs m','m.id_mhs = j.peserta_id','left')
-            ->get_where('lm_jawab j', array('module_id' => $id));
+            ->get_where('lm_jawab j', $where);
+        
         if($list->num_rows() < 1){
             jsonResponse(array('status' => false, 'msg' => 'Data tidak ditemukan'));
         }

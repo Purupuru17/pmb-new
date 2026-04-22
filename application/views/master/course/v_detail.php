@@ -113,6 +113,7 @@
             </div>
         </div>
         <div class="col-xs-12">
+            <div class="space-6"></div>
             <p id="one-spin" class="bigger-130 blue" style="display: none" align="center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> Loading . . .</p>
             <div class="widget-box transparent">
                 <div class="widget-header">
@@ -126,6 +127,26 @@
                         </a>
                     </div>
                     <div class="widget-toolbar no-border">
+                        <div class="btn-group btn-overlap">
+                            <select class="btn-xs center" name="prodi" id="prodi" data-placeholder="--> Pilih Program Studi <--">
+                                <option value=""> ----> Program Studi <---- </option>
+                                <?php
+                                foreach ($prodi['data'] as $val) {
+                                    echo '<option value="'.encode($val['id_prodi']).'">'.$val['nama_prodi'].'</option>';
+                                }
+                                ?>
+                            </select>
+                            <select class="btn-xs center" name="tahun" id="tahun" data-placeholder="---> Pilih Tahun <---">
+                                <option value=""> ---> Angkatan <--- </option>
+                                <?php
+                                $tahun = (date('m') == '12') ? date('Y') + 1 : date('Y');
+                                foreach (load_array('tahun') as $val) {
+                                    $selected = ($tahun == $val) ? 'selected' : '';
+                                    echo '<option value="'.$val.'" '.$selected.'>'.$val.'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
                         <div class="btn-group btn-overlap">
                             <button id="btn-rekap" class="btn btn-white btn-primary btn-sm btn-bold">
                                 <i class="fa fa-search-plus bigger-120"></i> Lihat Data
@@ -147,7 +168,7 @@
                                     <th>Hasil</th>
                                     <th>Catatan</th>
                                     <th>Status</th>
-                                    <th>Aksi</th>
+                                    <th width="10%">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -413,7 +434,7 @@ load_js(array(
             url: module + "/ajax/type/table/source/rekap",
             type: "POST",
             dataType: "json",
-            data: { id : $("#id").val() },
+            data: { id : $("#id").val(), prodi: $("#prodi").val(), tahun: $("#tahun").val() },
             success: function (rs) {
                 mhsTable.fnClearTable();
                 if (rs.status) {
@@ -434,7 +455,6 @@ load_js(array(
     function mhs_table() {
         mhsTable = $("#mhs-table")
         .dataTable({
-            iDisplayLength: 50,
             bScrollCollapse: true,
             bAutoWidth: false,
             aaSorting: [],

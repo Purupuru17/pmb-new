@@ -14,6 +14,7 @@ Rev
 - Grafik payment
 - Menu home menumpuk tidak bs d klik
 - Edit NIM kalau maba pindah prodi, lgkap sprt Neo ada kampus asal
+- Insert dan Delete ada pop up, edit NIM krn pindah prodi
 
 
 UPDATE m_mhs m

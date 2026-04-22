@@ -145,9 +145,7 @@ class Profil extends KZ_Controller {
                 
                 $nilai = ($val['is_quiz'] == 'PILIHAN-GANDA' && $jumlah_soal > 0) ? round($skor/$jumlah_soal*100) : $skor;
                 $color_jawab = 'blue2';
-                $st_jawab = $nilai > 40 ? notif('success', 'LULUS', 
-                    'Selamat anda telah dinyatakan <b class="bigger-120">LULUS</b>. Silahkan melengkapi administrasi berikutnya') : notif('info', 'LULUS', 
-                    'Terima kasih telah menyelesaikan tes ini. Silahkan melengkapi administrasi berikutnya');
+                $st_jawab = notif('success', 'SELESAI', 'Terima kasih telah menyelesaikan tes ini. Silahkan melengkapi administrasi berikutnya');
             }
             $json_soal = json_decode($val['soal_module'], true);
             $enrol_soal = !empty($val['soal_module']) && is_array($json_soal) ? 

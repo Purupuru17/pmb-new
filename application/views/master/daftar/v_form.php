@@ -112,7 +112,7 @@ $opsi3 = element(1, $exp, '');
                     </div>
                 </div>
                 <div class="form-group <?= $this->session->userdata('level') == '1' ? '':'hide' ?>">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">NIM :</label>
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right bolder red">NIM :</label>
                     <div class="col-xs-12 col-sm-4">
                         <div class="clearfix">
                             <input value="<?= $edit['nim'] ?>" type="text" name="nim" id="nim" class="col-xs-12  col-sm-6" placeholder="Nomor Induk Mahasiswa" />

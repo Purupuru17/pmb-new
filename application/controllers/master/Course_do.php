@@ -18,7 +18,7 @@ class Course_do extends KZ_Controller {
         if(!$this->fungsi->Validation($this->rules)){
             redirect($this->module.'/edit/'.$id);
         }
-        $data['nama_module'] = strtoupper($this->input->post('nama'));
+        $data['nama_module'] = $this->input->post('nama');
         $data['jenis_module'] = $this->input->post('jenis');
         $data['buka_module'] = empty($this->input->post('buka')) ? null : $this->input->post('buka');
         $data['tutup_module'] = empty($this->input->post('tutup')) ? null : $this->input->post('tutup');

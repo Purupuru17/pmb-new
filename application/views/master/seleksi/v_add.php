@@ -320,7 +320,7 @@
                     </form>
                     <div class="space-4"></div>
                 </div>
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-xs-12 col-sm-6  <?= $this->session->userdata('level') == '1' ? '':'hide' ?>">
                     <div class="profile-user-info profile-user-info-striped">
                         <div class="profile-info-row">
                             <div class="profile-info-name"> ID Biodata </div>
@@ -361,7 +361,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="profile-info-row hide">
+                        <div class="profile-info-row">
                             <div class="profile-info-name"> </div>
                             <div class="profile-info-value">
                                 <button id="btn-del" class="btn btn-bold btn-danger btn-white btn-block" type="button">
