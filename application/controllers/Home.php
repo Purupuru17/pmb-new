@@ -199,7 +199,7 @@ class Home extends KZ_Controller {
         $nav = $this->m_nav->getNav(array('status_nav' => '1'));
         $navbar = array();
         foreach ($nav['data'] as $row) {
-            $row['url_nav'] = site_url($row['url_nav']);
+            $row['url_nav'] = ($row['link_nav'] == '1') ? $row['url_nav'] : site_url($row['url_nav']);
             $navbar[] = $row;
         }
         jsonResponse(array('data' => $navbar, 'status' => true, 'msg' => 'Data ditemukan'));

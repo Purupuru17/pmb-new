@@ -27,7 +27,7 @@
                 <!-- logo -->
                 <div class="site-identity">
                     <a href="<?= site_url() ?>"><img src="<?= load_file('private/logo.png') ?>" alt="<?= ctk($app_session['judul']) ?>"></a>
-                    <span style="padding-top: 5px; font-size: 1.6em"><?= ctk($app_session['judul']) ?></span><br/>
+                    <span style="padding-top: 5px; font-size: 1.8em"><?= ctk($app_session['judul']) ?></span><br/>
                     <span style="font-size: 1.5em"><?= ctk($app_session['deskripsi']) ?></span><br/>
                     <span><small><?= config_item('kampus')['nama'] ?></small></span>
                     <br><br>

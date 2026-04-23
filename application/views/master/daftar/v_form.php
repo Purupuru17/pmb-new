@@ -32,6 +32,23 @@ $opsi3 = element(1, $exp, '');
             <h3 class="lighter center block blue"><?= $title[1] ?></h3>
             <form id="validation-form" action="<?= site_url($action); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Jalur Pendaftaran :</label>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="clearfix">
+                            <select class="select2 width-100 bolder" name="jalur" id="jalur" data-placeholder="----> Pilih Jalur Pendaftaran <----">
+                                <option value=""> </option>
+                                <?php
+                                $jalur = array_merge(config_item('pmb')['jalur'], config_item('pmb')['pemda']);
+                                foreach ($jalur as $val) {
+                                    $selected = ($edit['jalur_mhs'] == $val) ? 'selected' : '';
+                                    echo '<option value="'.$val.'"  '.$selected.'>'.strtoupper($val).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Pilihan Program Studi :</label>
                     <div class="col-xs-12 col-sm-4">
                         <div class="clearfix">
@@ -95,6 +112,19 @@ $opsi3 = element(1, $exp, '');
                         </div>
                     </div>
                 </div>
+                <div class="form-group <?= ($this->session->userdata('level') == '1' && !empty($edit['nim'])) ? '':'hide' ?>">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right bolder red">NIM :</label>
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="clearfix">
+                            <input value="<?= $edit['nim'] ?>" type="text" name="nim" id="nim" class="col-xs-12  col-sm-6" placeholder="Nomor Induk Mahasiswa" />
+                        </div>
+                    </div>
+                </div>
+                <div class="space-6"></div>
+                <div class="social-or-login center">
+                    <span class="bigger-110 bolder">Form Keterangan</span>
+                </div>
+                <div class="space-6"></div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Status Mahasiswa :</label>
                     <div class="col-xs-12 col-sm-2">
@@ -111,29 +141,15 @@ $opsi3 = element(1, $exp, '');
                         </div>
                     </div>
                 </div>
-                <div class="form-group <?= $this->session->userdata('level') == '1' ? '':'hide' ?>">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right bolder red">NIM :</label>
-                    <div class="col-xs-12 col-sm-4">
-                        <div class="clearfix">
-                            <input value="<?= $edit['nim'] ?>" type="text" name="nim" id="nim" class="col-xs-12  col-sm-6" placeholder="Nomor Induk Mahasiswa" />
-                        </div>
-                    </div>
-                </div>
-                <div class="space-6"></div>
-                <div class="social-or-login center">
-                    <span class="bigger-110 bolder">Form Keterangan</span>
-                </div>
-                <div class="space-6"></div>
-                <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Jalur Pendaftaran :</label>
+                <div class="form-group <?= empty($edit['id_mhs']) ? 'hide' : '' ?>">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Status KIP :</label>
                     <div class="col-xs-12 col-sm-3">
                         <div class="clearfix">
-                            <select class="select2 width-100" name="jalur" id="jalur" data-placeholder="----> Pilih Jalur Pendaftaran <----">
+                            <select class="select2 width-100" name="kip" id="kip" data-placeholder="-----> Pilih Opsi  <-----">
                                 <option value=""> </option>
                                 <?php
-                                $jalur = array_merge(config_item('pmb')['jalur'], config_item('pmb')['pemda']);
-                                foreach ($jalur as $val) {
-                                    $selected = ($edit['jalur_mhs'] == $val) ? 'selected' : '';
+                                foreach (load_array('kip') as $val) {
+                                    $selected = ($edit['kip_mhs'] == $val) ? 'selected' : '';
                                     echo '<option value="'.$val.'"  '.$selected.'>'.$val.'</option>';
                                 }
                                 ?>
@@ -146,22 +162,6 @@ $opsi3 = element(1, $exp, '');
                     <div class="col-xs-12 col-sm-8">
                         <div class="clearfix">
                             <textarea rows="3" cols="1" name="atribut" id="atribut" class="col-xs-12  col-sm-6" placeholder="Pengambilan Atribut Mahasiswa"><?= ctk($edit['atribut_mhs']) ?></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group <?= empty($edit['id_mhs']) ? 'hide' : '' ?>">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">KIP :</label>
-                    <div class="col-xs-12 col-sm-3">
-                        <div class="clearfix">
-                            <select class="select2 width-100" name="kip" id="kip" data-placeholder="-----> Pilih Opsi  <-----">
-                                <option value=""> </option>
-                                <?php
-                                foreach (load_array('kip') as $val) {
-                                    $selected = ($edit['kip_mhs'] == $val) ? 'selected' : '';
-                                    echo '<option value="'.$val.'"  '.$selected.'>'.$val.'</option>';
-                                }
-                                ?>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -510,16 +510,39 @@ $opsi3 = element(1, $exp, '');
         let tgl = this.value.split("-");
         $("#txt-tgl").html(tgl[2]+' '+bulan[parseInt(tgl[1])]+' '+tgl[0]);
     });
-    $("#opsi1").change(function () {
-        let data = $("#opsi1").select2('data');
-        let prodi = ['S2','Profesi'];
+    $("#jalur").change(function () {
+        let data = $(this).select2('data');
+        let other = ['Rekognisi','RPL','PPG'];
         
-        if (data && prodi.some(p => data.text.includes(p))) {
-            $("#opsi2,#opsi3").val(data.text).trigger('change');
-            $(".opsi").addClass('hide');
+        $("#opsi1,#opsi2,#opsi3").val('').trigger('change');
+        if(!data){
+            return;
+        }
+        let match = other.some(p => data.text.includes(p));
+        if (match) {
+            $(".opsi").hide();
         } else {
-            $(".opsi").removeClass('hide');
+            $(".opsi").show();
+        }
+    });
+    $("#opsi1").change(function () {
+        let data = $(this).select2('data');
+        let jalur = $("#jalur").val();
+        
+        let khusus = ['S2','Profesi'];
+        let other = ['Rekognisi','RPL','PPG'];
+        if(!data){
+            return;
+        }
+        let match = khusus.some(p => data.text.includes(p));
+        let match_more = other.some(p => jalur.includes(p));
+        
+        if (!match && !match_more) {
             $("#opsi2,#opsi3").val('').trigger('change');
+            $(".opsi").show();
+        } else {
+            $("#opsi2,#opsi3").val(data.text).trigger('change');
+            $(".opsi").hide();
         }
     });
     $("#bupati").change(function () {
@@ -674,7 +697,7 @@ $opsi3 = element(1, $exp, '');
             },
             alamat: {
                 required: true,
-                minlength: 10
+                minlength: 30
             },
             oap: {
                 
@@ -691,13 +714,13 @@ $opsi3 = element(1, $exp, '');
                 required: true,
                 digits: true,
                 min: 0,
-                max: 20
+                max: 100
             },
             rw: {
                 required: true,
                 digits: true,
                 min: 0,
-                max: 20
+                max: 100
             },
             lurah: {
                 required: true,

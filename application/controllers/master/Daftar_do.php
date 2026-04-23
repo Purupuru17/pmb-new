@@ -443,7 +443,7 @@ class Daftar_do extends KZ_Controller {
         ),array(
             'field' => 'alamat',
             'label' => 'Alamat',
-            'rules' => 'required|trim|xss_clean|min_length[10]'
+            'rules' => 'required|trim|xss_clean|min_length[30]'
         ),array(
             'field' => 'oap',
             'label' => 'Status OAP',

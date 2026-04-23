@@ -115,7 +115,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 float: left;
             }
             .main-nav li {
-                padding: 5px 0 !important;
                 margin-right: 20px;
             }
             .main-nav a{
@@ -123,6 +122,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 font-weight: bold;
                 text-transform: uppercase;
                 color: #ffffff;
+            }
+            .sub-menu{
+                position:absolute;
+                top:100%;
+                left:0;
+                opacity:0;
+                visibility:hidden;
+                transition:0.3s;
+                z-index:9999;
+            }
+            .main-nav li:hover > .sub-menu{
+                opacity:1;
+                visibility:visible;
             }
             .background{
                 background: none;
@@ -224,7 +236,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <ul class="sub-menu"><li class="arrow"></li>${subMenus.map(subMenu => `<li><a href="${subMenu.url_nav}">${subMenu.judul_nav}</a></li>`).join('')}</ul>
                                     </li>`;
                             } else {
-                                menuHTML += `<li><a href="${parentMenu.url_nav}">${parentMenu.judul_nav}</a></li>`;
+                                let target = parentMenu.link_nav === '1' ? `target="_blank" rel="noopener noreferrer"` : ``;
+                                menuHTML += `<li><a ${target} href="${parentMenu.url_nav}">${parentMenu.judul_nav}</a></li>`;
                             }
                         });
                         $(".the-menu").html(menuHTML);

@@ -19,9 +19,28 @@ $this->load->view('sistem/v_breadcrumb');
             <form id="validation-form" action="<?= site_url($module.'/add'); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
                 <div class="space-6"></div>
                 <div class="social-or-login center">
-                    <span class="bigger-110 orange">Program Studi</span>
+                    <span class="bigger-110 orange">Registrasi</span>
                 </div>
                 <div class="space-6"></div>
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Jalur Pendaftaran :</label>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="clearfix">
+                            <select class="select2 width-100 bolder" name="jalur" id="jalur" data-placeholder="----> Pilih Jalur Pendaftaran <----">
+                                <option value=""> </option>
+                                <?php
+                                foreach (config_item('pmb')['jalur'] as $val) {
+                                    echo '<option value="'.$val.'">'.strtoupper($val).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <span class="help-inline col-xs-8 col-md-offset-4">
+                        <small class="middle grey">* Informasi lengkap mengenai Jalur Pendaftaran, hubungi Admin
+                        </small>
+                    </span>
+                </div>
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Program Studi :</label>
                     <div class="col-xs-12 col-sm-4">
@@ -66,26 +85,6 @@ $this->load->view('sistem/v_breadcrumb');
                             </select>
                         </div>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-4 no-padding-right">Jalur Pendaftaran :</label>
-                    <div class="col-xs-12 col-sm-3">
-                        <div class="clearfix">
-                            <select class="select2 width-100 bolder" name="jalur" id="jalur" data-placeholder="----> Pilih Jalur Pendaftaran <----">
-                                <option value=""> </option>
-                                <?php
-                                foreach (config_item('pmb')['jalur'] as $val) {
-                                    echo '<option value="'.$val.'">'.$val.'</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <span class="help-inline col-xs-8 col-md-offset-4">
-                        <small class="middle grey">* Informasi lengkap mengenai Jalur Pendaftaran, hubungi Admin
-                        </small>
-                    </span>
                 </div>
                 <div class="social-or-login center">
                     <span class="bigger-110 orange">Biodata Diri</span>
@@ -248,16 +247,40 @@ $this->load->view('sistem/v_breadcrumb');
             return response.length > 0; // Valid jika ada token
         }, "Centang atau selesaikan CAPTCHA terlebih dahulu");
     });
-    $("#opsi1").change(function () {
-        let data = $("#opsi1").select2('data');
-        let prodi = ['S2','Profesi'];
+    $("#jalur").change(function () {
+        let data = $(this).select2('data');
+        let other = ['Rekognisi','RPL','PPG'];
         
-        if (data && prodi.some(p => data.text.includes(p))) {
-            $("#opsi2,#opsi3").val(data.text).trigger('change');
-            $(".opsi").addClass('hide');
+        $("#opsi1,#opsi2,#opsi3").val('').trigger('change');
+        if(!data){
+            return;
+        }
+        let match = other.some(p => data.text.includes(p));
+        if (match) {
+            $(".opsi").hide();
         } else {
-            $(".opsi").removeClass('hide');
+            $(".opsi").show();
+        }
+        $("#opsi1,#opsi2,#opsi3").val('').trigger('change');
+    });
+    $("#opsi1").change(function () {
+        let data = $(this).select2('data');
+        let jalur = $("#jalur").val();
+        
+        let khusus = ['S2','Profesi'];
+        let other = ['Rekognisi','RPL','PPG'];
+        if(!data){
+            return;
+        }
+        let match = khusus.some(p => data.text.includes(p));
+        let match_more = other.some(p => jalur.includes(p));
+        
+        if (!match && !match_more) {
             $("#opsi2,#opsi3").val('').trigger('change');
+            $(".opsi").show();
+        } else {
+            $("#opsi2,#opsi3").val(data.text).trigger('change');
+            $(".opsi").hide();
         }
     });
     $("#gshow").on("click", function(e) {

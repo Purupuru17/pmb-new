@@ -166,6 +166,11 @@
     </div>  
 </section>  
 <script async type="text/javascript">
+    function limitText(text, max = 70) {
+        if (text.length <= max) return text;
+        let cut = text.substring(0, max);
+        return cut.substring(0, cut.lastIndexOf(' ')) + '...';
+    }
     $(document).ready(function() {
         //Berita
         $.ajax({
@@ -177,15 +182,15 @@
             success: function (result) {
                 $.each(result.data, function (index, value) {
                     $(".the-berita").append(`<div class="col-md-3">
-                        <div class="event" style="margin-bottom: 20px; min-height:460px">
+                        <div class="event" style="height: 600px; margin-bottom: 20px;">
                             <div class="eventsimg">
                                 <a href="${value.slug}">
-                                    <img style="height: 200px" class="lazyload blur-up" src="${value.foto}" alt="${value.judul}">
+                                    <img style="height: 300px;" class="lazyload blur-up" src="${value.foto}" alt="${value.judul}">
                                 </a>
                             </div>
-                            <div class="event-content">
+                            <div class="event-content" style="height: 260px;">
                                 <a href="${value.slug}">
-                                    <h3 class="title">${value.judul}</h3>
+                                    <h3 class="title">${limitText(value.judul)}</h3>
                                 </a>
                                 <ul class="meta">
                                     <li>${value.update}</li>
@@ -199,7 +204,7 @@
                                     <li><a href="${value.slug}"><i class="icon fa fa-share"></i></a></li>
                                     <li><a href="#"><i class="icon fa fa-eye"></i>${value.view}</a></li>
                                     <li><a href="#" ><i class="icon fa fa-heart"></i>0</a> </li> 
-                                </ul> 
+                                </ul>
                             </div>
                         </div>
                     </div>`);

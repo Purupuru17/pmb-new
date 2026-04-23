@@ -44,7 +44,7 @@ $this->load->view('sistem/v_breadcrumb');
                         </div>
                     </div>
                     <span class="help-inline col-xs-12 col-sm-2">
-                        <span class="middle red">* Maksimal 2 MB</span>
+                        <span class="middle red">* Maksimal 1 MB (Kompres bila perlu)</span>
                     </span> 
                 </div>
                 <div class="form-group">
@@ -109,10 +109,10 @@ $this->load->view('sistem/v_breadcrumb');
             btn_change: 'Ubah',
             onchange: null,
             allowExt: file_ext,
-            maxSize: 2100000 //2.1 Mb
+            maxSize: 1100000 //1.1 Mb
         }).on('file.error.ace', function(ev, info) {
             if(info.error_count['ext']) jsfNotif('Peringatan!', 'Format file harus berupa File PDF', 3);
-            if(info.error_count['size']) jsfNotif('Peringatan!', 'Ukuran file maksimal 2 MB', 3);
+            if(info.error_count['size']) jsfNotif('Peringatan!', 'Ukuran file maksimal 1 MB', 3);
         });
         
         
