@@ -31,6 +31,7 @@ $opsi3 = element(1, $exp, '');
         <div class="col-xs-12">
             <h3 class="lighter center block blue"><?= $title[1] ?></h3>
             <form id="validation-form" action="<?= site_url($action); ?>" name="form" class="form-horizontal" method="POST" enctype="multipart/form-data">
+                <input type="hidden" value="<?= encode($edit['id_mhs']) ?>" id="idmhs" />
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-4 no-padding-right">Jalur Pendaftaran :</label>
                     <div class="col-xs-12 col-sm-3">
@@ -640,17 +641,29 @@ $opsi3 = element(1, $exp, '');
             },
             //Data Pendidikan
             nisn: {
-//                required: true,
+                required: {
+                    depends: function(e) {
+                        return $.trim($("#idmhs").val()) !== "";
+                    }
+                },
                 digits: true,
                 minlength: 10,
                 maxlength: 10
             },
             sekolah: {
-//                required: true,
+                required: {
+                    depends: function(e) {
+                        return $.trim($("#idmhs").val()) !== "";
+                    }
+                },
                 minlength: 5
             },
             npsn: {
-//                required: true,
+                required: {
+                    depends: function(e) {
+                        return $.trim($("#idmhs").val()) !== "";
+                    }
+                },
                 digits: true,
                 minlength: 8,
                 maxlength: 10
@@ -700,7 +713,7 @@ $opsi3 = element(1, $exp, '');
                 minlength: 30
             },
             oap: {
-                
+                minlength: 3
             },
             suku: {
                 minlength: 3

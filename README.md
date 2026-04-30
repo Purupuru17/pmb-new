@@ -15,7 +15,11 @@
 - Menu home menumpuk tidak bs d klik
 - Insert dan Delete ada pop up, edit NIM krn pindah prodi
 - Edit NIM kalau maba pindah prodi, lgkap sprt Neo ada kampus asal
+- nisn asal skolah js validate bedakan add dan edit
 
+
+#DB
+- oap_mhs, suku_mhs
 
 UPDATE m_mhs m
 JOIN (
