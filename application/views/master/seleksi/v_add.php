@@ -250,6 +250,20 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label col-xs-12 col-sm-4 no-padding-right"></label>
+                            <div class="col-xs-12 col-sm-6">
+                                <button class="btn btn-danger btn-white btn-bold" name="btn-nim" id="btn-nim" type="button">
+                                    <i class="ace-icon fa fa-check-square-o bigger-120"></i>
+                                    Generate NIM
+                                </button>
+                                <a target="_blank" href="<?= site_url('master/daftar/edit/'. encode($detail['id_mhs'])) ?>" 
+                                    class="btn btn-warning btn-white btn-bold btn-sm" >
+                                    <i class="ace-icon fa fa-pencil-square-o"></i>
+                                    Ubah Data
+                                </a>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label col-xs-12 col-sm-4 no-padding-right">Periode :</label>
                             <div class="col-xs-12 col-sm-5">
                                 <div class="clearfix">
@@ -304,19 +318,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="clearfix form-actions">
-                            <div class="col-md-offset-4 col-md-8">
-                                <button class="btn btn-danger btn-white btn-round" name="btn-nim" id="btn-nim" type="button">
-                                    <i class="ace-icon fa fa-check-square-o bigger-120"></i>
-                                    Generate NIM
-                                </button>
-                                <a target="_blank" href="<?= site_url('master/daftar/edit/'. encode($detail['id_mhs'])) ?>" 
-                                    class="btn btn-warning btn-white btn-round btn-sm" >
-                                    <i class="ace-icon fa fa-pencil-square-o"></i>
-                                    Ubah Data
-                                </a>
-                            </div>
-                        </div>
                     </form>
                     <div class="space-4"></div>
                 </div>
@@ -337,7 +338,7 @@
                         <div class="profile-info-row">
                             <div class="profile-info-name"> </div>
                             <div class="profile-info-value">
-                                <button onclick="load_mhs()" id="btn-feeder" class="btn btn-block btn-bold btn-default btn-white">
+                                <button onclick="loadMhs()" id="btn-feeder" class="btn btn-block btn-bold btn-default btn-white">
                                     <i class="ace-icon fa fa-search-plus bigger-110"></i>
                                     <span class="">Cek Data PDDikti</span>
                                 </button>
@@ -364,9 +365,18 @@
                         <div class="profile-info-row">
                             <div class="profile-info-name"> </div>
                             <div class="profile-info-value">
+                                <button id="btn-update" class="btn btn-bold btn-warning btn-white btn-block" type="button">
+                                    <i class="ace-icon fa fa-pencil-square-o bigger-110"></i>
+                                    <span class="">Update NIM PDDikti</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="profile-info-row hide">
+                            <div class="profile-info-name"> </div>
+                            <div class="profile-info-value">
                                 <button id="btn-del" class="btn btn-bold btn-danger btn-white btn-block" type="button">
                                     <i class="ace-icon fa fa-trash-o bigger-110"></i>
-                                    <span class="">Delete NIM Feeder</span>
+                                    <span class="">Delete NIM PDDikti</span>
                                 </button>
                             </div>
                         </div>
@@ -404,25 +414,93 @@ load_js(array(
             todayHighlight: true,clearBtn: true
         });
     });
-    $("#btn-bio").click(function () {
-        insert_bio();
-        $("#btn-bio").attr('disabled','disabled');
-    });
     $("#btn-nim").click(function () {
-        generate_nim();
+        generateNim();
         $("#btn-nim").attr('disabled','disabled');
     });
+    $("#btn-bio").click(function () {
+        var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
+        var msg = "<p class='center grey bigger-120'><i class='ace-icon fa fa-hand-o-right blue'></i>" + 
+                " Apakah anda yakin akan mengirim data ? </p>";
+        bootbox.confirm({title: title, message: msg, 
+            buttons: {
+                cancel: {
+                    label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal", className: "btn btn-sm"
+                },
+                confirm: {
+                    label: "<i class='ace-icon fa fa-paper-plane bigger-110'></i> Simpan", className: "btn btn-sm btn-success"
+                }
+            },
+            callback: function(result) {
+                if (result === true) {
+                    insertBio();
+                    $("#btn-bio").attr('disabled','disabled');
+                }
+            }
+        });
+    });
     $("#btn-reg").click(function () {
-        insert_nim();
-        $("#btn-reg").attr('disabled','disabled');
+        var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
+        var msg = "<p class='center grey bigger-120'><i class='ace-icon fa fa-hand-o-right blue'></i>" + 
+                " Apakah anda yakin akan mengirim data ? </p>";
+        bootbox.confirm({title: title, message: msg, 
+            buttons: {
+                cancel: {
+                    label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal", className: "btn btn-sm"
+                },
+                confirm: {
+                    label: "<i class='ace-icon fa fa-paper-plane bigger-110'></i> Simpan", className: "btn btn-sm btn-success"
+                }
+            },
+            callback: function(result) {
+                if (result === true) {
+                    insertNim();
+                    $("#btn-reg").attr('disabled','disabled');
+                }
+            }
+        });
+    });
+    $("#btn-update").click(function () {
+        var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
+        var msg = "<p class='center grey bigger-120'><i class='ace-icon fa fa-hand-o-right blue'></i>" + 
+                " Apakah anda yakin akan mengirim data ? </p>";
+        bootbox.confirm({title: title, message: msg, 
+            buttons: {
+                cancel: {
+                    label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal", className: "btn btn-sm"
+                },
+                confirm: {
+                    label: "<i class='ace-icon fa fa-paper-plane bigger-110'></i> Simpan", className: "btn btn-sm btn-success"
+                }
+            },
+            callback: function(result) {
+                if (result === true) {
+                    updateNim();
+                    $("#btn-update").attr('disabled','disabled');
+                }
+            }
+        });
     });
     $("#btn-del").click(function () {
-        delete_nim();
-        $("#btn-del").attr('disabled','disabled');
+        var title = "<h4 class='red center'><i class='ace-icon fa fa-exclamation-triangle red'></i> Peringatan !</h4>";
+        var msg = "<p class='center grey bigger-120'><i class='ace-icon fa fa-hand-o-right blue'></i>" + 
+                " Apakah anda yakin akan menghapus data  ? </p>";
+        bootbox.confirm({title: title, message: msg, 
+            buttons: {
+                cancel: {label: "<i class='ace-icon fa fa-times bigger-110'></i> Batal",className: "btn btn-sm"},
+                confirm: {label: "<i class='ace-icon fa fa-trash-o bigger-110'></i> Hapus",className: "btn btn-sm btn-danger"}
+            },
+            callback: function(result) {
+                if (result === true) {
+                    deleteNim();
+                    $("#btn-del").attr('disabled','disabled');
+                }
+            }
+        });
     });
 </script>
 <script type="text/javascript">
-    function load_mhs() {
+    function loadMhs() {
         var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
         var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
                 ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
@@ -446,7 +524,7 @@ load_js(array(
                     $("#span-mhs").html(rs.msg);
                     jsfNotif('Peringatan', rs.msg, 2);
                 }
-                show_data(rs.data);
+                showData(rs.data);
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 progress.modal("hide");
@@ -454,7 +532,7 @@ load_js(array(
             }
         });
     }
-    function insert_bio() {
+    function insertBio() {
         var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
         var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
                 ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
@@ -470,7 +548,7 @@ load_js(array(
                 progress.modal("hide");
                 if (rs.status) {
                     $("#span-bio").html(rs.data.id_mahasiswa);
-                    show_data(rs.data);
+                    showData(rs.data);
                     
                     jsfNotif('Informasi', rs.msg, 1);
                 } else {
@@ -483,7 +561,7 @@ load_js(array(
             }
         });
     }
-    function insert_nim() {
+    function insertNim() {
         var nim = $("#nim").val();
         if(nim === '' || nim === null){
             jsfNotif('Peringatan', 'Generate NIM mahasiswa', 2);
@@ -506,7 +584,7 @@ load_js(array(
                 } else {
                     jsfNotif('Peringatan', rs.msg, 2);
                 }
-                show_data(rs.data);
+                showData(rs.data);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 progress.modal("hide");
@@ -514,7 +592,38 @@ load_js(array(
             }
         });
     }
-    function delete_nim() {
+    function updateNim() {
+        var nim = $("#nim").val();
+        if(nim === '' || nim === null){
+            jsfNotif('Peringatan', 'Generate NIM mahasiswa', 2);
+            return;
+        }
+        var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
+        var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
+                ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
+        var progress = bootbox.dialog({title: title,message: msg,closeButton: false});
+        $.ajax({
+            url: module + "_do/ajax/type/action/source/change",
+            dataType: "json",
+            type: "POST",
+            data: $("#validation-form").serialize(),
+            success: function (rs) {
+                progress.modal("hide");
+                if (rs.status) {
+                    $("#span-reg").html(rs.data.id_registrasi_mahasiswa);
+                    jsfNotif('Informasi', rs.msg, 1);
+                } else {
+                    jsfNotif('Peringatan', rs.msg, 2);
+                }
+                showData(rs.data);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                progress.modal("hide");
+                jsfNotif('Error', 'Kesalahan Jaringan', 3);
+            }
+        });
+    }
+    function deleteNim() {
         var title = '<h4 class="blue center"><i class="ace-icon fa fa fa-spin fa-spinner"></i> Mohon tunggu . . . </h4>';
         var msg = '<p class="center red bigger-120"><i class="ace-icon fa fa-hand-o-right blue"></i>' +
                 ' Jangan menutup atau me-refresh halaman ini, silahkan tunggu sampai peringatan ini tertutup sendiri. </p>';
@@ -532,7 +641,7 @@ load_js(array(
                 } else {
                     jsfNotif('Peringatan', rs.msg, 2);
                 }
-                show_data(rs.data);
+                showData(rs.data);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 progress.modal("hide");
@@ -540,7 +649,7 @@ load_js(array(
             }
         });
     }
-    function generate_nim() {
+    function generateNim() {
         var id = $("select#prodi").val();
         if (id === '') {
             $("select#prodi").select2('open');
@@ -571,7 +680,7 @@ load_js(array(
             }
         });
     }
-    function show_data(data){
+    function showData(data){
         var str = '';
         $.each(data, function(key, value) {
             str += key + ' : <b>' + value + '</b><br>';

@@ -28,7 +28,7 @@ $config['app.allowed_img']    = 'jpg|png|jpeg|JPG|PNG';
 $config['app.storage']        = $ENV['APP_STORAGE'];
 $config['app.max_delete']     = $ENV['APP_DELETE'];
 
-$config['kampus'] = [
+$config['kampus'] = [ 'id' => $ENV['UNIV_ID'],
     'menteri' => $ENV['UNIV_MENTERI'], 'nama' => $ENV['UNIV_NAMA'], 
     'alamat' => $ENV['UNIV_SK'].' <br> '.$ENV['UNIV_ALAMAT'], 'ttd' => $ENV['UNIV_KOTA_TTD'],
     'oap' => $ENV['UNIV_OAP'],

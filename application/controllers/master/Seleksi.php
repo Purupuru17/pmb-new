@@ -289,21 +289,21 @@ class Seleksi extends KZ_Controller {
             $akm['id_mahasiswa'] = $id_bio;
             $akm['nim'] = $nim;
             $akm['id_jenis_daftar'] = $jenis;
-            $akm['id_jalur_daftar'] = 12; //seleksi mandiri
+            $akm['id_jalur_daftar'] = 12; 
             $akm['id_periode_masuk'] = $periode;
             $akm['tanggal_daftar'] = $tanggal;
-            $akm['id_perguruan_tinggi'] = 'aa90e1dd-4905-440c-93c3-68753ef9061e';
+            $akm['id_perguruan_tinggi'] = config_item('kampus')['id'];
             $akm['id_prodi'] = $prodi;
-            $akm['id_pembiayaan'] = 1; //mandiri
+            $akm['id_pembiayaan'] = 1;
             $akm['biaya_masuk'] = 2000000;
 
-            if(in_array($jenis, ['13','16','17','18'])){
-                $akm['id_perguruan_tinggi_asal'] = 'aa90e1dd-4905-440c-93c3-68753ef9061e';
+            if(in_array($jenis, ['2','13','16','17','18'])){
+                $akm['id_perguruan_tinggi_asal'] = config_item('kampus')['id'];
                 $akm['id_prodi_asal'] = $prodi;
             }
             if(in_array($jenis, ['17','18'])){
                 $akm['id_jalur_daftar'] = 11; //instansi
-                $akm['id_pembiayaan'] = 3; //beasiswa
+                $akm['id_pembiayaan'] = 3;
             }
             $rs_akm = $this->feeder->post('InsertRiwayatPendidikanMahasiswa', $akm);
             if(!$rs_akm['status']) {

@@ -1,20 +1,20 @@
 #NOTE
+- Hapus payment
+- Edit Sesi bug
+- Tambah Course
+- Cek kembali/optimasi saat mulai pngerjaan, bug ragu2
+- Grafik payment
 
-Rev
+
+#DONE
 - NIM status masih bug saat s1 jadi s2, validate ny jg bug -> (done)
 - Edit NIM di Seleksi TAB -> (done)
 - TAmbah VA masih bug saat ganti mhs -> (done)
 - config kode reg -> (done)
 - JS includes bagian register yg s2  -> (done)
-
-- Hapus payment
-- Edit Sesi
-- Tambah Course
-- Cek kembali/optimasi saat mulai pngerjaan, bug ragu2
-- Grafik payment
 - Menu home menumpuk tidak bs d klik
-- Edit NIM kalau maba pindah prodi, lgkap sprt Neo ada kampus asal
 - Insert dan Delete ada pop up, edit NIM krn pindah prodi
+- Edit NIM kalau maba pindah prodi, lgkap sprt Neo ada kampus asal
 
 
 UPDATE m_mhs m
