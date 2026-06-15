@@ -6,6 +6,7 @@
 - Grafik payment
 
 
+
 #DONE
 - NIM status masih bug saat s1 jadi s2, validate ny jg bug -> (done)
 - Edit NIM di Seleksi TAB -> (done)
@@ -16,6 +17,8 @@
 - Insert dan Delete ada pop up, edit NIM krn pindah prodi
 - Edit NIM kalau maba pindah prodi, lgkap sprt Neo ada kampus asal
 - nisn asal skolah js validate bedakan add dan edit
+- Surat keterangan print ttd rektor
+- Grafik depan view mobile
 
 
 #DB

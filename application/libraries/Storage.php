@@ -119,7 +119,7 @@ class Storage
         $this->file = new UploadFile($_FILES[$field]);
             
         if ($this->storage == 's3') {
-            $new_path = $path['s3'].'/';
+            $new_path = date('Y').'/'.$path['s3'].'/';
             if (!empty($name)) {
                 $this->file->customName = $new_path . $name;
             }
@@ -154,7 +154,7 @@ class Storage
         $this->file = new UploadFile($_FILES[$field]);
         
         if ($this->storage == 's3') {
-            $new_path = $path['s3'].'/';
+            $new_path = date('Y').'/'.$path['s3'].'/';
             if (!empty($name)) {
                 $this->file->customName = $new_path . $name;
             }

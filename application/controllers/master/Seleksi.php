@@ -183,13 +183,13 @@ class Seleksi extends KZ_Controller {
             jsonResponse(array('status' => FALSE, 'msg' => validation_errors()));
         }
         $limit = 1;
-        $select = $this->db->order_by('kode_reg ASC')->limit($limit)
-        ->get_where('m_mhs', [
-            'prodi_id' => decode($this->input->post('prodi')),
-            'status_mhs' => $this->input->post('status'),
-            'angkatan' => $this->input->post('tahun'),
-            'nim <>' => '' 
-        ]);
+        $select = $this->db->order_by('nim ASC')->limit($limit)
+            ->get_where('m_mhs', [
+                'prodi_id' => decode($this->input->post('prodi')),
+                'status_mhs' => $this->input->post('status'),
+                'angkatan' => $this->input->post('tahun'),
+                'nim <>' => '' 
+            ]);
         if($select->num_rows() < 1){
             jsonResponse(array('status' => FALSE, 'msg' => 'Data tidak ditemukan'));
         }

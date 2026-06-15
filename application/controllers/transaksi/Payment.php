@@ -186,7 +186,7 @@ class Payment extends KZ_Controller {
                 .ctk($items['bank_payment']).'</strong>';
             $row[] = '<strong class="'.$is_total.' bigger-110">'.rupiah($items['total_payment']).'</strong><br/>
                 <i class="fa fa-calendar-plus-o"></i> <small class="grey">'.format_date($items['buat_payment'],2).'</small>';
-            $row[] = st_aktif($items['status_payment'],null,'pay').$is_paid;
+            $row[] = st_aktif($items['status_payment'],null,'pay').st_mhs($items['status_mhs']).$is_paid;
             $row[] = '<small>'.$items['note_payment'].'</small>'.$is_up;
             $row[] = '<div class="action-buttons">'.$btn_aksi.'</div>';
             

@@ -63,7 +63,7 @@
                                             <span class="">Ubah Profil</span>
                                         </a>
                                         <div class="space space-4"></div>
-                                        <a target="_blank" href="<?= site_url($module .'/cetak') ?>" class="btn btn-block btn-bold btn-primary btn-white">
+                                        <a target="_blank" href="<?= site_url($module .'/cetak') ?>" class="btn btn-block btn-bold btn-success btn-white">
                                             <i class="ace-icon fa fa-credit-card bigger-120"></i>
                                             <span class="">KTM Sementara</span>
                                         </a>

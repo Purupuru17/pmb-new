@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title><?= $detail['nim'] ?> | <?= $detail['nama_mhs'] ?></title>
+        <title><?= $detail['nama_mhs'] ?> | <?= $detail['nim'] ?></title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="shortcut icon" type="image/x-icon" href="<?= load_file('theme/img/logo.png','base64') ?>"/>
+        <link rel="shortcut icon" type="image/x-icon" href="<?= load_file('private/logo.png','base64') ?>"/>
         <style>
             html, .signature{
                 font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;
@@ -25,7 +25,7 @@
                 text-align: center;
             }
             .watermark {
-                background:url(<?= load_file('theme/img/logo.png','base64') ?>);
+                background:url(<?= load_file('private/logo.png','base64') ?>);
                 background-repeat: no-repeat;
                 background-position: center center;
                 opacity: 0.06;
@@ -55,6 +55,9 @@
                 display: inline-block;
                 height: auto;
             }
+            .center {
+                text-align: center;
+            }
         </style>
     </head>
     <body class="watermark">
@@ -63,9 +66,9 @@
                 <tr>
                     <th colspan="4">
                         <font size="2">
-                            KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI
+                            <?= element('menteri', $univ) ?>
                         </font>
-                        <img src="<?= load_file('theme/img/logo.png','base64') ?>" class="logo">
+                        <img src="<?= load_file('private/logo.png','base64') ?>" class="logo">
                     </th>
                 </tr>
                 <tr>
@@ -73,35 +76,33 @@
                         <div class="repTitle">
                             <font size="3">
                                 <strong>
-                                    UNIVERSITAS PENDIDIKAN MUHAMMADIYAH (UNIMUDA) SORONG<br/>
-                                    <?= strtoupper($prodi['fakultas']) ?>
+                                    <?= element('nama', $univ) ?><br/>
+                                    <?= strtoupper($title[1]) ?>
                                 </strong>
                             </font>
                             <br/>
-                            SK. MENRISTEKDIKTI No. 547/KPT/I/2018<br/>
-                            Jln. KH. Ahmad Dahlan No. 01 Malawele Aimas Kabupaten Sorong
-                            Telp. (0951) 324409, 327873 Fax. (0951) 324409
+                            <?= element('alamat', $univ) ?>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td align="center" colspan="4">
                         <br/>
-                        <font size="4"><strong style="text-decoration: underline"><?= $judul[0] ?></strong></font>
+                        <font size="4"><strong style="text-decoration: underline"><?= $title[0] ?></strong></font>
                         <br/><br/>
                     </td>
                 </tr>
                 <tr>
                     <td width="7%"></td>
-                    <td width="25%" align="left">NIM</td>
+                    <td width="25%" align="left">Nama Lengkap</td>
                     <td colspan="2" align="left" class="resize">: 
-                        <strong><?= $detail['nim'] ?></strong>
+                        <strong><?= $detail['nama_mhs'] ?></strong>
                     </td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td align="left">Nama Lengkap</td>
-                    <td colspan="2" align="left" class="resize">:<strong> <?= $detail['nama_mhs'] ?> </strong> </td>
+                    <td align="left">Fakultas</td>
+                    <td colspan="2" align="left" class="resize">:<strong> <?= $prodi['fakultas'] ?></strong> </td>
                 </tr>
                 <tr>
                     <td></td>
@@ -115,8 +116,10 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td align="left">Status</td>
-                    <td colspan="2" align="left" class="resize">: <?= $detail['status_mhs'] ?></td>
+                    <td align="left">NIM</td>
+                    <td colspan="2" align="left" class="resize">: 
+                        <strong><?= $detail['nim'] ?></strong>
+                    </td>
                 </tr>
                 <tr>
                     <td></td>
@@ -135,7 +138,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td align="left">Tempat Tanggal Lahir</td>
+                    <td align="left">Tempat, Tanggal Lahir</td>
                     <td colspan="2" align="left" class="resize">: 
                         <?= $detail['tempat_lahir'] ?>, 
                         <?= format_date($detail['tgl_lahir'],1) ?>
@@ -168,6 +171,11 @@
                 </tr>
                 <tr>
                     <td></td>
+                    <td align="left">Status Pendaftaran</td>
+                    <td colspan="2" align="left" class="resize">: <?= $detail['status_mhs'] ?></td>
+                </tr>
+                <tr>
+                    <td></td>
                     <td align="left">Jalur Pendaftaran</td>
                     <td colspan="2" align="left" class="resize">: <?= $detail['jalur_mhs'] ?></td>
                 </tr>
@@ -180,34 +188,37 @@
                     <td></td>
                     <td style="text-align:left" colspan="3">
                         <br/><br/>
-                        Selamat Anda telah resmi <strong class="green">DITERIMA</strong> sebagai, <br/>
-                        <strong class="blue">Mahasiswa Baru UNIVERSITAS PENDIDIKAN MUHAMMADIYAH (UNIMUDA) Sorong</strong><br/> 
-                        Tahun Ajaran <?= $detail['angkatan'].'/'.intval($detail['angkatan']+1) ?> dengan status <strong class="blue">"<?= ($detail['status_mhs']) ?>"</strong>.
-                        <br/><br/>Bukti ini dapat dijadikan sebagai <strong class="orange">Kartu Mahasiswa Sementara</strong>, mohon untuk dicetak.
+                        Selamat Anda telah dinyatakan,
+                        <p style="text-align:center; font-size: 24px; margin: 0px;color:#13550b"><b><i>LULUS</i></b></p>
+                        
+                        <br>dan resmi diterima sebagai
+                        <strong class="blue" style="font-size: 14px;text-decoration: underline">Mahasiswa Baru</strong>  
+                        Tahun Ajaran <strong><?= $detail['angkatan'].'/'.intval($detail['angkatan']+1) ?>.</strong> 
+                        <br/>Bukti ini dapat dijadikan sebagai <strong class="orange">Kartu Mahasiswa Sementara</strong>, mohon untuk dicetak.
                     </td>
                 </tr>
             </tbody>
         </table>
         
-        <table width="100%" style="padding-top: 30px">
+        <table width="100%" style="padding-top: 10px">
             <tbody>
                 <tr>
-                    <td align="center" width="30%" style="font-size: 13px">
-                        <br/>Mahasiswa<br/>
+                    <td align="center" width="35%" style="font-size: 13px">
+                        &nbsp;<br/>Mahasiswa<br/>
                         <br/><br/><br/><br/><br/><br/><br/>
-                        <strong style="text-decoration: underline"><?= $detail['nama_mhs'] ?></strong><br/>
-                        NIM. <?= $detail['nim'] ?>
+                        <strong style="text-decoration: underline"><?= ucwords(strtolower($detail['nama_mhs'])) ?></strong><br/>
+                        NIK. <?= $detail['nik'] ?>
                     </td>
                     <td>
                         <img width="90" class="img-thumbnail" src="<?= load_file($detail['foto_mhs']) ?>"/>
                     </td>
                     <td></td>
                     <td align="center" width="40%" style="font-size: 13px">
-                        Sorong, <?= format_date(date('Y-m-d'),1) ?> <br/>
-                        <strong>Biro Admisi <br/> UNIMUDA Sorong</strong>
+                        <?= element('kota', $univ) ?>, <?= format_date(date('Y-m-d'),1) ?> <br/>
+                        <strong><?= $title[1] ?></strong>
                         <br/><br/><br/><br/><br/><br/><br/>
-                        <strong style="text-decoration: underline">Panitia PMB</strong><br/>
-                        
+                        <strong style="text-decoration: underline">Panitia Seleksi</strong><br/>
+                        &nbsp;
                     </td>
                 </tr>
             </tbody>
@@ -215,10 +226,8 @@
         <div class="footer">
             <table>
                 <tr>
-                    <td><img src="<?= load_file('theme/img/logo.png','base64') ?>" style="max-width: 35px;padding-right: 5px"></td>
-                    <td><?= $this->session->userdata('name') . '<br>' . 
-                        format_date(date('Y-m-d H:i:s'), 0) . ' <br> ' . ip_agent() ?>
-                    </td>
+                    <td><img src="<?= load_file('private/logo.png','base64') ?>" style="max-width: 40px;padding-right: 5px"></td>
+                    <td><?= $this->session->userdata('name') . '<br>' . format_date(date('Y-m-d H:i:s'), 0) . ' @ ' . ip_agent() ?></td>
                 </tr>
             </table>
         </div>

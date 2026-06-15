@@ -27,7 +27,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                     <span class="help-inline col-xs-12 col-sm-3">
                         <span class="middle red">* Maksimal 5 MB</span><br>
-                        <a href="<?= base_url('theme/img/bank.xls') ?>">Template &nbsp;<i class="fa fa-download red bigger-120"></i></a>
+                        <a href="<?= base_url('private/bank.xls') ?>">Template &nbsp;<i class="fa fa-download red bigger-120"></i></a>
                     </span> 
                 </div>
                 <div class="clearfix form-actions">

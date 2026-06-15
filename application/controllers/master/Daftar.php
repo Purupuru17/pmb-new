@@ -94,6 +94,29 @@ class Daftar extends KZ_Controller {
         );
         $this->load_view('master/daftar/v_detail', $this->data);
     }
+    function cetak($id = NULL) {
+        if(empty(decode($id))){
+            redirect($this->module);
+        }
+        $detail = $this->m_mhs->getId(decode($id));
+        if(is_null($detail)){
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Data tidak ditemukan'));
+            redirect($this->module);
+        }
+        if(!in_array($detail['status_mhs'], ['LULUS','VALID','AKTIF'])){
+            $this->session->set_flashdata('notif', notif('warning', 'Peringatan', 'Status belum dinyatakan LULUS'));
+            redirect($this->module.'/detail/'.$id);
+        }
+        $this->data['detail'] = $detail;
+        $this->data['prodi'] = $this->m_prodi->getId($detail['prodi_id']);
+        
+        $title = 'KARTU MAHASISWA SEMENTARA';
+        $this->data['title'] = array($title, 'Lembaga Penerimaan Mahasiswa Baru');
+        $this->data['univ'] = config_item('kampus');
+        
+        $html = $this->load->view('mhs/profil/v_kartu', $this->data, true);
+        $this->fungsi->PdfGenerate($html, url_title($title.' '.$detail['nama_mhs'].' '.$detail['nim'], '-', true));
+    }
     function ajax() {
         $routing_module = $this->uri->uri_to_assoc(4, $this->url_route);
         if(is_null($routing_module['type'])){

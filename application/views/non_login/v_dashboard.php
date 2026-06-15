@@ -57,7 +57,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="widget-body">
-                    <div class="widget-main">
+                    <div class="widget-main table-responsive">
                         <div id="container" style="height: 400px; min-width: 380px"></div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="widget-body">
-                    <div class="widget-main">
+                    <div class="widget-main table-responsive">
                         <div id="container2" style="height: 400px; min-width: 380px"></div>
                     </div>
                 </div>
@@ -95,7 +95,7 @@ $this->load->view('sistem/v_breadcrumb');
                     </div>
                 </div>
                 <div class="widget-body">
-                    <div class="widget-main">
+                    <div class="widget-main table-responsive">
                         <div id="container3" style="height: 400px; min-width: 380px"></div>
                     </div>
                 </div>

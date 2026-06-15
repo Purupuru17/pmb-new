@@ -282,8 +282,8 @@ $this->load->view('sistem/v_breadcrumb');
             aoColumnDefs: [
                 {bSortable: false, aTargets: [0,7]},
                 {bSearchable: false, aTargets: [0,7]},
-                {sClass: "center", aTargets: [0, 2, 5, 6]},
-                {sClass: "center nowrap", aTargets: [1, 3, 4, 7]}
+                {sClass: "center", aTargets: [0, 2, 6]},
+                {sClass: "center nowrap", aTargets: [1, 3, 4, 5, 7]}
             ],
             oLanguage: {
                 sSearch: "Cari : ",

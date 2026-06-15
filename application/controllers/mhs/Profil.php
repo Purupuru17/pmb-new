@@ -81,7 +81,6 @@ class Profil extends KZ_Controller {
     }
     function cetak() {
         $this->load->model(array('m_prodi'));
-        $this->load->library(array('fungsi'));
         
         $detail = $this->m_mhs->getId($this->mid);
         if(is_null($detail)){
@@ -90,16 +89,18 @@ class Profil extends KZ_Controller {
         }
         if(!in_array($detail['status_mhs'], ['LULUS','VALID','AKTIF'])){
             $this->session->set_flashdata('notif', notif('warning', 'Peringatan'
-                , 'Mohon maaf anda belum dinyatakan LULUS. KTM hanya terbit ketika Status Mahasiswa : LULUS & AKTIF'));
+                , 'Mohon maaf anda belum dinyatakan LULUS. KTM hanya terbit ketika Status Mahasiswa : LULUS'));
             redirect($this->module);
         }
         $this->data['detail'] = $detail;
         $this->data['prodi'] = $this->m_prodi->getId($detail['prodi_id']);
         
         $title = 'KARTU MAHASISWA SEMENTARA';
-        $this->data['judul'] = array($title, null);
-        $this->fungsi->PdfGenerate($this->load->view('mhs/profil/v_kartu', $this->data, true), 
-            url_title($title.' '.$detail['nim'].' '.$detail['nama_mhs'], '-', true));
+        $this->data['title'] = array($title, 'Lembaga Penerimaan Mahasiswa Baru');
+        $this->data['univ'] = config_item('kampus');
+        
+        $html = $this->load->view('mhs/profil/v_kartu', $this->data, true);
+        $this->fungsi->PdfGenerate($html, url_title($title.' '.$detail['nama_mhs'].' '.$detail['nim'], '-', true));
     }
     function ajax() {
         $routing_module = $this->uri->uri_to_assoc(4, $this->url_route);

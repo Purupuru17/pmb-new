@@ -71,6 +71,11 @@
                                             <i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
                                             <span class="">Ubah Profil</span>
                                         </a>
+                                        <div class="space space-4"></div>
+                                        <a target="_blank" href="<?= site_url($module .'/cetak/'. encode($detail['id_mhs'])) ?>" class="btn btn-block btn-bold btn-success btn-white">
+                                            <i class="ace-icon fa fa-credit-card bigger-120"></i>
+                                            <span class="">KTM Sementara</span>
+                                        </a>
                                     </div><!-- /.col -->
                                     <div class="col-xs-12 col-sm-10">
                                         <h4 class="blue">
